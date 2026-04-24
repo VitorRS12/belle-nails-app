@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 const statusLabel: Record<Appointment["status"], string> = {
   scheduled: "Agendado",
@@ -39,10 +40,12 @@ export function AppointmentCard({
   showDate?: boolean;
   showStatusActions?: boolean;
 }) {
-  const [actionsOpen, setActionsOpen] = useState(false);
   const [rescheduleOpen, setRescheduleOpen] = useState(false);
+  const [completeOpen, setCompleteOpen] = useState(false);
   const [newDate, setNewDate] = useState(appt.date);
   const [newTime, setNewTime] = useState(appt.time);
+  const [extraValue, setExtraValue] = useState("");
+  const [extraReason, setExtraReason] = useState("");
 
   const remove = () => {
     if (!confirm("Remover este atendimento?")) return;
@@ -50,126 +53,125 @@ export function AppointmentCard({
     toast.success("Removido");
   };
 
-  const setStatus = (status: Appointment["status"]) => {
-    appointmentsStore.save({ ...appt, status });
-    toast.success(
-      status === "completed"
-        ? "Marcado como concluído ✨"
-        : status === "cancelled"
-        ? "Atendimento cancelado"
-        : "Atendimento reagendado"
-    );
-    setActionsOpen(false);
+  const cancel = () => {
+    if (!confirm("Cancelar este serviço?")) return;
+    appointmentsStore.save({ ...appt, status: "cancelled" });
+    toast.success("Atendimento cancelado");
+  };
+
+  const confirmComplete = () => {
+    const extra = Number(extraValue) || 0;
+    appointmentsStore.save({
+      ...appt,
+      status: "completed",
+      completedAt: new Date().toISOString(),
+      extraValue: extra > 0 ? extra : undefined,
+      extraReason: extra > 0 ? (extraReason.trim() || undefined) : undefined,
+      price: appt.price + extra,
+    });
+    toast.success("Marcado como concluído ✨");
+    setCompleteOpen(false);
+    setExtraValue("");
+    setExtraReason("");
   };
 
   const reschedule = () => {
     appointmentsStore.save({ ...appt, date: newDate, time: newTime, status: "scheduled" });
     toast.success("Reagendado!");
     setRescheduleOpen(false);
-    setActionsOpen(false);
   };
 
-  const clickable = showStatusActions && appt.status === "scheduled";
-
-  const cardContent = (
-    <article className="group rounded-2xl bg-card border border-border/60 p-4 shadow-soft hover:shadow-elegant transition-smooth animate-scale-in text-left w-full">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <span className={cn("text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full", statusStyles[appt.status])}>
-              {statusLabel[appt.status]}
-            </span>
-            <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
-              <Clock className="h-3 w-3" />
-              {showDate && format(parseISO(appt.date), "dd MMM", { locale: ptBR }) + " · "}
-              {appt.time}
-            </span>
-          </div>
-          <h3 className="font-display text-lg leading-tight truncate">{appt.clientName}</h3>
-          <p className="text-sm text-muted-foreground truncate">{appt.service}</p>
-          {appt.materials.length > 0 && (
-            <div className="mt-2 flex flex-wrap gap-1">
-              {appt.materials.map((m, i) => (
-                <span key={i} className="text-[10px] rounded-full bg-secondary px-2 py-0.5 text-secondary-foreground">
-                  {m.name}{m.quantity ? ` · ${m.quantity}` : ""}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className="flex flex-col items-end gap-2">
-          <span className="font-display text-lg text-primary whitespace-nowrap">
-            R$ {appt.price.toFixed(2).replace(".", ",")}
-          </span>
-          <div className="flex gap-1">
-            <AppointmentForm
-              initial={appt}
-              trigger={
-                <button
-                  onClick={(e) => e.stopPropagation()}
-                  className="h-7 w-7 rounded-full bg-secondary hover:bg-accent-soft inline-flex items-center justify-center transition-smooth"
-                >
-                  <Pencil className="h-3 w-3" />
-                </button>
-              }
-            />
-            <button
-              onClick={(e) => { e.stopPropagation(); remove(); }}
-              className="h-7 w-7 rounded-full bg-secondary hover:bg-destructive/10 hover:text-destructive inline-flex items-center justify-center transition-smooth"
-            >
-              <Trash2 className="h-3 w-3" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </article>
-  );
-
-  if (!clickable) return cardContent;
+  const showQuickActions = showStatusActions && appt.status === "scheduled";
 
   return (
     <>
-      <button type="button" onClick={() => setActionsOpen(true)} className="block w-full">
-        {cardContent}
-      </button>
+      <article className="group rounded-2xl bg-card border border-border/60 p-4 shadow-soft hover:shadow-elegant transition-smooth animate-scale-in text-left w-full">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
+              <span className={cn("text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full", statusStyles[appt.status])}>
+                {statusLabel[appt.status]}
+              </span>
+              <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                {showDate && format(parseISO(appt.date), "dd MMM", { locale: ptBR }) + " · "}
+                {appt.time}
+              </span>
+            </div>
+            <h3 className="font-display text-lg leading-tight truncate">{appt.clientName}</h3>
+            <p className="text-sm text-muted-foreground truncate">{appt.service}</p>
+            {appt.extraValue ? (
+              <p className="text-[11px] text-primary mt-1">
+                +R$ {appt.extraValue.toFixed(2).replace(".", ",")}
+                {appt.extraReason ? ` · ${appt.extraReason}` : ""}
+              </p>
+            ) : null}
+            {appt.materials.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1">
+                {appt.materials.map((m, i) => (
+                  <span key={i} className="text-[10px] rounded-full bg-secondary px-2 py-0.5 text-secondary-foreground">
+                    {m.name}{m.quantity ? ` · ${m.quantity}` : ""}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="flex flex-col items-end gap-2">
+            <span className="font-display text-lg text-primary whitespace-nowrap">
+              R$ {appt.price.toFixed(2).replace(".", ",")}
+            </span>
+            <div className="flex gap-1">
+              <AppointmentForm
+                initial={appt}
+                trigger={
+                  <button className="h-7 w-7 rounded-full bg-secondary hover:bg-accent-soft inline-flex items-center justify-center transition-smooth">
+                    <Pencil className="h-3 w-3" />
+                  </button>
+                }
+              />
+              <button
+                onClick={remove}
+                className="h-7 w-7 rounded-full bg-secondary hover:bg-destructive/10 hover:text-destructive inline-flex items-center justify-center transition-smooth"
+              >
+                <Trash2 className="h-3 w-3" />
+              </button>
+            </div>
+          </div>
+        </div>
 
-      <Dialog open={actionsOpen} onOpenChange={setActionsOpen}>
-        <DialogContent className="max-w-sm rounded-3xl">
-          <DialogHeader>
-            <DialogTitle className="font-display text-2xl">{appt.clientName}</DialogTitle>
-            <DialogDescription>
-              {appt.service} · {format(parseISO(appt.date), "dd 'de' MMMM", { locale: ptBR })} às {appt.time}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-2 pt-2">
+        {showQuickActions && (
+          <div className="mt-3 pt-3 border-t border-border/60 grid grid-cols-3 gap-2">
             <Button
-              onClick={() => setStatus("completed")}
-              className="w-full justify-start h-12 bg-gradient-primary shadow-elegant"
+              size="sm"
+              onClick={() => setCompleteOpen(true)}
+              className="bg-gradient-primary shadow-soft h-9 text-xs"
             >
-              <CheckCircle2 className="h-5 w-5 mr-2" /> Marcar como concluído
+              <CheckCircle2 className="h-4 w-4 mr-1" /> Concluir
             </Button>
             <Button
-              onClick={() => setRescheduleOpen(true)}
+              size="sm"
               variant="secondary"
-              className="w-full justify-start h-12"
+              onClick={() => setRescheduleOpen(true)}
+              className="h-9 text-xs"
             >
-              <CalendarClock className="h-5 w-5 mr-2" /> Adiar / Reagendar
+              <CalendarClock className="h-4 w-4 mr-1" /> Adiar
             </Button>
             <Button
-              onClick={() => setStatus("cancelled")}
+              size="sm"
               variant="outline"
-              className="w-full justify-start h-12 text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/30"
+              onClick={cancel}
+              className="h-9 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/30"
             >
-              <XCircle className="h-5 w-5 mr-2" /> Cancelar serviço
+              <XCircle className="h-4 w-4 mr-1" /> Cancelar
             </Button>
           </div>
-        </DialogContent>
-      </Dialog>
+        )}
+      </article>
 
       <Dialog open={rescheduleOpen} onOpenChange={setRescheduleOpen}>
         <DialogContent className="max-w-sm rounded-3xl">
           <DialogHeader>
-            <DialogTitle className="font-display text-2xl">Reagendar</DialogTitle>
+            <DialogTitle className="font-display text-2xl">Adiar / Reagendar</DialogTitle>
             <DialogDescription>Escolha a nova data e horário.</DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-3 pt-2">
@@ -185,6 +187,48 @@ export function AppointmentCard({
           <Button onClick={reschedule} className="w-full bg-gradient-primary h-11 shadow-elegant mt-2">
             Confirmar novo horário
           </Button>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={completeOpen} onOpenChange={setCompleteOpen}>
+        <DialogContent className="max-w-sm rounded-3xl">
+          <DialogHeader>
+            <DialogTitle className="font-display text-2xl">Concluir atendimento</DialogTitle>
+            <DialogDescription>
+              {appt.service} · R$ {appt.price.toFixed(2).replace(".", ",")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 pt-2">
+            <div className="space-y-2">
+              <Label>Valor extra (opcional)</Label>
+              <Input
+                inputMode="decimal"
+                placeholder="0,00"
+                value={extraValue}
+                onChange={(e) => setExtraValue(e.target.value.replace(",", "."))}
+              />
+            </div>
+            {Number(extraValue) > 0 && (
+              <div className="space-y-2 animate-scale-in">
+                <Label>Motivo do valor extra</Label>
+                <Textarea
+                  placeholder="Ex: decoração especial, alongamento adicional…"
+                  rows={2}
+                  value={extraReason}
+                  onChange={(e) => setExtraReason(e.target.value)}
+                />
+              </div>
+            )}
+            <div className="rounded-2xl bg-gradient-soft p-3 text-center">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Total final</p>
+              <p className="font-display text-2xl text-primary">
+                R$ {(appt.price + (Number(extraValue) || 0)).toFixed(2).replace(".", ",")}
+              </p>
+            </div>
+            <Button onClick={confirmComplete} className="w-full bg-gradient-primary h-11 shadow-elegant">
+              <CheckCircle2 className="h-5 w-5 mr-2" /> Confirmar conclusão
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </>

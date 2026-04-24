@@ -74,10 +74,13 @@ function ClientDetail({
 }) {
   const completed = appts.filter((a) => a.status === "completed");
   const total = completed.reduce((s, a) => s + a.price, 0);
-  const sortedCompleted = [...completed].sort((a, b) =>
-    (b.date + b.time).localeCompare(a.date + a.time)
-  );
+  const sortedCompleted = [...completed].sort((a, b) => {
+    const ka = a.completedAt ?? `${a.date}T${a.time}`;
+    const kb = b.completedAt ?? `${b.date}T${b.time}`;
+    return kb.localeCompare(ka);
+  });
   const last = sortedCompleted[0];
+  const lastDate = last ? (last.completedAt ? parseISO(last.completedAt) : parseISO(last.date)) : null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -108,7 +111,7 @@ function ClientDetail({
           <div className="rounded-2xl bg-gradient-soft p-3 text-center">
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Última</p>
             <p className="font-display text-sm text-primary leading-tight pt-1">
-              {last ? format(parseISO(last.date), "dd/MM/yy") : "—"}
+              {lastDate ? format(lastDate, "dd/MM/yy") : "—"}
             </p>
           </div>
         </div>
@@ -127,21 +130,30 @@ function ClientDetail({
             </p>
           ) : (
             <div className="space-y-2">
-              {sortedCompleted.map((a) => (
-                <div key={a.id} className="rounded-xl bg-card border border-border/60 p-3">
-                  <div className="flex justify-between items-start gap-2">
-                    <div className="min-w-0">
-                      <p className="font-medium text-sm truncate">{a.service}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {format(parseISO(a.date), "dd 'de' MMM yyyy", { locale: ptBR })} · {a.time}
-                      </p>
+              {sortedCompleted.map((a) => {
+                const completedDate = a.completedAt ? parseISO(a.completedAt) : parseISO(a.date);
+                return (
+                  <div key={a.id} className="rounded-xl bg-card border border-border/60 p-3">
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="min-w-0">
+                        <p className="font-medium text-sm truncate">{a.service}</p>
+                        <p className="text-xs text-muted-foreground">
+                          Concluído em {format(completedDate, "dd 'de' MMM yyyy", { locale: ptBR })}
+                        </p>
+                        {a.extraValue ? (
+                          <p className="text-[11px] text-primary mt-0.5">
+                            +R$ {a.extraValue.toFixed(2).replace(".", ",")}
+                            {a.extraReason ? ` · ${a.extraReason}` : ""}
+                          </p>
+                        ) : null}
+                      </div>
+                      <span className="font-display text-primary text-sm whitespace-nowrap">
+                        R$ {a.price.toFixed(2).replace(".", ",")}
+                      </span>
                     </div>
-                    <span className="font-display text-primary text-sm whitespace-nowrap">
-                      R$ {a.price.toFixed(2).replace(".", ",")}
-                    </span>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -158,9 +170,9 @@ const Clientes = () => {
 
   const list = useMemo(() => {
     const enriched = clients.map((c) => {
-      const cAppts = appts.filter((a) => a.clientId === c.id);
-      const total = cAppts.filter((a) => a.status === "completed").reduce((s, a) => s + a.price, 0);
-      return { ...c, count: cAppts.length, total };
+      const completedAppts = appts.filter((a) => a.clientId === c.id && a.status === "completed");
+      const total = completedAppts.reduce((s, a) => s + a.price, 0);
+      return { ...c, count: completedAppts.length, total };
     });
     return enriched
       .filter((c) => (q.trim() ? c.name.toLowerCase().includes(q.toLowerCase()) : true))

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { appointmentsStore, clientsStore, uid } from "@/lib/storage";
 import { useClients } from "@/hooks/useStore";
-import type { Appointment, Material } from "@/lib/types";
+import { type Appointment, type Material, SERVICE_CATALOG } from "@/lib/types";
 import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -136,11 +136,35 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
 
           <div className="space-y-2">
             <Label>Serviço</Label>
-            <Input
-              placeholder="Ex: Esmaltação em gel"
-              value={service}
-              onChange={(e) => setService(e.target.value)}
-            />
+            <Select
+              value={SERVICE_CATALOG.find((s) => s.name === service) ? service : (service ? "__custom__" : "")}
+              onValueChange={(v) => {
+                if (v === "__custom__") {
+                  setService("");
+                  return;
+                }
+                setService(v);
+                const found = SERVICE_CATALOG.find((s) => s.name === v);
+                if (found) setPrice(String(found.price));
+              }}
+            >
+              <SelectTrigger><SelectValue placeholder="Selecione um serviço" /></SelectTrigger>
+              <SelectContent>
+                {SERVICE_CATALOG.map((s) => (
+                  <SelectItem key={s.name} value={s.name}>
+                    {s.name} · R$ {s.price.toFixed(2).replace(".", ",")}
+                  </SelectItem>
+                ))}
+                <SelectItem value="__custom__">Outro (personalizado)</SelectItem>
+              </SelectContent>
+            </Select>
+            {!SERVICE_CATALOG.find((s) => s.name === service) && (
+              <Input
+                placeholder="Descreva o serviço"
+                value={service}
+                onChange={(e) => setService(e.target.value)}
+              />
+            )}
           </div>
 
           <div className="space-y-2">
@@ -199,17 +223,19 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
             />
           </div>
 
-          <div className="space-y-2">
-            <Label>Status</Label>
-            <Select value={status} onValueChange={(v) => setStatus(v as Appointment["status"])}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="scheduled">Agendado</SelectItem>
-                <SelectItem value="completed">Concluído</SelectItem>
-                <SelectItem value="cancelled">Cancelado</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {initial?.status === "completed" || initial?.status === "cancelled" ? (
+            <div className="space-y-2">
+              <Label>Status</Label>
+              <Select value={status} onValueChange={(v) => setStatus(v as Appointment["status"])}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="scheduled">Agendado</SelectItem>
+                  <SelectItem value="completed">Concluído</SelectItem>
+                  <SelectItem value="cancelled">Cancelado</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          ) : null}
 
           <Button onClick={submit} className="w-full bg-gradient-primary shadow-elegant h-11 text-base">
             Salvar

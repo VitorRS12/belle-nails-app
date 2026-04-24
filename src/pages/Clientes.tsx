@@ -170,9 +170,9 @@ const Clientes = () => {
 
   const list = useMemo(() => {
     const enriched = clients.map((c) => {
-      const cAppts = appts.filter((a) => a.clientId === c.id);
-      const total = cAppts.filter((a) => a.status === "completed").reduce((s, a) => s + a.price, 0);
-      return { ...c, count: cAppts.length, total };
+      const completedAppts = appts.filter((a) => a.clientId === c.id && a.status === "completed");
+      const total = completedAppts.reduce((s, a) => s + a.price, 0);
+      return { ...c, count: completedAppts.length, total };
     });
     return enriched
       .filter((c) => (q.trim() ? c.name.toLowerCase().includes(q.toLowerCase()) : true))

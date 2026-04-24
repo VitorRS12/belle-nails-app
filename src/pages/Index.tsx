@@ -10,11 +10,13 @@ import { Sparkles, TrendingUp, CalendarCheck } from "lucide-react";
 const Dashboard = () => {
   const appts = useAppointments();
 
-  const { today, upcoming, monthRevenue, monthCount } = useMemo(() => {
+  const { todayScheduled, upcoming, monthRevenue, monthCount } = useMemo(() => {
     const sorted = [...appts].sort((a, b) =>
       (a.date + a.time).localeCompare(b.date + b.time)
     );
-    const today = sorted.filter((a) => isToday(parseISO(a.date)) && a.status !== "cancelled");
+    const todayScheduled = sorted.filter(
+      (a) => isToday(parseISO(a.date)) && a.status === "scheduled"
+    );
     const upcoming = sorted
       .filter((a) => {
         const d = parseISO(a.date);
@@ -26,7 +28,7 @@ const Dashboard = () => {
       (a) => isSameMonth(parseISO(a.date), monthStart) && a.status === "completed"
     );
     return {
-      today,
+      todayScheduled,
       upcoming,
       monthRevenue: thisMonth.reduce((s, a) => s + a.price, 0),
       monthCount: thisMonth.length,
@@ -47,21 +49,21 @@ const Dashboard = () => {
         </div>
         <div className="rounded-2xl bg-gradient-gold text-accent-foreground p-4 shadow-gold">
           <CalendarCheck className="h-5 w-5 mb-3 opacity-90" />
-          <p className="text-xs uppercase tracking-wider opacity-80">Atendimentos</p>
+          <p className="text-xs uppercase tracking-wider opacity-80">Concluídos no mês</p>
           <p className="font-display text-2xl mt-1">{monthCount}</p>
         </div>
       </section>
 
       <section className="space-y-3">
         <h2 className="font-display text-xl flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-accent" /> Hoje
+          <Sparkles className="h-4 w-4 text-accent" /> Agendados para hoje
         </h2>
-        {today.length === 0 ? (
+        {todayScheduled.length === 0 ? (
           <div className="rounded-2xl bg-card/60 border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-            Nenhum atendimento hoje. Aproveite!
+            Nenhum agendamento para hoje.
           </div>
         ) : (
-          today.map((a) => <AppointmentCard key={a.id} appt={a} />)
+          todayScheduled.map((a) => <AppointmentCard key={a.id} appt={a} showStatusActions />)
         )}
       </section>
 
@@ -72,7 +74,7 @@ const Dashboard = () => {
             Sem agendamentos futuros.
           </div>
         ) : (
-          upcoming.map((a) => <AppointmentCard key={a.id} appt={a} showDate />)
+          upcoming.map((a) => <AppointmentCard key={a.id} appt={a} showDate showStatusActions />)
         )}
       </section>
     </AppLayout>

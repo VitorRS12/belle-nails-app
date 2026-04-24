@@ -36,7 +36,7 @@ const Agenda = () => {
           </h2>
           <div className="space-y-3">
             {items.map((a) => (
-              <AppointmentCard key={a.id} appt={a} />
+              <AppointmentCard key={a.id} appt={a} showStatusActions />
             ))}
           </div>
         </section>

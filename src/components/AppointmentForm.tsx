@@ -223,17 +223,19 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
             />
           </div>
 
-          <div className="space-y-2">
-            <Label>Status</Label>
-            <Select value={status} onValueChange={(v) => setStatus(v as Appointment["status"])}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="scheduled">Agendado</SelectItem>
-                <SelectItem value="completed">Concluído</SelectItem>
-                <SelectItem value="cancelled">Cancelado</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {initial?.status === "completed" || initial?.status === "cancelled" ? (
+            <div className="space-y-2">
+              <Label>Status</Label>
+              <Select value={status} onValueChange={(v) => setStatus(v as Appointment["status"])}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="scheduled">Agendado</SelectItem>
+                  <SelectItem value="completed">Concluído</SelectItem>
+                  <SelectItem value="cancelled">Cancelado</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          ) : null}
 
           <Button onClick={submit} className="w-full bg-gradient-primary shadow-elegant h-11 text-base">
             Salvar

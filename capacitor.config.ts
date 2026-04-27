@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.lovable.8011af2c9eff47f8bbddaf8a9c4a5689',
+  appId: 'app.lovable.bellenails',
   appName: 'Belle Nails',
   webDir: 'dist',
   server: {

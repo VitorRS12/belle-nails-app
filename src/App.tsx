@@ -8,9 +8,33 @@ import Agenda from "./pages/Agenda.tsx";
 import Clientes from "./pages/Clientes.tsx";
 import Atendimentos from "./pages/Atendimentos.tsx";
 import Relatorio from "./pages/Relatorio.tsx";
+import Configuracoes from "./pages/Configuracoes.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import { useGoogleDriveAutoBackup } from "./hooks/useGoogleDriveBackup";
+import { useEffect } from "react";
+import { handleOAuthRedirect } from "./lib/googleDrive";
 
 const queryClient = new QueryClient();
+
+function AppInner() {
+  useGoogleDriveAutoBackup();
+
+  useEffect(() => {
+    handleOAuthRedirect();
+  }, []);
+
+  return (
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="/agenda" element={<Agenda />} />
+      <Route path="/clientes" element={<Clientes />} />
+      <Route path="/atendimentos" element={<Atendimentos />} />
+      <Route path="/relatorio" element={<Relatorio />} />
+      <Route path="/configuracoes" element={<Configuracoes />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -18,14 +42,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/agenda" element={<Agenda />} />
-          <Route path="/clientes" element={<Clientes />} />
-          <Route path="/atendimentos" element={<Atendimentos />} />
-          <Route path="/relatorio" element={<Relatorio />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AppInner />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

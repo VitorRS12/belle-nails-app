@@ -23,6 +23,29 @@ const Configuracoes = () => {
     if (handleOAuthRedirect()) {
       setConnected(true);
       toast.success("Google Drive conectado!");
+
+      // Auto-restore if local data is empty
+      const clients = JSON.parse(localStorage.getItem(CLIENTS_KEY) || "[]");
+      const appts = JSON.parse(localStorage.getItem(APPTS_KEY) || "[]");
+      if (clients.length === 0 && appts.length === 0) {
+        (async () => {
+          setLoading(true);
+          const raw = await downloadBackup();
+          setLoading(false);
+          if (!raw) return;
+          try {
+            const data = JSON.parse(raw);
+            if (data.clients?.length || data.appointments?.length) {
+              if (data.clients) localStorage.setItem(CLIENTS_KEY, JSON.stringify(data.clients));
+              if (data.appointments) localStorage.setItem(APPTS_KEY, JSON.stringify(data.appointments));
+              window.dispatchEvent(new Event("manicure:update"));
+              toast.success("Dados restaurados automaticamente do backup!");
+            }
+          } catch {
+            // ignore invalid backup
+          }
+        })();
+      }
     }
   }, []);
 

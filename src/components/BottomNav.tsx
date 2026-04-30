@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Home, CalendarDays, Users, Sparkles, Settings } from "lucide-react";
+import { Home, CalendarDays, Users, Sparkles, FileText, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
@@ -7,6 +7,7 @@ const items = [
   { to: "/agenda", icon: CalendarDays, label: "Agenda" },
   { to: "/clientes", icon: Users, label: "Clientes" },
   { to: "/atendimentos", icon: Sparkles, label: "Histórico" },
+  { to: "/relatorio", icon: FileText, label: "Relatório" },
   { to: "/configuracoes", icon: Settings, label: "Config" },
 ];
 

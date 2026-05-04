@@ -10,9 +10,11 @@ import Atendimentos from "./pages/Atendimentos.tsx";
 import Relatorio from "./pages/Relatorio.tsx";
 import Configuracoes from "./pages/Configuracoes.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import OAuthCallback from "./pages/OAuthCallback.tsx";
 import { useGoogleDriveAutoBackup } from "./hooks/useGoogleDriveBackup";
 import { useEffect } from "react";
-import { handleOAuthRedirect } from "./lib/googleDrive";
+import { handleOAuthRedirect, initNativeOAuthListener } from "./lib/googleDrive";
+import { toast } from "sonner";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +23,9 @@ function AppInner() {
 
   useEffect(() => {
     handleOAuthRedirect();
+    initNativeOAuthListener(() => {
+      toast.success("Google Drive conectado!");
+    });
   }, []);
 
   return (
@@ -31,6 +36,7 @@ function AppInner() {
       <Route path="/atendimentos" element={<Atendimentos />} />
       <Route path="/relatorio" element={<Relatorio />} />
       <Route path="/configuracoes" element={<Configuracoes />} />
+      <Route path="/oauth-callback" element={<OAuthCallback />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

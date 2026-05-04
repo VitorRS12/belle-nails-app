@@ -1,6 +1,16 @@
+import { Browser } from "@capacitor/browser";
+import { App as CapApp } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
+
 const CLIENT_ID = "1015780156925-msh8403357kg6bm2j5o3bag0l32eu25c.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/drive.file";
 const BACKUP_FILENAME = "belle-nails-backup.json";
+
+// IMPORTANT: This URL must be your PUBLISHED Lovable URL and must be added
+// to "Authorized redirect URIs" in Google Cloud Console.
+// On native (APK), Google redirects here, and this page bounces back to the app via deep link.
+const PUBLISHED_REDIRECT = "https://id-preview--8011af2c-9eff-47f8-bbdd-af8a9c4a5689.lovable.app/oauth-callback";
+const NATIVE_DEEP_LINK_SCHEME = "app.lovable.bellenails";
 
 const TOKEN_KEY = "gdrive_access_token";
 const EXPIRY_KEY = "gdrive_token_expiry";
@@ -32,17 +42,55 @@ export function disconnect() {
 }
 
 export function startOAuthFlow() {
-  const redirectUri = window.location.origin;
+  const isNative = Capacitor.isNativePlatform();
+  // On native: use the published web page as redirect, which then deep-links back.
+  // On web: use the current origin.
+  const redirectUri = isNative ? PUBLISHED_REDIRECT : `${window.location.origin}/oauth-callback`;
+
   const params = new URLSearchParams({
     client_id: CLIENT_ID,
     redirect_uri: redirectUri,
     response_type: "token",
     scope: SCOPES,
     prompt: "consent",
+    state: isNative ? "native" : "web",
   });
-  window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
+  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
+
+  if (isNative) {
+    Browser.open({ url: authUrl });
+  } else {
+    window.location.href = authUrl;
+  }
 }
 
+/**
+ * Called on the /oauth-callback page (web).
+ * If the redirect carries a token, either store it (web) or bounce to deep link (native state).
+ */
+export function handleOAuthCallbackPage() {
+  const hash = window.location.hash;
+  if (!hash.includes("access_token")) return;
+  const params = new URLSearchParams(hash.substring(1));
+  const state = params.get("state");
+  if (state === "native") {
+    // Bounce to the native app via custom URL scheme
+    window.location.href = `${NATIVE_DEEP_LINK_SCHEME}://oauth#${hash.substring(1)}`;
+    return;
+  }
+  // Web flow: store and redirect to settings
+  const token = params.get("access_token");
+  const expiresIn = Number(params.get("expires_in") || "3600");
+  if (token) {
+    storeToken(token, expiresIn);
+    window.location.replace("/configuracoes");
+  }
+}
+
+/**
+ * Legacy helper kept for backwards compatibility (called from App).
+ * Handles tokens arriving in the URL hash on any page.
+ */
 export function handleOAuthRedirect(): boolean {
   const hash = window.location.hash;
   if (!hash.includes("access_token")) return false;
@@ -51,11 +99,36 @@ export function handleOAuthRedirect(): boolean {
   const expiresIn = Number(params.get("expires_in") || "3600");
   if (token) {
     storeToken(token, expiresIn);
-    // Clean URL
     window.history.replaceState(null, "", window.location.pathname);
     return true;
   }
   return false;
+}
+
+/**
+ * Listen for the deep link callback on native platforms.
+ * Should be initialized once at app start.
+ */
+export function initNativeOAuthListener(onToken?: () => void) {
+  if (!Capacitor.isNativePlatform()) return;
+  CapApp.addListener("appUrlOpen", async (event) => {
+    const url = event.url || "";
+    if (!url.startsWith(`${NATIVE_DEEP_LINK_SCHEME}://oauth`)) return;
+    const hashIndex = url.indexOf("#");
+    if (hashIndex === -1) return;
+    const params = new URLSearchParams(url.substring(hashIndex + 1));
+    const token = params.get("access_token");
+    const expiresIn = Number(params.get("expires_in") || "3600");
+    if (token) {
+      storeToken(token, expiresIn);
+      try {
+        await Browser.close();
+      } catch {
+        // ignore
+      }
+      onToken?.();
+    }
+  });
 }
 
 async function findBackupFile(token: string): Promise<string | null> {

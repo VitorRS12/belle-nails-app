@@ -9,7 +9,7 @@ const BACKUP_FILENAME = "belle-nails-backup.json";
 // IMPORTANT: This URL must be your PUBLISHED Lovable URL and must be added
 // to "Authorized redirect URIs" in Google Cloud Console.
 // On native (APK), Google redirects here, and this page bounces back to the app via deep link.
-const PUBLISHED_REDIRECT = "https://id-preview--8011af2c-9eff-47f8-bbdd-af8a9c4a5689.lovable.app/oauth-callback";
+const PUBLISHED_REDIRECT = "https://mani-plan-pro.lovable.app/oauth-callback";
 const NATIVE_DEEP_LINK_SCHEME = "app.lovable.bellenails";
 
 const TOKEN_KEY = "gdrive_access_token";

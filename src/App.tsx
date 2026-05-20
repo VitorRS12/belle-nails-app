@@ -12,6 +12,7 @@ import Configuracoes from "./pages/Configuracoes.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import OAuthCallback from "./pages/OAuthCallback.tsx";
 import Auth from "./pages/Auth.tsx";
+import Dashboard from "./pages/Dashboard.tsx";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useGoogleDriveAutoBackup } from "./hooks/useGoogleDriveBackup";
@@ -36,6 +37,7 @@ function AppInner() {
       <Route path="/auth" element={<Auth />} />
       <Route path="/oauth-callback" element={<OAuthCallback />} />
       <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/agenda" element={<ProtectedRoute><Agenda /></ProtectedRoute>} />
       <Route path="/clientes" element={<ProtectedRoute><Clientes /></ProtectedRoute>} />
       <Route path="/atendimentos" element={<ProtectedRoute><Atendimentos /></ProtectedRoute>} />

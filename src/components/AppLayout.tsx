@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { BottomNav } from "./BottomNav";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
+import { AreaSwitcher } from "./AreaSwitcher";
 
 interface Props {
   title: string;
@@ -31,7 +32,10 @@ export function AppLayout({ title, subtitle, action, children, wide }: Props) {
               )}
               <h1 className="font-display text-lg text-foreground leading-tight">{title}</h1>
             </div>
-            <div className="ml-auto">{action}</div>
+            <div className="ml-auto flex items-center gap-3">
+              <AreaSwitcher />
+              {action}
+            </div>
           </header>
 
           <main
@@ -39,7 +43,7 @@ export function AppLayout({ title, subtitle, action, children, wide }: Props) {
               wide ? "max-w-6xl" : "max-w-md md:max-w-4xl"
             }`}
           >
-            <header className="md:hidden px-5 pt-6 pb-4 flex items-end justify-between gap-3">
+            <header className="md:hidden px-5 pt-6 pb-2 flex items-end justify-between gap-3">
               <div className="animate-fade-in">
                 {subtitle && (
                   <p className="text-xs uppercase tracking-[0.18em] text-accent font-semibold mb-1">
@@ -50,6 +54,9 @@ export function AppLayout({ title, subtitle, action, children, wide }: Props) {
               </div>
               {action}
             </header>
+            <div className="md:hidden px-5 pb-2 overflow-x-auto">
+              <AreaSwitcher variant="compact" />
+            </div>
             <div className="px-5 md:px-8 md:pt-6 space-y-4 animate-fade-in">{children}</div>
           </main>
         </div>

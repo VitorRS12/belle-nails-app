@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { appointmentsStore, clientsStore, uid } from "@/lib/storage";
 import { useClients } from "@/hooks/useStore";
-import { type Appointment, type Material, SERVICE_CATALOG } from "@/lib/types";
+import { type Appointment, type Material, type ServiceItem, SERVICE_CATALOG } from "@/lib/types";
 import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -18,6 +18,15 @@ interface Props {
   onSaved?: () => void;
 }
 
+function initialServices(initial?: Appointment): ServiceItem[] {
+  if (initial?.services && initial.services.length > 0) return initial.services;
+  if (initial?.service) {
+    // legacy single-service record
+    return [{ name: initial.service, price: initial.price || 0 }];
+  }
+  return [];
+}
+
 export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Props) {
   const clients = useClients();
   const [open, setOpen] = useState(false);
@@ -25,8 +34,11 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
   const [newClientName, setNewClientName] = useState("");
   const [date, setDate] = useState(initial?.date ?? defaultDate ?? new Date().toISOString().slice(0, 10));
   const [time, setTime] = useState(initial?.time ?? "09:00");
-  const [service, setService] = useState(initial?.service ?? "");
-  const [price, setPrice] = useState<string>(initial ? String(initial.price) : "");
+
+  const [services, setServices] = useState<ServiceItem[]>(initialServices(initial));
+  const [pickerValue, setPickerValue] = useState<string>("");
+  const [customName, setCustomName] = useState("");
+
   const [materials, setMaterials] = useState<Material[]>(initial?.materials ?? []);
   const [matName, setMatName] = useState("");
   const [matQty, setMatQty] = useState("");
@@ -38,12 +50,40 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
     setClientId(initial?.clientId ?? "");
     setDate(initial?.date ?? defaultDate ?? new Date().toISOString().slice(0, 10));
     setTime(initial?.time ?? "09:00");
-    setService(initial?.service ?? "");
-    setPrice(initial ? String(initial.price) : "");
+    setServices(initialServices(initial));
+    setPickerValue("");
+    setCustomName("");
     setMaterials(initial?.materials ?? []);
     setNotes(initial?.notes ?? "");
     setStatus(initial?.status ?? "scheduled");
   }, [open, initial, defaultDate]);
+
+  const total = useMemo(
+    () => services.reduce((s, x) => s + (Number(x.price) || 0), 0),
+    [services],
+  );
+
+  const addFromCatalog = (name: string) => {
+    const found = SERVICE_CATALOG.find((s) => s.name === name);
+    if (!found) return;
+    setServices((cur) => [...cur, { name: found.name, price: found.price }]);
+    setPickerValue("");
+  };
+
+  const addCustom = () => {
+    const n = customName.trim();
+    if (!n) return;
+    setServices((cur) => [...cur, { name: n, price: 0 }]);
+    setCustomName("");
+  };
+
+  const updateService = (idx: number, patch: Partial<ServiceItem>) => {
+    setServices((cur) => cur.map((s, i) => (i === idx ? { ...s, ...patch } : s)));
+  };
+
+  const removeService = (idx: number) => {
+    setServices((cur) => cur.filter((_, i) => i !== idx));
+  };
 
   const addMaterial = () => {
     if (!matName.trim()) return;
@@ -64,7 +104,14 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
     }
 
     if (!finalClientId) return toast.error("Selecione ou cadastre uma cliente");
-    if (!service.trim()) return toast.error("Informe o serviço");
+    if (services.length === 0) return toast.error("Adicione ao menos um serviço");
+
+    const cleanServices = services.map((s) => ({
+      name: s.name.trim() || "Serviço",
+      price: Number(s.price) || 0,
+    }));
+    const totalPrice = cleanServices.reduce((s, x) => s + x.price, 0);
+    const serviceLabel = cleanServices.map((s) => s.name).join(" + ");
 
     const appt: Appointment = {
       id: initial?.id ?? uid(),
@@ -72,9 +119,10 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
       clientName: finalClientName,
       date,
       time,
-      service: service.trim(),
+      service: serviceLabel,
+      services: cleanServices,
       materials,
-      price: Number(price) || 0,
+      price: totalPrice,
       notes: notes.trim() || undefined,
       status,
       createdAt: initial?.createdAt ?? new Date().toISOString(),
@@ -84,6 +132,8 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
     setOpen(false);
     onSaved?.();
   };
+
+  const availableCatalog = SERVICE_CATALOG; // allow duplicates if needed
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -134,47 +184,68 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label>Serviço</Label>
-            <Select
-              value={SERVICE_CATALOG.find((s) => s.name === service) ? service : (service ? "__custom__" : "")}
-              onValueChange={(v) => {
-                if (v === "__custom__") {
-                  setService("");
-                  return;
-                }
-                setService(v);
-                const found = SERVICE_CATALOG.find((s) => s.name === v);
-                if (found) setPrice(String(found.price));
-              }}
-            >
-              <SelectTrigger><SelectValue placeholder="Selecione um serviço" /></SelectTrigger>
+          <div className="space-y-3">
+            <Label>Serviços</Label>
+
+            <Select value={pickerValue} onValueChange={addFromCatalog}>
+              <SelectTrigger><SelectValue placeholder="Adicionar serviço da lista" /></SelectTrigger>
               <SelectContent>
-                {SERVICE_CATALOG.map((s) => (
+                {availableCatalog.map((s) => (
                   <SelectItem key={s.name} value={s.name}>
                     {s.name} · R$ {s.price.toFixed(2).replace(".", ",")}
                   </SelectItem>
                 ))}
-                <SelectItem value="__custom__">Outro (personalizado)</SelectItem>
               </SelectContent>
             </Select>
-            {!SERVICE_CATALOG.find((s) => s.name === service) && (
-              <Input
-                placeholder="Descreva o serviço"
-                value={service}
-                onChange={(e) => setService(e.target.value)}
-              />
-            )}
-          </div>
 
-          <div className="space-y-2">
-            <Label>Valor (R$)</Label>
-            <Input
-              inputMode="decimal"
-              placeholder="0,00"
-              value={price}
-              onChange={(e) => setPrice(e.target.value.replace(",", "."))}
-            />
+            <div className="flex gap-2">
+              <Input
+                placeholder="Adicionar serviço personalizado"
+                value={customName}
+                onChange={(e) => setCustomName(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustom())}
+              />
+              <Button type="button" variant="secondary" onClick={addCustom}>
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {services.length > 0 && (
+              <div className="space-y-2">
+                {services.map((s, i) => (
+                  <div key={i} className="flex items-center gap-2 rounded-xl bg-accent-soft/50 p-2">
+                    <Input
+                      className="flex-1 h-9 bg-background"
+                      value={s.name}
+                      onChange={(e) => updateService(i, { name: e.target.value })}
+                    />
+                    <Input
+                      className="w-24 h-9 bg-background"
+                      inputMode="decimal"
+                      placeholder="0,00"
+                      value={s.price === 0 ? "" : String(s.price)}
+                      onChange={(e) =>
+                        updateService(i, { price: Number(e.target.value.replace(",", ".")) || 0 })
+                      }
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeService(i)}
+                      className="h-8 w-8 rounded-full bg-secondary hover:bg-destructive/10 hover:text-destructive inline-flex items-center justify-center transition-smooth"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+
+                <div className="flex items-center justify-between rounded-2xl bg-gradient-soft p-3">
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground">Total</span>
+                  <span className="font-display text-xl text-primary">
+                    R$ {total.toFixed(2).replace(".", ",")}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">

@@ -11,6 +11,9 @@ import Relatorio from "./pages/Relatorio.tsx";
 import Configuracoes from "./pages/Configuracoes.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import OAuthCallback from "./pages/OAuthCallback.tsx";
+import Auth from "./pages/Auth.tsx";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useGoogleDriveAutoBackup } from "./hooks/useGoogleDriveBackup";
 import { useEffect } from "react";
 import { handleOAuthRedirect, initNativeOAuthListener } from "./lib/googleDrive";
@@ -30,13 +33,14 @@ function AppInner() {
 
   return (
     <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/agenda" element={<Agenda />} />
-      <Route path="/clientes" element={<Clientes />} />
-      <Route path="/atendimentos" element={<Atendimentos />} />
-      <Route path="/relatorio" element={<Relatorio />} />
-      <Route path="/configuracoes" element={<Configuracoes />} />
+      <Route path="/auth" element={<Auth />} />
       <Route path="/oauth-callback" element={<OAuthCallback />} />
+      <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+      <Route path="/agenda" element={<ProtectedRoute><Agenda /></ProtectedRoute>} />
+      <Route path="/clientes" element={<ProtectedRoute><Clientes /></ProtectedRoute>} />
+      <Route path="/atendimentos" element={<ProtectedRoute><Atendimentos /></ProtectedRoute>} />
+      <Route path="/relatorio" element={<ProtectedRoute><Relatorio /></ProtectedRoute>} />
+      <Route path="/configuracoes" element={<ProtectedRoute><Configuracoes /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
@@ -48,7 +52,9 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AppInner />
+        <AuthProvider>
+          <AppInner />
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

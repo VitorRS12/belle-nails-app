@@ -14,7 +14,128 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      appointments: {
+        Row: {
+          client_id: string
+          client_name: string
+          completed_at: string | null
+          created_at: string
+          date: string
+          extra_reason: string | null
+          extra_value: number | null
+          id: string
+          materials: Json
+          notes: string | null
+          price: number
+          service: string
+          services: Json
+          status: string
+          time: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          client_id: string
+          client_name: string
+          completed_at?: string | null
+          created_at?: string
+          date: string
+          extra_reason?: string | null
+          extra_value?: number | null
+          id?: string
+          materials?: Json
+          notes?: string | null
+          price?: number
+          service: string
+          services?: Json
+          status?: string
+          time: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          client_id?: string
+          client_name?: string
+          completed_at?: string | null
+          created_at?: string
+          date?: string
+          extra_reason?: string | null
+          extra_value?: number | null
+          id?: string
+          materials?: Json
+          notes?: string | null
+          price?: number
+          service?: string
+          services?: Json
+          status?: string
+          time?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          areas: string[]
+          created_at: string
+          display_name: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          areas?: string[]
+          created_at?: string
+          display_name?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          areas?: string[]
+          created_at?: string
+          display_name?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

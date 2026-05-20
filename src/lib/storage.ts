@@ -69,8 +69,8 @@ export async function hydrateStores(userId: string) {
   ]);
   if (cRes.error) toast.error("Erro ao carregar clientes");
   if (aRes.error) toast.error("Erro ao carregar atendimentos");
-  _clients = (cRes.data as ClientRow[] | null)?.map(rowToClient) ?? [];
-  _appts = (aRes.data as ApptRow[] | null)?.map(rowToAppt) ?? [];
+  _clients = ((cRes.data ?? []) as unknown as ClientRow[]).map(rowToClient);
+  _appts = ((aRes.data ?? []) as unknown as ApptRow[]).map(rowToAppt);
   _hydrated = true;
   emit();
 }
@@ -97,20 +97,22 @@ async function upsertClient(c: Client) {
 
 async function upsertAppt(a: Appointment) {
   if (!_userId) return;
-  const { error } = await supabase.from("appointments").upsert({
+  const row = {
     id: a.id, user_id: _userId,
     client_id: a.clientId, client_name: a.clientName,
     date: a.date, time: a.time,
     service: a.service,
-    services: a.services ?? [],
-    materials: a.materials ?? [],
+    services: (a.services ?? []) as unknown,
+    materials: (a.materials ?? []) as unknown,
     price: a.price,
     notes: a.notes ?? null,
     status: a.status,
     extra_value: a.extraValue ?? null,
     extra_reason: a.extraReason ?? null,
     completed_at: a.completedAt ?? null,
-  });
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await supabase.from("appointments").upsert(row as any);
   if (error) toast.error("Falha ao salvar atendimento: " + error.message);
 }
 
@@ -222,7 +224,8 @@ export async function migrateLegacyData(): Promise<{ clients: number; appointmen
     if (error) throw error;
   }
   if (apptRows.length) {
-    const { error } = await supabase.from("appointments").upsert(apptRows);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await supabase.from("appointments").upsert(apptRows as any);
     if (error) throw error;
   }
 

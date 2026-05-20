@@ -4,10 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from "@/components/ui/select";
 import { appointmentsStore, clientsStore, uid } from "@/lib/storage";
 import { useClients } from "@/hooks/useStore";
-import { type Appointment, type Material, type ServiceItem, SERVICE_CATALOG } from "@/lib/types";
+import { useProfile } from "@/hooks/useProfile";
+import { type Appointment, type Material, type ServiceItem, SERVICE_CATALOG_BY_AREA, AREAS, type AreaKey } from "@/lib/types";
 import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -29,6 +30,8 @@ function initialServices(initial?: Appointment): ServiceItem[] {
 
 export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Props) {
   const clients = useClients();
+  const { profile } = useProfile();
+  const activeAreas: AreaKey[] = (profile?.areas?.length ? profile.areas : ["manicure"]) as AreaKey[];
   const [open, setOpen] = useState(false);
   const [clientId, setClientId] = useState(initial?.clientId ?? "");
   const [newClientName, setNewClientName] = useState("");
@@ -63,8 +66,11 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
     [services],
   );
 
-  const addFromCatalog = (name: string) => {
-    const found = SERVICE_CATALOG.find((s) => s.name === name);
+  const addFromCatalog = (value: string) => {
+    // value format: "<area>::<name>"
+    const [area, name] = value.split("::");
+    const list = SERVICE_CATALOG_BY_AREA[area as AreaKey] ?? [];
+    const found = list.find((s) => s.name === name);
     if (!found) return;
     setServices((cur) => [...cur, { name: found.name, price: found.price }]);
     setPickerValue("");
@@ -133,8 +139,6 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
     onSaved?.();
   };
 
-  const availableCatalog = SERVICE_CATALOG; // allow duplicates if needed
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -190,11 +194,21 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
             <Select value={pickerValue} onValueChange={addFromCatalog}>
               <SelectTrigger><SelectValue placeholder="Adicionar serviço da lista" /></SelectTrigger>
               <SelectContent>
-                {availableCatalog.map((s) => (
-                  <SelectItem key={s.name} value={s.name}>
-                    {s.name} · R$ {s.price.toFixed(2).replace(".", ",")}
-                  </SelectItem>
-                ))}
+                {activeAreas.map((areaKey) => {
+                  const area = AREAS.find((a) => a.key === areaKey);
+                  const items = SERVICE_CATALOG_BY_AREA[areaKey] ?? [];
+                  if (!area || items.length === 0) return null;
+                  return (
+                    <SelectGroup key={areaKey}>
+                      <SelectLabel>{area.emoji} {area.label}</SelectLabel>
+                      {items.map((s) => (
+                        <SelectItem key={`${areaKey}::${s.name}`} value={`${areaKey}::${s.name}`}>
+                          {s.name} · R$ {s.price.toFixed(2).replace(".", ",")}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  );
+                })}
               </SelectContent>
             </Select>
 

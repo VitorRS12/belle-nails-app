@@ -11,17 +11,30 @@ import {
 } from "@/lib/googleDrive";
 import { hasLegacyData, migrateLegacyData } from "@/lib/storage";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProfile } from "@/hooks/useProfile";
+import { AREAS, type AreaKey } from "@/lib/types";
 import { toast } from "sonner";
-import { Cloud, CloudOff, Download, Upload, CheckCircle2, LogOut, User, UploadCloud } from "lucide-react";
+import { Cloud, CloudOff, Download, Upload, CheckCircle2, LogOut, User, UploadCloud, Briefcase } from "lucide-react";
 
 const CLIENTS_KEY = "manicure_clients_v1";
 const APPTS_KEY = "manicure_appointments_v1";
 
 const Configuracoes = () => {
   const { user, signOut } = useAuth();
+  const { profile, updateAreas } = useProfile();
   const [connected, setConnected] = useState(isConnected());
   const [loading, setLoading] = useState(false);
   const [hasLegacy, setHasLegacy] = useState(false);
+
+  const toggleArea = async (key: AreaKey) => {
+    const current = profile?.areas ?? ["manicure"];
+    const next = current.includes(key)
+      ? current.filter((a) => a !== key)
+      : [...current, key];
+    const ok = await updateAreas(next);
+    if (ok) toast.success("Áreas atualizadas");
+    else toast.error("Falha ao atualizar áreas");
+  };
 
   useEffect(() => {
     setHasLegacy(hasLegacyData());
@@ -95,6 +108,39 @@ const Configuracoes = () => {
           <Button variant="outline" onClick={() => signOut()} className="w-full rounded-xl">
             <LogOut className="h-4 w-4 mr-2" /> Sair
           </Button>
+        </div>
+
+        {/* Areas / Multi-perfil */}
+        <div className="rounded-2xl bg-card border border-border/60 p-5 shadow-soft">
+          <div className="flex items-center gap-3 mb-4">
+            <Briefcase className="h-6 w-6 text-primary" />
+            <div>
+              <h3 className="font-display text-lg">Áreas de atuação</h3>
+              <p className="text-xs text-muted-foreground">
+                Escolha as áreas em que você trabalha. Os catálogos de serviços aparecerão de acordo.
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            {AREAS.map((a) => {
+              const active = (profile?.areas ?? ["manicure"]).includes(a.key);
+              return (
+                <button
+                  key={a.key}
+                  type="button"
+                  onClick={() => toggleArea(a.key)}
+                  className={`rounded-xl border px-3 py-3 text-left transition-smooth ${
+                    active
+                      ? "bg-gradient-primary text-primary-foreground border-transparent shadow-soft"
+                      : "bg-background border-border hover:bg-accent-soft/40"
+                  }`}
+                >
+                  <div className="text-xl">{a.emoji}</div>
+                  <div className="text-sm font-medium">{a.label}</div>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Migration */}

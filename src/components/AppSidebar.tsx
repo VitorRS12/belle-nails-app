@@ -4,7 +4,6 @@ import {
   CalendarDays,
   Users,
   Sparkles,
-  FileText,
   Settings,
   LayoutDashboard,
 } from "lucide-react";
@@ -26,7 +25,6 @@ const items = [
   { to: "/agenda", icon: CalendarDays, label: "Agenda" },
   { to: "/clientes", icon: Users, label: "Clientes" },
   { to: "/atendimentos", icon: Sparkles, label: "Histórico" },
-  { to: "/relatorio", icon: FileText, label: "Relatório" },
   { to: "/configuracoes", icon: Settings, label: "Configurações" },
 ];
 

@@ -4,10 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from "@/components/ui/select";
 import { appointmentsStore, clientsStore, uid } from "@/lib/storage";
 import { useClients } from "@/hooks/useStore";
-import { type Appointment, type Material, type ServiceItem, SERVICE_CATALOG } from "@/lib/types";
+import { useProfile } from "@/hooks/useProfile";
+import { type Appointment, type Material, type ServiceItem, SERVICE_CATALOG_BY_AREA, AREAS, type AreaKey } from "@/lib/types";
 import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
 

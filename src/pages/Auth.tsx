@@ -57,8 +57,20 @@ const Auth = () => {
 
   const signInGoogle = async () => {
     setBusy(true);
+    // Clear any stale/expired session before re-authenticating.
+    // Returning users sometimes have a broken token in localStorage that blocks re-login.
+    try {
+      await supabase.auth.signOut().catch(() => {});
+      Object.keys(localStorage)
+        .filter((k) => k.startsWith("sb-") && k.endsWith("-auth-token"))
+        .forEach((k) => localStorage.removeItem(k));
+    } catch { /* ignore */ }
+
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
+      extraParams: {
+        prompt: "select_account",
+      },
     });
     if (result.error) {
       setBusy(false);

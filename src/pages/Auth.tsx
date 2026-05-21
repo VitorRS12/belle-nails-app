@@ -57,14 +57,10 @@ const Auth = () => {
 
   const signInGoogle = async () => {
     setBusy(true);
-    // Clear any stale/expired session before re-authenticating.
-    // Returning users sometimes have a broken token in localStorage that blocks re-login.
-    try {
-      await supabase.auth.signOut().catch(() => {});
-      Object.keys(localStorage)
-        .filter((k) => k.startsWith("sb-") && k.endsWith("-auth-token"))
-        .forEach((k) => localStorage.removeItem(k));
-    } catch { /* ignore */ }
+    // Clear any stale Supabase session so a returning user can re-authenticate cleanly.
+    // IMPORTANT: do NOT touch localStorage directly here — lovable-auth stores PKCE state
+    // there and clearing it would break the OAuth callback.
+    try { await supabase.auth.signOut(); } catch { /* ignore */ }
 
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,

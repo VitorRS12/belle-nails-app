@@ -57,21 +57,20 @@ const Auth = () => {
 
   const signInGoogle = async () => {
     setBusy(true);
-    // Clear any stale Supabase session so a returning user can re-authenticate cleanly.
-    // IMPORTANT: do NOT touch localStorage directly here — lovable-auth stores PKCE state
-    // there and clearing it would break the OAuth callback.
-    try { await supabase.auth.signOut(); } catch { /* ignore */ }
-
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
       extraParams: {
         prompt: "select_account",
       },
     });
+
     if (result.error) {
       setBusy(false);
       toast.error("Erro ao entrar com Google");
+      return;
     }
+
+    if (!result.redirected) setBusy(false);
   };
 
   return (

@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useRef, useState, ReactNode } fro
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { clearStores, hydrateStores } from "@/lib/storage";
+import { toast } from "sonner";
 
 interface AuthCtx {
   session: Session | null;
@@ -35,6 +36,82 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       clearStores();
     };
 
+    const readOAuthParams = () => {
+      const sources = [window.location.hash.replace(/^#/, ""), window.location.search.replace(/^\?/, "")];
+
+      for (const source of sources) {
+        if (!source) continue;
+
+        const params = new URLSearchParams(source);
+        const accessToken = params.get("access_token");
+        const refreshToken = params.get("refresh_token");
+        const errorDescription = params.get("error_description") || params.get("error");
+
+        if (errorDescription) {
+          return { error: errorDescription, hasOAuthParams: true };
+        }
+
+        if (accessToken && refreshToken) {
+          return {
+            hasOAuthParams: true,
+            tokens: {
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            },
+          };
+        }
+      }
+
+      return { hasOAuthParams: false };
+    };
+
+    const clearOAuthParamsFromUrl = () => {
+      const url = new URL(window.location.href);
+      const authKeys = [
+        "access_token",
+        "refresh_token",
+        "expires_at",
+        "expires_in",
+        "token_type",
+        "provider_token",
+        "provider_refresh_token",
+        "state",
+        "error",
+        "error_code",
+        "error_description",
+      ];
+
+      authKeys.forEach((key) => url.searchParams.delete(key));
+      url.hash = "";
+
+      const nextUrl = `${url.pathname}${url.search}${url.hash}`;
+      window.history.replaceState({}, document.title, nextUrl || "/");
+    };
+
+    const bootstrapOAuthSession = async () => {
+      const oauth = readOAuthParams();
+
+      if (!oauth.hasOAuthParams) return null;
+
+      clearOAuthParamsFromUrl();
+
+      if (oauth.error) {
+        toast.error("Erro ao concluir login com Google");
+        return null;
+      }
+
+      if (!oauth.tokens) return null;
+
+      const { data, error } = await supabase.auth.setSession(oauth.tokens);
+
+      if (error) {
+        toast.error("Erro ao concluir login com Google");
+        return null;
+      }
+
+      return data.session;
+    };
+
     const { data: sub } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       if (!mounted) return;
 
@@ -48,17 +125,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     });
 
-    void supabase.auth.getSession().then(({ data }) => {
+    void (async () => {
+      const sessionFromOAuth = await bootstrapOAuthSession();
+      const { data } = await supabase.auth.getSession();
+
       if (!mounted) return;
 
-      setSession((current) => current ?? data.session);
+      const nextSession = data.session ?? sessionFromOAuth;
 
-      if (data.session?.user) {
-        hydrateForUser(data.session.user.id);
+      setSession((current) => current ?? nextSession);
+
+      if (nextSession?.user) {
+        hydrateForUser(nextSession.user.id);
       }
 
       setLoading(false);
-    });
+    })();
 
     return () => {
       mounted = false;

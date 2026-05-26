@@ -53,9 +53,17 @@ export function disconnect() {
 
 export function startOAuthFlow() {
   const isNative = Capacitor.isNativePlatform();
-  // On native: use the published web page as redirect, which then deep-links back.
-  // On web: use the current origin.
   const redirectUri = isNative ? PUBLISHED_REDIRECT : `${window.location.origin}/oauth-callback`;
+
+  // CSRF protection: random nonce stored and validated on return.
+  // We encode platform alongside the nonce so the callback page knows where to route.
+  const nonce = generateStateNonce();
+  const state = `${nonce}.${isNative ? "native" : "web"}`;
+  try {
+    sessionStorage.setItem(STATE_KEY, nonce);
+  } catch {
+    // sessionStorage unavailable — proceed but CSRF check will fail safely
+  }
 
   const params = new URLSearchParams({
     client_id: CLIENT_ID,
@@ -63,7 +71,7 @@ export function startOAuthFlow() {
     response_type: "token",
     scope: SCOPES,
     prompt: "consent",
-    state: isNative ? "native" : "web",
+    state,
   });
   const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
 
@@ -73,6 +81,24 @@ export function startOAuthFlow() {
     window.location.href = authUrl;
   }
 }
+
+function consumeStoredNonce(): string | null {
+  try {
+    const v = sessionStorage.getItem(STATE_KEY);
+    sessionStorage.removeItem(STATE_KEY);
+    return v;
+  } catch {
+    return null;
+  }
+}
+
+function parseState(state: string | null): { nonce: string; platform: string } | null {
+  if (!state) return null;
+  const idx = state.lastIndexOf(".");
+  if (idx === -1) return null;
+  return { nonce: state.substring(0, idx), platform: state.substring(idx + 1) };
+}
+
 
 /**
  * Called on the /oauth-callback page (web).

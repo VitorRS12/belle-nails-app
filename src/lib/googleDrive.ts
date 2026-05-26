@@ -14,6 +14,16 @@ const NATIVE_DEEP_LINK_SCHEME = "app.lovable.bellenails";
 
 const TOKEN_KEY = "gdrive_access_token";
 const EXPIRY_KEY = "gdrive_token_expiry";
+const STATE_KEY = "gdrive_oauth_state";
+
+function generateStateNonce(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+  const arr = new Uint8Array(16);
+  (globalThis.crypto ?? window.crypto).getRandomValues(arr);
+  return Array.from(arr, (b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 export function getStoredToken(): string | null {
   const token = localStorage.getItem(TOKEN_KEY);
@@ -43,9 +53,17 @@ export function disconnect() {
 
 export function startOAuthFlow() {
   const isNative = Capacitor.isNativePlatform();
-  // On native: use the published web page as redirect, which then deep-links back.
-  // On web: use the current origin.
   const redirectUri = isNative ? PUBLISHED_REDIRECT : `${window.location.origin}/oauth-callback`;
+
+  // CSRF protection: random nonce stored and validated on return.
+  // We encode platform alongside the nonce so the callback page knows where to route.
+  const nonce = generateStateNonce();
+  const state = `${nonce}.${isNative ? "native" : "web"}`;
+  try {
+    sessionStorage.setItem(STATE_KEY, nonce);
+  } catch {
+    // sessionStorage unavailable — proceed but CSRF check will fail safely
+  }
 
   const params = new URLSearchParams({
     client_id: CLIENT_ID,
@@ -53,7 +71,7 @@ export function startOAuthFlow() {
     response_type: "token",
     scope: SCOPES,
     prompt: "consent",
-    state: isNative ? "native" : "web",
+    state,
   });
   const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
 
@@ -64,6 +82,24 @@ export function startOAuthFlow() {
   }
 }
 
+function consumeStoredNonce(): string | null {
+  try {
+    const v = sessionStorage.getItem(STATE_KEY);
+    sessionStorage.removeItem(STATE_KEY);
+    return v;
+  } catch {
+    return null;
+  }
+}
+
+function parseState(state: string | null): { nonce: string; platform: string } | null {
+  if (!state) return null;
+  const idx = state.lastIndexOf(".");
+  if (idx === -1) return null;
+  return { nonce: state.substring(0, idx), platform: state.substring(idx + 1) };
+}
+
+
 /**
  * Called on the /oauth-callback page (web).
  * If the redirect carries a token, either store it (web) or bounce to deep link (native state).
@@ -72,13 +108,22 @@ export function handleOAuthCallbackPage() {
   const hash = window.location.hash;
   if (!hash.includes("access_token")) return;
   const params = new URLSearchParams(hash.substring(1));
-  const state = params.get("state");
-  if (state === "native") {
-    // Bounce to the native app via custom URL scheme
+  const parsed = parseState(params.get("state"));
+  if (!parsed) return;
+
+  if (parsed.platform === "native") {
+    // Bounce to the native app via custom URL scheme — the device will validate the nonce.
     window.location.href = `${NATIVE_DEEP_LINK_SCHEME}://oauth#${hash.substring(1)}`;
     return;
   }
-  // Web flow: store and redirect to settings
+
+  // Web flow: validate CSRF nonce before accepting token
+  const storedNonce = consumeStoredNonce();
+  if (!storedNonce || storedNonce !== parsed.nonce) {
+    window.location.replace("/configuracoes?gdrive_error=invalid_state");
+    return;
+  }
+
   const token = params.get("access_token");
   const expiresIn = Number(params.get("expires_in") || "3600");
   if (token) {
@@ -95,6 +140,14 @@ export function handleOAuthRedirect(): boolean {
   const hash = window.location.hash;
   if (!hash.includes("access_token")) return false;
   const params = new URLSearchParams(hash.substring(1));
+  const parsed = parseState(params.get("state"));
+  // Require a valid state to accept tokens from the URL
+  if (!parsed) return false;
+  const storedNonce = consumeStoredNonce();
+  if (!storedNonce || storedNonce !== parsed.nonce) {
+    window.history.replaceState(null, "", window.location.pathname);
+    return false;
+  }
   const token = params.get("access_token");
   const expiresIn = Number(params.get("expires_in") || "3600");
   if (token) {
@@ -117,6 +170,14 @@ export function initNativeOAuthListener(onToken?: () => void) {
     const hashIndex = url.indexOf("#");
     if (hashIndex === -1) return;
     const params = new URLSearchParams(url.substring(hashIndex + 1));
+    const parsed = parseState(params.get("state"));
+    if (!parsed) return;
+    // Validate CSRF nonce against the value stored before the OAuth redirect
+    const storedNonce = consumeStoredNonce();
+    if (!storedNonce || storedNonce !== parsed.nonce) {
+      try { await Browser.close(); } catch { /* ignore */ }
+      return;
+    }
     const token = params.get("access_token");
     const expiresIn = Number(params.get("expires_in") || "3600");
     if (token) {

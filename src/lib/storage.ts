@@ -116,7 +116,10 @@ async function upsertAppt(a: Appointment) {
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error } = await supabase.from("appointments").upsert(row as any);
-  if (error) toast.error("Falha ao salvar atendimento: " + error.message);
+  if (error) {
+    console.error("upsertAppt failed:", error);
+    toast.error("Falha ao salvar atendimento.");
+  }
 }
 
 // ---------- public API (kept sync) ----------
@@ -135,7 +138,10 @@ export const clientsStore = {
     _appts = _appts.filter((a) => a.clientId !== id);
     emit();
     void supabase.from("clients").delete().eq("id", id).then(({ error }) => {
-      if (error) toast.error("Falha ao remover cliente: " + error.message);
+      if (error) {
+        console.error("delete client failed:", error);
+        toast.error("Falha ao remover cliente.");
+      }
     });
   },
 };
@@ -154,7 +160,10 @@ export const appointmentsStore = {
     _appts = _appts.filter((a) => a.id !== id);
     emit();
     void supabase.from("appointments").delete().eq("id", id).then(({ error }) => {
-      if (error) toast.error("Falha ao remover: " + error.message);
+      if (error) {
+        console.error("delete appointment failed:", error);
+        toast.error("Falha ao remover atendimento.");
+      }
     });
   },
 };

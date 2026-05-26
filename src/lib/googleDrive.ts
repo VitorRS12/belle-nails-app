@@ -14,6 +14,16 @@ const NATIVE_DEEP_LINK_SCHEME = "app.lovable.bellenails";
 
 const TOKEN_KEY = "gdrive_access_token";
 const EXPIRY_KEY = "gdrive_token_expiry";
+const STATE_KEY = "gdrive_oauth_state";
+
+function generateStateNonce(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+  const arr = new Uint8Array(16);
+  crypto.getRandomValues(arr);
+  return Array.from(arr, (b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 export function getStoredToken(): string | null {
   const token = localStorage.getItem(TOKEN_KEY);

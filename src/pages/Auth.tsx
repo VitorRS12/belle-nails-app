@@ -37,7 +37,10 @@ const Auth = () => {
     setBusy(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
-    if (error) toast.error(error.message);
+    if (error) {
+      console.error("signIn failed:", error);
+      toast.error("E-mail ou senha incorretos.");
+    }
   };
 
   const signUpEmail = async () => {
@@ -51,8 +54,12 @@ const Auth = () => {
       },
     });
     setBusy(false);
-    if (error) toast.error(error.message);
-    else toast.success("Conta criada! Você já pode entrar.");
+    if (error) {
+      console.error("signUp failed:", error);
+      toast.error("Não foi possível criar a conta. Verifique os dados e tente novamente.");
+    } else {
+      toast.success("Conta criada! Você já pode entrar.");
+    }
   };
 
   const signInGoogle = async () => {

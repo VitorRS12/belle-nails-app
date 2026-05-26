@@ -21,7 +21,7 @@ function generateStateNonce(): string {
     return crypto.randomUUID();
   }
   const arr = new Uint8Array(16);
-  crypto.getRandomValues(arr);
+  (globalThis.crypto ?? window.crypto).getRandomValues(arr);
   return Array.from(arr, (b) => b.toString(16).padStart(2, "0")).join("");
 }
 

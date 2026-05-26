@@ -1,28 +1,16 @@
 import { useState, useEffect } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
-import {
-  isConnected,
-  startOAuthFlow,
-  disconnect,
-  uploadBackup,
-  downloadBackup,
-  handleOAuthRedirect,
-} from "@/lib/googleDrive";
 import { hasLegacyData, migrateLegacyData } from "@/lib/storage";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
 import { AREAS, type AreaKey } from "@/lib/types";
 import { toast } from "sonner";
-import { Cloud, CloudOff, Download, Upload, CheckCircle2, LogOut, User, UploadCloud, Briefcase } from "lucide-react";
-
-const CLIENTS_KEY = "manicure_clients_v1";
-const APPTS_KEY = "manicure_appointments_v1";
+import { LogOut, User, UploadCloud, Briefcase } from "lucide-react";
 
 const Configuracoes = () => {
   const { user, signOut } = useAuth();
   const { profile, updateAreas } = useProfile();
-  const [connected, setConnected] = useState(isConnected());
   const [loading, setLoading] = useState(false);
   const [hasLegacy, setHasLegacy] = useState(false);
 
@@ -38,10 +26,6 @@ const Configuracoes = () => {
 
   useEffect(() => {
     setHasLegacy(hasLegacyData());
-    if (handleOAuthRedirect()) {
-      setConnected(true);
-      toast.success("Google Drive conectado!");
-    }
   }, []);
 
   const handleMigrate = async () => {
@@ -52,47 +36,15 @@ const Configuracoes = () => {
       toast.success(`Importado: ${r.clients} clientes e ${r.appointments} atendimentos!`);
       setHasLegacy(false);
     } catch (e) {
-      toast.error("Erro ao importar: " + (e as Error).message);
+      console.error("Erro ao importar dados legados:", e);
+      toast.error("Não foi possível importar os dados. Tente novamente.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleConnect = () => startOAuthFlow();
-  const handleDisconnect = () => { disconnect(); setConnected(false); toast.success("Google Drive desconectado"); };
-
-  const handleManualBackup = async () => {
-    setLoading(true);
-    const data = JSON.stringify({
-      version: 1,
-      exportedAt: new Date().toISOString(),
-      clients: JSON.parse(localStorage.getItem(CLIENTS_KEY) || "[]"),
-      appointments: JSON.parse(localStorage.getItem(APPTS_KEY) || "[]"),
-    });
-    const ok = await uploadBackup(data);
-    setLoading(false);
-    if (ok) toast.success("Backup salvo no Google Drive!");
-    else toast.error("Erro ao salvar backup.");
-  };
-
-  const handleRestore = async () => {
-    if (!confirm("Isso substituirá todos os dados atuais. Continuar?")) return;
-    setLoading(true);
-    const raw = await downloadBackup();
-    setLoading(false);
-    if (!raw) { toast.error("Nenhum backup encontrado."); return; }
-    try {
-      const data = JSON.parse(raw);
-      if (data.clients) localStorage.setItem(CLIENTS_KEY, JSON.stringify(data.clients));
-      if (data.appointments) localStorage.setItem(APPTS_KEY, JSON.stringify(data.appointments));
-      window.dispatchEvent(new Event("manicure:update"));
-      toast.success("Dados restaurados! Use 'Importar dados do celular' para enviar à nuvem.");
-      setHasLegacy(true);
-    } catch { toast.error("Arquivo inválido."); }
-  };
-
   return (
-    <AppLayout subtitle="Conta & Backup" title="Configurações">
+    <AppLayout subtitle="Conta" title="Configurações">
       <div className="space-y-4">
         {/* Account */}
         <div className="rounded-2xl bg-card border border-border/60 p-5 shadow-soft">
@@ -155,39 +107,6 @@ const Configuracoes = () => {
             </div>
             <Button onClick={handleMigrate} disabled={loading} className="w-full bg-gradient-primary shadow-elegant rounded-xl">
               <UploadCloud className="h-4 w-4 mr-2" /> Importar dados do celular
-            </Button>
-          </div>
-        )}
-
-        {/* Google Drive (legacy backup) */}
-        <div className="rounded-2xl bg-card border border-border/60 p-5 shadow-soft">
-          <div className="flex items-center gap-3 mb-4">
-            {connected ? <CheckCircle2 className="h-6 w-6 text-green-500" /> : <CloudOff className="h-6 w-6 text-muted-foreground" />}
-            <div>
-              <h3 className="font-display text-lg">Google Drive (opcional)</h3>
-              <p className="text-sm text-muted-foreground">
-                {connected ? "Conectado · backup do localStorage" : "Backup extra dos dados locais"}
-              </p>
-            </div>
-          </div>
-          {connected ? (
-            <Button variant="outline" onClick={handleDisconnect} className="w-full rounded-xl">
-              <CloudOff className="h-4 w-4 mr-2" /> Desconectar
-            </Button>
-          ) : (
-            <Button onClick={handleConnect} className="w-full bg-gradient-primary rounded-xl shadow-elegant">
-              <Cloud className="h-4 w-4 mr-2" /> Conectar Google Drive
-            </Button>
-          )}
-        </div>
-
-        {connected && (
-          <div className="grid grid-cols-2 gap-3">
-            <Button variant="outline" onClick={handleManualBackup} disabled={loading} className="rounded-xl h-auto py-4 flex flex-col gap-2">
-              <Upload className="h-5 w-5" /><span className="text-xs">Backup agora</span>
-            </Button>
-            <Button variant="outline" onClick={handleRestore} disabled={loading} className="rounded-xl h-auto py-4 flex flex-col gap-2">
-              <Download className="h-5 w-5" /><span className="text-xs">Restaurar</span>
             </Button>
           </div>
         )}

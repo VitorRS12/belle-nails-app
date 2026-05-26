@@ -92,7 +92,10 @@ async function upsertClient(c: Client) {
     phone: c.phone ?? null,
     notes: c.notes ?? null,
   });
-  if (error) toast.error("Falha ao salvar cliente: " + error.message);
+  if (error) {
+    console.error("upsertClient failed:", error);
+    toast.error("Falha ao salvar cliente.");
+  }
 }
 
 async function upsertAppt(a: Appointment) {

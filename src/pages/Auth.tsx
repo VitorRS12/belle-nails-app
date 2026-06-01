@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { Capacitor } from "@capacitor/core";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -94,19 +95,23 @@ const Auth = () => {
         </header>
 
         <div className="rounded-3xl bg-card border border-border/60 p-5 shadow-soft space-y-4">
-          <Button
-            onClick={signInGoogle}
-            disabled={busy}
-            variant="outline"
-            className="w-full h-11 rounded-xl gap-2"
-          >
-            <GoogleIcon /> Continuar com Google
-          </Button>
+          {!Capacitor.isNativePlatform() && (
+            <>
+              <Button
+                onClick={signInGoogle}
+                disabled={busy}
+                variant="outline"
+                className="w-full h-11 rounded-xl gap-2"
+              >
+                <GoogleIcon /> Continuar com Google
+              </Button>
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border/60" /></div>
-            <div className="relative flex justify-center text-[10px] uppercase tracking-widest"><span className="bg-card px-2 text-muted-foreground">ou</span></div>
-          </div>
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border/60" /></div>
+                <div className="relative flex justify-center text-[10px] uppercase tracking-widest"><span className="bg-card px-2 text-muted-foreground">ou</span></div>
+              </div>
+            </>
+          )}
 
           <Tabs defaultValue="signin">
             <TabsList className="grid grid-cols-2 w-full">

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Capacitor } from "@capacitor/core";
+import { Browser } from "@capacitor/browser";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,9 @@ const GoogleIcon = () => (
     <path fill="#EA4335" d="M12 5.38c1.62 0 3.07.56 4.21 1.65l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84C6.71 7.3 9.14 5.38 12 5.38z"/>
   </svg>
 );
+
+const NATIVE_GOOGLE_REDIRECT_URI = "app.lovable.bellenails://oauth-callback";
+const GOOGLE_OAUTH_BROKER_URL = "https://bellenailsorigin.lovable.app/~oauth/initiate";
 
 const Auth = () => {
   const { session, loading } = useAuth();
@@ -65,20 +69,42 @@ const Auth = () => {
 
   const signInGoogle = async () => {
     setBusy(true);
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-      extraParams: {
-        prompt: "select_account",
-      },
-    });
 
-    if (result.error) {
+    try {
+      if (Capacitor.isNativePlatform()) {
+        const state = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        sessionStorage.setItem("native-google-oauth-state", state);
+
+        const authUrl = new URL(GOOGLE_OAUTH_BROKER_URL);
+        authUrl.searchParams.set("provider", "google");
+        authUrl.searchParams.set("redirect_uri", NATIVE_GOOGLE_REDIRECT_URI);
+        authUrl.searchParams.set("state", state);
+        authUrl.searchParams.set("prompt", "select_account");
+
+        await Browser.open({ url: authUrl.toString() });
+        setBusy(false);
+        return;
+      }
+
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+        extraParams: {
+          prompt: "select_account",
+        },
+      });
+
+      if (result.error) {
+        setBusy(false);
+        toast.error("Erro ao entrar com Google");
+        return;
+      }
+
+      if (!result.redirected) setBusy(false);
+    } catch (error) {
+      console.error("google sign in failed:", error);
       setBusy(false);
       toast.error("Erro ao entrar com Google");
-      return;
     }
-
-    if (!result.redirected) setBusy(false);
   };
 
   return (

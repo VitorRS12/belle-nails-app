@@ -1,6 +1,9 @@
 import { createContext, useContext, useEffect, useRef, useState, ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { Capacitor } from "@capacitor/core";
+import { App as CapacitorApp, type URLOpenListenerEvent } from "@capacitor/app";
+import { Browser } from "@capacitor/browser";
 import { clearStores, hydrateStores } from "@/lib/storage";
 import { toast } from "sonner";
 
@@ -22,6 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let mounted = true;
+    let appUrlListener: { remove: () => Promise<void> } | null = null;
 
     const hydrateForUser = (userId: string) => {
       if (hydratedUserIdRef.current === userId) return;
@@ -112,6 +116,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return data.session;
     };
 
+    const handleNativeOAuthUrl = async (rawUrl?: string | null) => {
+      if (!rawUrl) return null;
+
+      const normalizedUrl = rawUrl.replace("#", "?");
+      const url = new URL(normalizedUrl);
+      const isNativeCallback = url.protocol === "app.lovable.bellenails:" && url.hostname === "oauth-callback";
+
+      if (!isNativeCallback) return null;
+
+      const expectedState = sessionStorage.getItem("native-google-oauth-state");
+      const returnedState = url.searchParams.get("state");
+      const errorDescription = url.searchParams.get("error_description") || url.searchParams.get("error");
+
+      if (expectedState && returnedState && expectedState !== returnedState) {
+        toast.error("Não foi possível validar o retorno do Google");
+        return null;
+      }
+
+      sessionStorage.removeItem("native-google-oauth-state");
+
+      await Browser.close().catch(() => undefined);
+
+      if (errorDescription) {
+        toast.error("Erro ao concluir login com Google");
+        return null;
+      }
+
+      const accessToken = url.searchParams.get("access_token");
+      const refreshToken = url.searchParams.get("refresh_token");
+
+      if (!accessToken || !refreshToken) return null;
+
+      const { data, error } = await supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      });
+
+      if (error) {
+        toast.error("Erro ao concluir login com Google");
+        return null;
+      }
+
+      return data.session;
+    };
+
     const { data: sub } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       if (!mounted) return;
 
@@ -126,7 +175,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     void (async () => {
-      const sessionFromOAuth = await bootstrapOAuthSession();
+      let sessionFromOAuth = await bootstrapOAuthSession();
+
+      if (!sessionFromOAuth && Capacitor.isNativePlatform()) {
+        const launchUrl = await CapacitorApp.getLaunchUrl();
+        sessionFromOAuth = await handleNativeOAuthUrl(launchUrl?.url);
+
+        appUrlListener = await CapacitorApp.addListener("appUrlOpen", async (event: URLOpenListenerEvent) => {
+          const nextSession = await handleNativeOAuthUrl(event.url);
+
+          if (!mounted || !nextSession) return;
+
+          setSession(nextSession);
+          hydrateForUser(nextSession.user.id);
+          setLoading(false);
+        });
+      }
+
       const { data } = await supabase.auth.getSession();
 
       if (!mounted) return;
@@ -144,6 +209,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return () => {
       mounted = false;
+      void appUrlListener?.remove();
       sub.subscription.unsubscribe();
     };
   }, []);

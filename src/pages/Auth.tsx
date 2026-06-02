@@ -70,35 +70,41 @@ const Auth = () => {
   const signInGoogle = async () => {
     setBusy(true);
 
-    if (Capacitor.isNativePlatform()) {
-      const state = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-      sessionStorage.setItem("native-google-oauth-state", state);
+    try {
+      if (Capacitor.isNativePlatform()) {
+        const state = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        sessionStorage.setItem("native-google-oauth-state", state);
 
-      const authUrl = new URL(GOOGLE_OAUTH_BROKER_URL);
-      authUrl.searchParams.set("provider", "google");
-      authUrl.searchParams.set("redirect_uri", NATIVE_GOOGLE_REDIRECT_URI);
-      authUrl.searchParams.set("state", state);
-      authUrl.searchParams.set("prompt", "select_account");
+        const authUrl = new URL(GOOGLE_OAUTH_BROKER_URL);
+        authUrl.searchParams.set("provider", "google");
+        authUrl.searchParams.set("redirect_uri", NATIVE_GOOGLE_REDIRECT_URI);
+        authUrl.searchParams.set("state", state);
+        authUrl.searchParams.set("prompt", "select_account");
 
-      await Browser.open({ url: authUrl.toString() });
-      setBusy(false);
-      return;
-    }
+        await Browser.open({ url: authUrl.toString() });
+        setBusy(false);
+        return;
+      }
 
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-      extraParams: {
-        prompt: "select_account",
-      },
-    });
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+        extraParams: {
+          prompt: "select_account",
+        },
+      });
 
-    if (result.error) {
+      if (result.error) {
+        setBusy(false);
+        toast.error("Erro ao entrar com Google");
+        return;
+      }
+
+      if (!result.redirected) setBusy(false);
+    } catch (error) {
+      console.error("google sign in failed:", error);
       setBusy(false);
       toast.error("Erro ao entrar com Google");
-      return;
     }
-
-    if (!result.redirected) setBusy(false);
   };
 
   return (

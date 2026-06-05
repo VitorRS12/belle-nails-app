@@ -22,7 +22,6 @@ const GoogleIcon = () => (
 );
 
 const NATIVE_GOOGLE_REDIRECT_URI = "app.lovable.bellenails://oauth-callback";
-const GOOGLE_OAUTH_BROKER_URL = "https://bellenailsorigin.lovable.app/~oauth/initiate";
 
 const Auth = () => {
   const { session, loading } = useAuth();

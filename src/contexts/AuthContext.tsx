@@ -125,16 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (!isNativeCallback) return null;
 
-      const expectedState = sessionStorage.getItem("native-google-oauth-state");
-      const returnedState = url.searchParams.get("state");
       const errorDescription = url.searchParams.get("error_description") || url.searchParams.get("error");
-
-      if (expectedState && returnedState && expectedState !== returnedState) {
-        toast.error("Não foi possível validar o retorno do Google");
-        return null;
-      }
-
-      sessionStorage.removeItem("native-google-oauth-state");
 
       await Browser.close().catch(() => undefined);
 

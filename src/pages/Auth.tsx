@@ -22,7 +22,6 @@ const GoogleIcon = () => (
 );
 
 const NATIVE_GOOGLE_REDIRECT_URI = "app.lovable.bellenails://oauth-callback";
-const GOOGLE_OAUTH_BROKER_URL = "https://bellenailsorigin.lovable.app/~oauth/initiate";
 
 const Auth = () => {
   const { session, loading } = useAuth();
@@ -72,16 +71,22 @@ const Auth = () => {
 
     try {
       if (Capacitor.isNativePlatform()) {
-        const state = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-        sessionStorage.setItem("native-google-oauth-state", state);
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: NATIVE_GOOGLE_REDIRECT_URI,
+            skipBrowserRedirect: true,
+            queryParams: { prompt: "select_account" },
+          },
+        });
 
-        const authUrl = new URL(GOOGLE_OAUTH_BROKER_URL);
-        authUrl.searchParams.set("provider", "google");
-        authUrl.searchParams.set("redirect_uri", NATIVE_GOOGLE_REDIRECT_URI);
-        authUrl.searchParams.set("state", state);
-        authUrl.searchParams.set("prompt", "select_account");
+        if (error || !data?.url) {
+          setBusy(false);
+          toast.error("Erro ao entrar com Google");
+          return;
+        }
 
-        await Browser.open({ url: authUrl.toString() });
+        await Browser.open({ url: data.url, presentationStyle: "popover" });
         setBusy(false);
         return;
       }

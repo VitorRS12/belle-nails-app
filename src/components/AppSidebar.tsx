@@ -21,7 +21,7 @@ import {
 
 const items = [
   { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/", icon: Home, label: "Início" },
+  { to: "/inicio", icon: Home, label: "Início" },
   { to: "/agenda", icon: CalendarDays, label: "Agenda" },
   { to: "/clientes", icon: Users, label: "Clientes" },
   { to: "/atendimentos", icon: Sparkles, label: "Histórico" },

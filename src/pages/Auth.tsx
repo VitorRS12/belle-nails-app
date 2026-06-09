@@ -35,7 +35,7 @@ const Auth = () => {
     document.title = "Entrar · Belle Nails";
   }, []);
 
-  if (!loading && session) return <Navigate to="/" replace />;
+  if (!loading && session) return <Navigate to="/inicio" replace />;
 
   const signInEmail = async () => {
     setBusy(true);

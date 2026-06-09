@@ -21,7 +21,7 @@ import {
 
 const items = [
   { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/", icon: Home, label: "Início" },
+  { to: "/inicio", icon: Home, label: "Início" },
   { to: "/agenda", icon: CalendarDays, label: "Agenda" },
   { to: "/clientes", icon: Users, label: "Clientes" },
   { to: "/atendimentos", icon: Sparkles, label: "Histórico" },
@@ -49,11 +49,11 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map(({ to, icon: Icon, label }) => {
-                const active = to === "/" ? pathname === "/" : pathname === to;
+                const active = pathname === to;
                 return (
                   <SidebarMenuItem key={to}>
                     <SidebarMenuButton asChild isActive={active}>
-                      <NavLink to={to} end={to === "/"} className="flex items-center gap-2">
+                      <NavLink to={to} end className="flex items-center gap-2">
                         <Icon className="h-4 w-4" />
                         {!collapsed && <span>{label}</span>}
                       </NavLink>

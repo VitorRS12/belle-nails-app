@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 const items = [
   { to: "/dashboard", icon: LayoutDashboard, label: "Painel" },
-  { to: "/", icon: Home, label: "Início" },
+  { to: "/inicio", icon: Home, label: "Início" },
   { to: "/agenda", icon: CalendarDays, label: "Agenda" },
   { to: "/clientes", icon: Users, label: "Clientes" },
   { to: "/atendimentos", icon: Sparkles, label: "Histórico" },
@@ -19,7 +19,7 @@ export function BottomNav() {
           <li key={to}>
             <NavLink
               to={to}
-              end={to === "/"}
+              end
               className={({ isActive }) =>
                 cn(
                   "flex flex-col items-center gap-1 py-3 text-xs transition-smooth",

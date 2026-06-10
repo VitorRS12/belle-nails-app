@@ -12,9 +12,9 @@ import {
   ArrowRight,
   Eye,
 } from "lucide-react";
-import dashboardShot from "@/assets/screenshots/dashboard-shot.png.asset.json";
-import agendaShot from "@/assets/screenshots/agenda-shot.png.asset.json";
-import clientesShot from "@/assets/screenshots/clientes-shot.png.asset.json";
+import dashboardShot from "@/assets/screenshots/painel.png.asset.json";
+import agendaShot from "@/assets/screenshots/agenda.png.asset.json";
+import clientesShot from "@/assets/screenshots/clientes.png.asset.json";
 
 const screens = [
   {

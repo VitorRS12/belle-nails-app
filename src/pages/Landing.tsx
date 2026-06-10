@@ -12,9 +12,9 @@ import {
   ArrowRight,
   Eye,
 } from "lucide-react";
-import dashboardShot from "@/assets/screenshots/dashboard-shot.png.asset.json";
-import agendaShot from "@/assets/screenshots/agenda-shot.png.asset.json";
-import clientesShot from "@/assets/screenshots/clientes-shot.png.asset.json";
+import dashboardShot from "@/assets/screenshots/painel.png.asset.json";
+import agendaShot from "@/assets/screenshots/agenda.png.asset.json";
+import clientesShot from "@/assets/screenshots/clientes.png.asset.json";
 
 const screens = [
   {
@@ -167,9 +167,7 @@ const Landing = () => {
                   src={src}
                   alt={alt}
                   loading="lazy"
-                  width={768}
-                  height={1400}
-                  className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                  className="w-full h-auto object-contain group-hover:scale-[1.02] transition-transform duration-500"
                 />
               </div>
               <p className="mt-3 text-sm font-medium text-muted-foreground tracking-wide uppercase">

@@ -167,9 +167,7 @@ const Landing = () => {
                   src={src}
                   alt={alt}
                   loading="lazy"
-                  width={768}
-                  height={1400}
-                  className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                  className="w-full h-auto object-contain group-hover:scale-[1.02] transition-transform duration-500"
                 />
               </div>
               <p className="mt-3 text-sm font-medium text-muted-foreground tracking-wide uppercase">

@@ -10,7 +10,29 @@ import {
   LayoutDashboard,
   ShieldCheck,
   ArrowRight,
+  Eye,
 } from "lucide-react";
+import dashboardShot from "@/assets/screenshots/dashboard-shot.png.asset.json";
+import agendaShot from "@/assets/screenshots/agenda-shot.png.asset.json";
+import clientesShot from "@/assets/screenshots/clientes-shot.png.asset.json";
+
+const screens = [
+  {
+    src: dashboardShot.url,
+    alt: "Painel do Belle Nails com resumo do salão",
+    label: "Painel",
+  },
+  {
+    src: agendaShot.url,
+    alt: "Agenda semanal do Belle Nails com atendimentos",
+    label: "Agenda",
+  },
+  {
+    src: clientesShot.url,
+    alt: "Lista de clientes do Belle Nails",
+    label: "Clientes",
+  },
+];
 
 const features = [
   {
@@ -119,6 +141,42 @@ const Landing = () => {
           <span className="h-px w-16 bg-accent/40" />
           <Sparkles className="h-4 w-4" />
           <span className="h-px w-16 bg-accent/40" />
+        </div>
+      </section>
+
+      {/* Screenshots */}
+      <section className="max-w-6xl mx-auto px-6 pb-24">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/60 backdrop-blur px-4 py-1.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
+            <Eye className="h-3 w-3" />
+            Veja por dentro
+          </div>
+          <h2 className="font-display text-3xl sm:text-4xl tracking-tight">
+            Conheça o app.
+          </h2>
+          <p className="mt-3 text-muted-foreground max-w-lg mx-auto">
+            Interface elegante e intuitiva pensada para o dia a dia do salão.
+          </p>
+        </div>
+
+        <div className="grid sm:grid-cols-3 gap-6">
+          {screens.map(({ src, alt, label }) => (
+            <div key={label} className="group text-center">
+              <div className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur overflow-hidden shadow-soft hover:shadow-elegant transition-smooth">
+                <img
+                  src={src}
+                  alt={alt}
+                  loading="lazy"
+                  width={768}
+                  height={1400}
+                  className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                />
+              </div>
+              <p className="mt-3 text-sm font-medium text-muted-foreground tracking-wide uppercase">
+                {label}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 

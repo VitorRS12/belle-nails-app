@@ -16,7 +16,23 @@ import dashboardShot from "@/assets/screenshots/dashboard-shot.png.asset.json";
 import agendaShot from "@/assets/screenshots/agenda-shot.png.asset.json";
 import clientesShot from "@/assets/screenshots/clientes-shot.png.asset.json";
 
-const features = [
+const screens = [
+  {
+    src: dashboardShot.url,
+    alt: "Painel do Belle Nails com resumo do salão",
+    label: "Painel",
+  },
+  {
+    src: agendaShot.url,
+    alt: "Agenda semanal do Belle Nails com atendimentos",
+    label: "Agenda",
+  },
+  {
+    src: clientesShot.url,
+    alt: "Lista de clientes do Belle Nails",
+    label: "Clientes",
+  },
+];
   {
     icon: CalendarDays,
     title: "Agenda inteligente",

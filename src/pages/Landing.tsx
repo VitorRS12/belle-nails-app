@@ -10,7 +10,11 @@ import {
   LayoutDashboard,
   ShieldCheck,
   ArrowRight,
+  Eye,
 } from "lucide-react";
+import dashboardShot from "@/assets/screenshots/dashboard-shot.png.asset.json";
+import agendaShot from "@/assets/screenshots/agenda-shot.png.asset.json";
+import clientesShot from "@/assets/screenshots/clientes-shot.png.asset.json";
 
 const features = [
   {

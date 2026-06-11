@@ -1,5 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, HashRouter, Route, Routes, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import { PageTransition } from "./components/PageTransition";
 import { Capacitor } from "@capacitor/core";
 
 const Router = Capacitor.isNativePlatform() ? HashRouter : BrowserRouter;
@@ -22,18 +24,22 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 const queryClient = new QueryClient();
 
 function AppInner() {
+  const location = useLocation();
+  const wrap = (el: JSX.Element) => <PageTransition>{el}</PageTransition>;
   return (
-    <Routes>
-      <Route path="/" element={<Landing />} />
-      <Route path="/auth" element={<Auth />} />
-      <Route path="/inicio" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-      <Route path="/agenda" element={<ProtectedRoute><Agenda /></ProtectedRoute>} />
-      <Route path="/clientes" element={<ProtectedRoute><Clientes /></ProtectedRoute>} />
-      <Route path="/atendimentos" element={<ProtectedRoute><Atendimentos /></ProtectedRoute>} />
-      <Route path="/configuracoes" element={<ProtectedRoute><Configuracoes /></ProtectedRoute>} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <AnimatePresence mode="wait" initial={false}>
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={wrap(<Landing />)} />
+        <Route path="/auth" element={wrap(<Auth />)} />
+        <Route path="/inicio" element={<ProtectedRoute>{wrap(<Index />)}</ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute>{wrap(<Dashboard />)}</ProtectedRoute>} />
+        <Route path="/agenda" element={<ProtectedRoute>{wrap(<Agenda />)}</ProtectedRoute>} />
+        <Route path="/clientes" element={<ProtectedRoute>{wrap(<Clientes />)}</ProtectedRoute>} />
+        <Route path="/atendimentos" element={<ProtectedRoute>{wrap(<Atendimentos />)}</ProtectedRoute>} />
+        <Route path="/configuracoes" element={<ProtectedRoute>{wrap(<Configuracoes />)}</ProtectedRoute>} />
+        <Route path="*" element={wrap(<NotFound />)} />
+      </Routes>
+    </AnimatePresence>
   );
 }
 

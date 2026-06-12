@@ -2,9 +2,11 @@ import { useMemo } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { AppointmentCard } from "@/components/AppointmentCard";
 import { AppointmentForm } from "@/components/AppointmentForm";
+import { EmptyState } from "@/components/EmptyState";
 import { useAppointments } from "@/hooks/useStore";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { CalendarDays } from "lucide-react";
 
 const Agenda = () => {
   const appts = useAppointments();
@@ -25,9 +27,11 @@ const Agenda = () => {
   return (
     <AppLayout subtitle="Agendamentos" title="Agenda" action={<AppointmentForm />}>
       {grouped.length === 0 && (
-        <div className="rounded-2xl bg-card/60 border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-          Nenhum agendamento marcado.
-        </div>
+        <EmptyState
+          icon={<CalendarDays className="h-5 w-5" />}
+          title="Agenda livre"
+          description="Nenhum agendamento marcado. Toque em + para criar um."
+        />
       )}
       {grouped.map(([date, items]) => (
         <section key={date} className="space-y-2">

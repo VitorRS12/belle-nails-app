@@ -2,9 +2,10 @@ import { useMemo, useState } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { AppointmentCard } from "@/components/AppointmentCard";
 import { AppointmentForm } from "@/components/AppointmentForm";
+import { EmptyState } from "@/components/EmptyState";
 import { useAppointments } from "@/hooks/useStore";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Sparkles } from "lucide-react";
 
 const Atendimentos = () => {
   const appts = useAppointments();
@@ -42,9 +43,11 @@ const Atendimentos = () => {
       </div>
 
       {list.length === 0 ? (
-        <div className="rounded-2xl bg-card/60 border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-          Nenhum atendimento ainda.
-        </div>
+        <EmptyState
+          icon={<Sparkles className="h-5 w-5" />}
+          title="Sem atendimentos"
+          description="Quando você concluir um agendamento, ele aparecerá aqui."
+        />
       ) : (
         <div className="space-y-3">
           {list.map((a) => (

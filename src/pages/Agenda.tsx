@@ -44,6 +44,9 @@ const Agenda = () => {
             booked:
               "relative after:content-[''] after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:h-1 after:w-1 after:rounded-full after:bg-primary",
           }}
+          classNames={{
+            day_today: "ring-1 ring-primary/40 text-foreground bg-transparent",
+          }}
           className="rounded-md"
         />
       </div>

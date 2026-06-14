@@ -1,50 +1,71 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { AppointmentCard } from "@/components/AppointmentCard";
 import { AppointmentForm } from "@/components/AppointmentForm";
 import { EmptyState } from "@/components/EmptyState";
 import { useAppointments } from "@/hooks/useStore";
-import { format, parseISO } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { format, parseISO, isSameDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CalendarDays } from "lucide-react";
 
 const Agenda = () => {
   const appts = useAppointments();
+  const [selected, setSelected] = useState<Date>(new Date());
 
-  const grouped = useMemo(() => {
-    const future = appts
-      .filter((a) => a.status === "scheduled")
-      .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
-    const map = new Map<string, typeof appts>();
-    future.forEach((a) => {
-      const arr = map.get(a.date) ?? [];
-      arr.push(a);
-      map.set(a.date, arr);
-    });
-    return Array.from(map.entries());
-  }, [appts]);
+  const scheduled = useMemo(
+    () => appts.filter((a) => a.status === "scheduled"),
+    [appts]
+  );
+
+  const datesWithAppts = useMemo(
+    () => scheduled.map((a) => parseISO(a.date)),
+    [scheduled]
+  );
+
+  const dayAppts = useMemo(
+    () =>
+      scheduled
+        .filter((a) => isSameDay(parseISO(a.date), selected))
+        .sort((a, b) => a.time.localeCompare(b.time)),
+    [scheduled, selected]
+  );
 
   return (
     <AppLayout subtitle="Agendamentos" title="Agenda" action={<AppointmentForm />}>
-      {grouped.length === 0 && (
-        <EmptyState
-          icon={<CalendarDays className="h-5 w-5" />}
-          title="Agenda livre"
-          description="Nenhum agendamento marcado. Toque em + para criar um."
+      <div className="rounded-2xl bg-card border border-border/60 p-2 sm:p-4 shadow-soft flex justify-center">
+        <Calendar
+          mode="single"
+          selected={selected}
+          onSelect={(d) => d && setSelected(d)}
+          locale={ptBR}
+          modifiers={{ booked: datesWithAppts }}
+          modifiersClassNames={{
+            booked:
+              "relative after:content-[''] after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:h-1 after:w-1 after:rounded-full after:bg-primary",
+          }}
+          className="rounded-md"
         />
-      )}
-      {grouped.map(([date, items]) => (
-        <section key={date} className="space-y-2">
-          <h2 className="font-display text-lg text-foreground/80 capitalize">
-            {format(parseISO(date), "EEEE, dd 'de' MMMM", { locale: ptBR })}
-          </h2>
+      </div>
+
+      <section className="space-y-2">
+        <h2 className="font-display text-lg text-foreground/80 capitalize">
+          {format(selected, "EEEE, dd 'de' MMMM", { locale: ptBR })}
+        </h2>
+        {dayAppts.length === 0 ? (
+          <EmptyState
+            icon={<CalendarDays className="h-5 w-5" />}
+            title="Dia livre"
+            description="Nenhum agendamento para esta data. Toque em + para criar."
+          />
+        ) : (
           <div className="space-y-3">
-            {items.map((a) => (
+            {dayAppts.map((a) => (
               <AppointmentCard key={a.id} appt={a} showStatusActions />
             ))}
           </div>
-        </section>
-      ))}
+        )}
+      </section>
     </AppLayout>
   );
 };

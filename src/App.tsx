@@ -17,6 +17,7 @@ import NotFound from "./pages/NotFound.tsx";
 import Auth from "./pages/Auth.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import Landing from "./pages/Landing.tsx";
+import Relatorio from "./pages/Relatorio.tsx";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ActiveAreaProvider } from "./contexts/ActiveAreaContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -37,6 +38,7 @@ function AppInner() {
         <Route path="/agenda" element={<ProtectedRoute>{wrap(<Agenda />)}</ProtectedRoute>} />
         <Route path="/clientes" element={<ProtectedRoute>{wrap(<Clientes />)}</ProtectedRoute>} />
         <Route path="/atendimentos" element={<ProtectedRoute>{wrap(<Atendimentos />)}</ProtectedRoute>} />
+        <Route path="/relatorio" element={<ProtectedRoute>{wrap(<Relatorio />)}</ProtectedRoute>} />
         <Route path="/configuracoes" element={<ProtectedRoute>{wrap(<Configuracoes />)}</ProtectedRoute>} />
         <Route path="*" element={wrap(<NotFound />)} />
       </Routes>

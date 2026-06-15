@@ -64,6 +64,46 @@ const Dashboard = () => {
   const appts = useAppointments();
   const clients = useClients();
 
+  // Filters
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [serviceFilter, setServiceFilter] = useState<string>("all");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+
+  const allServices = useMemo(() => {
+    const s = new Set<string>();
+    appts.forEach((a) => s.add(a.service));
+    return Array.from(s).sort();
+  }, [appts]);
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return appts.filter((a) => {
+      if (statusFilter !== "all" && a.status !== statusFilter) return false;
+      if (serviceFilter !== "all" && a.service !== serviceFilter) return false;
+      if (dateFrom && a.date < dateFrom) return false;
+      if (dateTo && a.date > dateTo) return false;
+      if (q) {
+        const hay = `${a.clientName} ${a.service} ${a.notes ?? ""}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [appts, search, statusFilter, serviceFilter, dateFrom, dateTo]);
+
+  const hasActiveFilters =
+    !!search || statusFilter !== "all" || serviceFilter !== "all" || !!dateFrom || !!dateTo;
+
+  const clearFilters = () => {
+    setSearch("");
+    setStatusFilter("all");
+    setServiceFilter("all");
+    setDateFrom("");
+    setDateTo("");
+  };
+
+
   const data = useMemo(() => {
     const now = new Date();
     const completed = appts.filter((a) => a.status === "completed");

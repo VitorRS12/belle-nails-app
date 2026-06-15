@@ -1,0 +1,32 @@
+{
+  "name": "Belle Nails — Agenda da Manicure",
+  "short_name": "Belle Nails",
+  "description": "App elegante para gestão de atendimentos, clientes e agendamentos da manicure.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fbf6f2",
+  "theme_color": "#e6c4ce",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

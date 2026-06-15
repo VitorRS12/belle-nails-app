@@ -1,6 +1,16 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { useAppointments, useClients } from "@/hooks/useStore";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Search, X, TrendingUp, CalendarCheck, Users, Sparkles } from "lucide-react";
 import {
   format,
   parseISO,
@@ -11,12 +21,6 @@ import {
   isSameMonth,
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import {
-  TrendingUp,
-  CalendarCheck,
-  Users,
-  Sparkles,
-} from "lucide-react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -31,6 +35,22 @@ import {
   Legend,
 } from "recharts";
 
+type StatusFilter = "all" | "scheduled" | "completed" | "postponed" | "cancelled";
+
+const STATUS_LABELS: Record<Exclude<StatusFilter, "all">, string> = {
+  scheduled: "Agendado",
+  completed: "Concluído",
+  postponed: "Adiado",
+  cancelled: "Cancelado",
+};
+
+const STATUS_BADGE: Record<Exclude<StatusFilter, "all">, string> = {
+  scheduled: "bg-primary/15 text-primary",
+  completed: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
+  postponed: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
+  cancelled: "bg-destructive/15 text-destructive",
+};
+
 const COLORS = [
   "hsl(345 60% 60%)",
   "hsl(38 60% 65%)",
@@ -43,6 +63,46 @@ const COLORS = [
 const Dashboard = () => {
   const appts = useAppointments();
   const clients = useClients();
+
+  // Filters
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [serviceFilter, setServiceFilter] = useState<string>("all");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+
+  const allServices = useMemo(() => {
+    const s = new Set<string>();
+    appts.forEach((a) => s.add(a.service));
+    return Array.from(s).sort();
+  }, [appts]);
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return appts.filter((a) => {
+      if (statusFilter !== "all" && a.status !== statusFilter) return false;
+      if (serviceFilter !== "all" && a.service !== serviceFilter) return false;
+      if (dateFrom && a.date < dateFrom) return false;
+      if (dateTo && a.date > dateTo) return false;
+      if (q) {
+        const hay = `${a.clientName} ${a.service} ${a.notes ?? ""}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [appts, search, statusFilter, serviceFilter, dateFrom, dateTo]);
+
+  const hasActiveFilters =
+    !!search || statusFilter !== "all" || serviceFilter !== "all" || !!dateFrom || !!dateTo;
+
+  const clearFilters = () => {
+    setSearch("");
+    setStatusFilter("all");
+    setServiceFilter("all");
+    setDateFrom("");
+    setDateTo("");
+  };
+
 
   const data = useMemo(() => {
     const now = new Date();
@@ -190,11 +250,76 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* Recent table */}
-      <section className="rounded-2xl bg-card border border-border/60 p-4 shadow-soft">
-        <h3 className="font-display text-lg mb-3">Últimos atendimentos concluídos</h3>
-        {data.recent.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Nenhum atendimento concluído ainda.</p>
+      {/* Filtered appointments table */}
+      <section className="rounded-2xl bg-card border border-border/60 p-4 shadow-soft space-y-4">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <h3 className="font-display text-lg">Atendimentos</h3>
+          <span className="text-xs text-muted-foreground">
+            {filtered.length} {filtered.length === 1 ? "resultado" : "resultados"}
+          </span>
+        </div>
+
+        {/* Filters */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
+          <div className="relative lg:col-span-2">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar cliente, serviço, nota…"
+              className="pl-9"
+            />
+          </div>
+          <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as StatusFilter)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os status</SelectItem>
+              {Object.entries(STATUS_LABELS).map(([v, l]) => (
+                <SelectItem key={v} value={v}>{l}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={serviceFilter} onValueChange={setServiceFilter}>
+            <SelectTrigger>
+              <SelectValue placeholder="Serviço" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os serviços</SelectItem>
+              {allServices.map((s) => (
+                <SelectItem key={s} value={s}>{s}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <div className="flex gap-2">
+            <Input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              aria-label="De"
+            />
+            <Input
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              aria-label="Até"
+            />
+          </div>
+        </div>
+
+        {hasActiveFilters && (
+          <div>
+            <Button variant="ghost" size="sm" onClick={clearFilters} className="h-8">
+              <X className="h-3.5 w-3.5 mr-1" /> Limpar filtros
+            </Button>
+          </div>
+        )}
+
+        {filtered.length === 0 ? (
+          <p className="text-sm text-muted-foreground py-6 text-center">
+            Nenhum atendimento encontrado com os filtros atuais.
+          </p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -203,27 +328,45 @@ const Dashboard = () => {
                   <th className="py-2 pr-3">Data</th>
                   <th className="py-2 pr-3">Cliente</th>
                   <th className="py-2 pr-3">Serviço</th>
+                  <th className="py-2 pr-3">Status</th>
                   <th className="py-2 pr-3 text-right">Valor</th>
                 </tr>
               </thead>
               <tbody>
-                {data.recent.map((a) => (
-                  <tr key={a.id} className="border-b border-border/40 last:border-0">
-                    <td className="py-2 pr-3 whitespace-nowrap">
-                      {format(parseISO(a.date), "dd/MM/yyyy")} {a.time}
-                    </td>
-                    <td className="py-2 pr-3">{a.clientName}</td>
-                    <td className="py-2 pr-3">{a.service}</td>
-                    <td className="py-2 pr-3 text-right font-medium">
-                      R$ {a.price.toFixed(2).replace(".", ",")}
-                    </td>
-                  </tr>
-                ))}
+                {[...filtered]
+                  .sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time))
+                  .slice(0, 50)
+                  .map((a) => {
+                    const st = (a.status as Exclude<StatusFilter, "all">) ?? "scheduled";
+                    return (
+                      <tr key={a.id} className="border-b border-border/40 last:border-0">
+                        <td className="py-2 pr-3 whitespace-nowrap">
+                          {format(parseISO(a.date), "dd/MM/yyyy")} {a.time}
+                        </td>
+                        <td className="py-2 pr-3">{a.clientName}</td>
+                        <td className="py-2 pr-3">{a.service}</td>
+                        <td className="py-2 pr-3">
+                          <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${STATUS_BADGE[st] ?? ""}`}>
+                            {STATUS_LABELS[st] ?? st}
+                          </span>
+                        </td>
+                        <td className="py-2 pr-3 text-right font-medium">
+                          R$ {a.price.toFixed(2).replace(".", ",")}
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
+            {filtered.length > 50 && (
+              <p className="text-xs text-muted-foreground text-center mt-3">
+                Mostrando os 50 mais recentes de {filtered.length}.
+              </p>
+            )}
           </div>
         )}
       </section>
+
     </AppLayout>
   );
 };

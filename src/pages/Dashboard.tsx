@@ -1,6 +1,16 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { useAppointments, useClients } from "@/hooks/useStore";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Search, X, TrendingUp, CalendarCheck, Users, Sparkles } from "lucide-react";
 import {
   format,
   parseISO,
@@ -11,12 +21,6 @@ import {
   isSameMonth,
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import {
-  TrendingUp,
-  CalendarCheck,
-  Users,
-  Sparkles,
-} from "lucide-react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -30,6 +34,22 @@ import {
   Cell,
   Legend,
 } from "recharts";
+
+type StatusFilter = "all" | "scheduled" | "completed" | "postponed" | "cancelled";
+
+const STATUS_LABELS: Record<Exclude<StatusFilter, "all">, string> = {
+  scheduled: "Agendado",
+  completed: "Concluído",
+  postponed: "Adiado",
+  cancelled: "Cancelado",
+};
+
+const STATUS_BADGE: Record<Exclude<StatusFilter, "all">, string> = {
+  scheduled: "bg-primary/15 text-primary",
+  completed: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
+  postponed: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
+  cancelled: "bg-destructive/15 text-destructive",
+};
 
 const COLORS = [
   "hsl(345 60% 60%)",

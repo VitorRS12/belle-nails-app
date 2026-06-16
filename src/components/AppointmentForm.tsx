@@ -215,6 +215,16 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
             <Select value={pickerValue} onValueChange={addFromCatalog}>
               <SelectTrigger><SelectValue placeholder="Adicionar serviço da lista" /></SelectTrigger>
               <SelectContent>
+                {customCatalog.length > 0 && (
+                  <SelectGroup>
+                    <SelectLabel>⭐ Meus serviços</SelectLabel>
+                    {customCatalog.map((s) => (
+                      <SelectItem key={`custom::${s.id}`} value={`custom::${s.id}`}>
+                        {s.name} · R$ {s.price.toFixed(2).replace(".", ",")}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                )}
                 {activeAreas.map((areaKey) => {
                   const area = AREAS.find((a) => a.key === areaKey);
                   const items = SERVICE_CATALOG_BY_AREA[areaKey] ?? [];
@@ -223,7 +233,7 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
                     <SelectGroup key={areaKey}>
                       <SelectLabel>{area.emoji} {area.label}</SelectLabel>
                       {items.map((s) => (
-                        <SelectItem key={`${areaKey}::${s.name}`} value={`${areaKey}::${s.name}`}>
+                        <SelectItem key={`default::${areaKey}::${s.name}`} value={`default::${areaKey}::${s.name}`}>
                           {s.name} · R$ {s.price.toFixed(2).replace(".", ",")}
                         </SelectItem>
                       ))}
@@ -233,15 +243,45 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
               </SelectContent>
             </Select>
 
-            <div className="flex gap-2">
-              <Input
-                placeholder="Adicionar serviço personalizado"
-                value={customName}
-                onChange={(e) => setCustomName(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustom())}
-              />
-              <Button type="button" variant="secondary" onClick={addCustom}>
-                <Plus className="h-4 w-4" />
+            <div className="rounded-2xl border border-dashed border-border bg-accent-soft/30 p-3 space-y-2">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Star className="h-3 w-3" />
+                Criar serviço personalizado (fica salvo na sua lista)
+              </div>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Nome do serviço"
+                  value={customName}
+                  onChange={(e) => setCustomName(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustom())}
+                />
+                <Input
+                  className="w-24"
+                  inputMode="decimal"
+                  placeholder="R$ 0,00"
+                  value={customPrice}
+                  onChange={(e) => setCustomPrice(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustom())}
+                />
+              </div>
+              {activeAreas.length > 1 && (
+                <Select value={customArea} onValueChange={(v) => setCustomArea(v as AreaKey)}>
+                  <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {activeAreas.map((areaKey) => {
+                      const area = AREAS.find((a) => a.key === areaKey);
+                      if (!area) return null;
+                      return (
+                        <SelectItem key={areaKey} value={areaKey}>
+                          {area.emoji} {area.label}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+              )}
+              <Button type="button" variant="secondary" onClick={addCustom} className="w-full h-9">
+                <Plus className="h-4 w-4 mr-1" /> Adicionar e salvar
               </Button>
             </div>
 

@@ -8,8 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGr
 import { appointmentsStore, clientsStore, uid } from "@/lib/storage";
 import { useClients } from "@/hooks/useStore";
 import { useProfile } from "@/hooks/useProfile";
+import { useCustomServices } from "@/hooks/useCustomServices";
 import { type Appointment, type Material, type ServiceItem, SERVICE_CATALOG_BY_AREA, AREAS, type AreaKey } from "@/lib/types";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Star } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {

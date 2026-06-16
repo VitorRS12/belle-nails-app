@@ -71,8 +71,16 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
   );
 
   const addFromCatalog = (value: string) => {
-    // value format: "<area>::<name>"
-    const [area, name] = value.split("::");
+    // value format: "default::<area>::<name>" or "custom::<id>"
+    if (value.startsWith("custom::")) {
+      const id = value.slice("custom::".length);
+      const found = customCatalog.find((s) => s.id === id);
+      if (!found) return;
+      setServices((cur) => [...cur, { name: found.name, price: found.price }]);
+      setPickerValue("");
+      return;
+    }
+    const [, area, name] = value.split("::");
     const list = SERVICE_CATALOG_BY_AREA[area as AreaKey] ?? [];
     const found = list.find((s) => s.name === name);
     if (!found) return;
@@ -80,11 +88,20 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
     setPickerValue("");
   };
 
-  const addCustom = () => {
+  const addCustom = async () => {
     const n = customName.trim();
-    if (!n) return;
-    setServices((cur) => [...cur, { name: n, price: 0 }]);
+    if (!n) {
+      toast.error("Informe o nome do serviço");
+      return;
+    }
+    const price = Number(customPrice.replace(",", ".")) || 0;
+    // Persist for next time
+    const saved = await addCustomService(customArea, n, price);
+    // Add to current appointment regardless of save success
+    setServices((cur) => [...cur, { name: saved?.name ?? n, price: saved?.price ?? price }]);
     setCustomName("");
+    setCustomPrice("");
+    if (saved) toast.success("Serviço salvo na sua lista ✨");
   };
 
   const updateService = (idx: number, patch: Partial<ServiceItem>) => {

@@ -91,14 +91,13 @@ const Dashboard = () => {
   }, [appts, search, statusFilter, serviceFilter, dateFilter]);
 
   const hasActiveFilters =
-    !!search || statusFilter !== "all" || serviceFilter !== "all" || !!dateFrom || !!dateTo;
+    !!search || statusFilter !== "all" || serviceFilter !== "all" || !!dateFilter;
 
   const clearFilters = () => {
     setSearch("");
     setStatusFilter("all");
     setServiceFilter("all");
-    setDateFrom("");
-    setDateTo("");
+    setDateFilter("");
   };
 
 
@@ -293,15 +292,9 @@ const Dashboard = () => {
           <div className="flex gap-2">
             <Input
               type="date"
-              value={dateFrom}
-              onChange={(e) => setDateFrom(e.target.value)}
-              aria-label="De"
-            />
-            <Input
-              type="date"
-              value={dateTo}
-              onChange={(e) => setDateTo(e.target.value)}
-              aria-label="Até"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              aria-label="A partir de"
             />
           </div>
         </div>

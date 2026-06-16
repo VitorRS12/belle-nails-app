@@ -32,6 +32,7 @@ function initialServices(initial?: Appointment): ServiceItem[] {
 export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Props) {
   const clients = useClients();
   const { profile } = useProfile();
+  const { services: customCatalog, add: addCustomService } = useCustomServices();
   const activeAreas: AreaKey[] = (profile?.areas?.length ? profile.areas : ["manicure"]) as AreaKey[];
   const [open, setOpen] = useState(false);
   const [clientId, setClientId] = useState(initial?.clientId ?? "");

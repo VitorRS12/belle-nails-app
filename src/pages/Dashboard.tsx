@@ -81,15 +81,14 @@ const Dashboard = () => {
     return appts.filter((a) => {
       if (statusFilter !== "all" && a.status !== statusFilter) return false;
       if (serviceFilter !== "all" && a.service !== serviceFilter) return false;
-      if (dateFrom && a.date < dateFrom) return false;
-      if (dateTo && a.date > dateTo) return false;
+      if (dateFilter && a.date < dateFilter) return false;
       if (q) {
         const hay = `${a.clientName} ${a.service} ${a.notes ?? ""}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
     });
-  }, [appts, search, statusFilter, serviceFilter, dateFrom, dateTo]);
+  }, [appts, search, statusFilter, serviceFilter, dateFilter]);
 
   const hasActiveFilters =
     !!search || statusFilter !== "all" || serviceFilter !== "all" || !!dateFrom || !!dateTo;

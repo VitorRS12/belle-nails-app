@@ -68,8 +68,7 @@ const Dashboard = () => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [serviceFilter, setServiceFilter] = useState<string>("all");
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
 
   const allServices = useMemo(() => {
     const s = new Set<string>();
@@ -82,25 +81,23 @@ const Dashboard = () => {
     return appts.filter((a) => {
       if (statusFilter !== "all" && a.status !== statusFilter) return false;
       if (serviceFilter !== "all" && a.service !== serviceFilter) return false;
-      if (dateFrom && a.date < dateFrom) return false;
-      if (dateTo && a.date > dateTo) return false;
+      if (dateFilter && a.date < dateFilter) return false;
       if (q) {
         const hay = `${a.clientName} ${a.service} ${a.notes ?? ""}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
     });
-  }, [appts, search, statusFilter, serviceFilter, dateFrom, dateTo]);
+  }, [appts, search, statusFilter, serviceFilter, dateFilter]);
 
   const hasActiveFilters =
-    !!search || statusFilter !== "all" || serviceFilter !== "all" || !!dateFrom || !!dateTo;
+    !!search || statusFilter !== "all" || serviceFilter !== "all" || !!dateFilter;
 
   const clearFilters = () => {
     setSearch("");
     setStatusFilter("all");
     setServiceFilter("all");
-    setDateFrom("");
-    setDateTo("");
+    setDateFilter("");
   };
 
 
@@ -295,15 +292,9 @@ const Dashboard = () => {
           <div className="flex gap-2">
             <Input
               type="date"
-              value={dateFrom}
-              onChange={(e) => setDateFrom(e.target.value)}
-              aria-label="De"
-            />
-            <Input
-              type="date"
-              value={dateTo}
-              onChange={(e) => setDateTo(e.target.value)}
-              aria-label="Até"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              aria-label="A partir de"
             />
           </div>
         </div>

@@ -43,6 +43,8 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
   const [services, setServices] = useState<ServiceItem[]>(initialServices(initial));
   const [pickerValue, setPickerValue] = useState<string>("");
   const [customName, setCustomName] = useState("");
+  const [customPrice, setCustomPrice] = useState("");
+  const [customArea, setCustomArea] = useState<AreaKey>(activeAreas[0] ?? "manicure");
 
   const [materials, setMaterials] = useState<Material[]>(initial?.materials ?? []);
   const [matName, setMatName] = useState("");

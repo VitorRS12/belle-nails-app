@@ -112,6 +112,36 @@ export type Database = {
         }
         Relationships: []
       }
+      custom_services: {
+        Row: {
+          area: string
+          created_at: string
+          id: string
+          name: string
+          price: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          area?: string
+          created_at?: string
+          id?: string
+          name: string
+          price?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          area?: string
+          created_at?: string
+          id?: string
+          name?: string
+          price?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           areas: string[]

@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { hasLegacyData, migrateLegacyData } from "@/lib/storage";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
+import { useTheme } from "@/contexts/ThemeContext";
 import { AREAS, type AreaKey } from "@/lib/types";
 import { toast } from "sonner";
-import { LogOut, User, UploadCloud, Briefcase } from "lucide-react";
+import { LogOut, User, UploadCloud, Briefcase, Moon, Sun } from "lucide-react";
 
 const Configuracoes = () => {
   const { user, signOut } = useAuth();

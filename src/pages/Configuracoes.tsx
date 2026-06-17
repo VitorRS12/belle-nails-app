@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { hasLegacyData, migrateLegacyData } from "@/lib/storage";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
@@ -66,24 +67,40 @@ const Configuracoes = () => {
         </div>
 
         {/* Appearance */}
-        <div className="rounded-2xl bg-card border border-border/60 p-5 shadow-soft">
-          <div className="flex items-center justify-between gap-3">
+        <div className="relative overflow-hidden rounded-2xl border border-border/60 p-5 shadow-soft bg-card">
+          {/* Ambient accent */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-12 -right-10 h-40 w-40 rounded-full opacity-60 blur-3xl transition-opacity duration-500"
+            style={{
+              background:
+                theme === "dark"
+                  ? "radial-gradient(circle, hsl(345 70% 55% / 0.45), transparent 70%)"
+                  : "radial-gradient(circle, hsl(38 80% 70% / 0.55), transparent 70%)",
+            }}
+          />
+          <div className="relative flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="h-11 w-11 rounded-full bg-secondary text-secondary-foreground inline-flex items-center justify-center">
+              <div
+                className={`h-11 w-11 rounded-full inline-flex items-center justify-center transition-colors duration-500 ${
+                  theme === "dark"
+                    ? "bg-gradient-to-br from-[hsl(345_45%_25%)] to-[hsl(340_30%_18%)] text-primary"
+                    : "bg-gradient-to-br from-[hsl(38_85%_82%)] to-[hsl(38_70%_70%)] text-accent-foreground"
+                }`}
+              >
                 {theme === "dark" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
               </div>
               <div className="min-w-0">
-                <h3 className="font-display text-lg">Modo escuro</h3>
+                <h3 className="font-display text-lg">Aparência</h3>
                 <p className="text-xs text-muted-foreground">
-                  {theme === "dark" ? "Tema escuro ativado." : "Tema claro ativado."} Sua preferência fica salva.
+                  {theme === "dark"
+                    ? "Tema escuro ativado — ideal à noite."
+                    : "Tema claro ativado — luminoso e suave."}{" "}
+                  Sua preferência fica salva.
                 </p>
               </div>
             </div>
-            <Switch
-              checked={theme === "dark"}
-              onCheckedChange={toggleTheme}
-              aria-label="Alternar modo escuro"
-            />
+            <ThemeToggle />
           </div>
         </div>
 

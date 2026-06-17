@@ -4,6 +4,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { AreaSwitcher } from "./AreaSwitcher";
 import { Breadcrumbs } from "./Breadcrumbs";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface Props {
   title: string;

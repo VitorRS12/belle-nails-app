@@ -367,7 +367,12 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
           </div>
         )}
       </section>
+        </TabsContent>
 
+        <TabsContent value="relatorio" className="mt-0">
+          <RelatorioContent />
+        </TabsContent>
+      </Tabs>
     </AppLayout>
   );
 };

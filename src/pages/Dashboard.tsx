@@ -62,7 +62,8 @@ const COLORS = [
   "hsl(280 40% 65%)",
 ];
 
-const Dashboard = () => {
+const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "relatorio" }) => {
+  const [tab, setTab] = useState<"overview" | "relatorio">(initialTab);
   const appts = useAppointments();
   const clients = useClients();
 

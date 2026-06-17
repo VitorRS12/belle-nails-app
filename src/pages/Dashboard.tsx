@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { AppLayout } from "@/components/AppLayout";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { RelatorioContent } from "@/components/RelatorioContent";
 import { useAppointments, useClients } from "@/hooks/useStore";
 import { Input } from "@/components/ui/input";
 import {

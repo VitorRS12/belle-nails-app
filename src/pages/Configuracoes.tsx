@@ -13,6 +13,7 @@ import { LogOut, User, UploadCloud, Briefcase, Moon, Sun } from "lucide-react";
 const Configuracoes = () => {
   const { user, signOut } = useAuth();
   const { profile, updateAreas } = useProfile();
+  const { theme, toggleTheme } = useTheme();
   const [loading, setLoading] = useState(false);
   const [hasLegacy, setHasLegacy] = useState(false);
 

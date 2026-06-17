@@ -43,7 +43,7 @@ export function AppLayout({ title, subtitle, action, children, wide }: Props) {
             }`}
           >
             <header className="md:hidden px-5 pt-6 pb-2 flex items-end justify-between gap-3">
-              <div className="animate-fade-in">
+              <div className="animate-fade-in min-w-0">
                 {subtitle && (
                   <p className="text-xs uppercase tracking-[0.18em] text-accent font-semibold mb-1">
                     {subtitle}
@@ -51,7 +51,10 @@ export function AppLayout({ title, subtitle, action, children, wide }: Props) {
                 )}
                 <h1 className="font-display text-3xl text-foreground leading-tight">{title}</h1>
               </div>
-              {action}
+              <div className="flex items-center gap-2 shrink-0">
+                <ThemeToggle />
+                {action}
+              </div>
             </header>
             <div className="md:hidden px-5 pb-2 overflow-x-auto">
               <AreaSwitcher variant="compact" />

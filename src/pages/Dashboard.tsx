@@ -167,6 +167,13 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
       subtitle={format(new Date(), "EEEE, dd 'de' MMMM", { locale: ptBR })}
       title="Dashboard"
     >
+      <Tabs value={tab} onValueChange={(v) => setTab(v as "overview" | "relatorio")} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2 max-w-sm">
+          <TabsTrigger value="overview">Visão geral</TabsTrigger>
+          <TabsTrigger value="relatorio">Relatório</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-6 mt-0">
       {/* KPIs */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <KpiCard

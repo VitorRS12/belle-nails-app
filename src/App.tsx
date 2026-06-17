@@ -20,6 +20,7 @@ import Landing from "./pages/Landing.tsx";
 import Relatorio from "./pages/Relatorio.tsx";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ActiveAreaProvider } from "./contexts/ActiveAreaContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 

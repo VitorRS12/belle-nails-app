@@ -39,7 +39,7 @@ function AppInner() {
         <Route path="/agenda" element={<ProtectedRoute>{wrap(<Agenda />)}</ProtectedRoute>} />
         <Route path="/clientes" element={<ProtectedRoute>{wrap(<Clientes />)}</ProtectedRoute>} />
         <Route path="/atendimentos" element={<ProtectedRoute>{wrap(<Atendimentos />)}</ProtectedRoute>} />
-        <Route path="/relatorio" element={<ProtectedRoute>{wrap(<Relatorio />)}</ProtectedRoute>} />
+        <Route path="/relatorio" element={<ProtectedRoute>{wrap(<Dashboard initialTab="relatorio" />)}</ProtectedRoute>} />
         <Route path="/configuracoes" element={<ProtectedRoute>{wrap(<Configuracoes />)}</ProtectedRoute>} />
         <Route path="*" element={wrap(<NotFound />)} />
       </Routes>

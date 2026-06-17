@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { hasLegacyData, migrateLegacyData } from "@/lib/storage";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
+import { useTheme } from "@/contexts/ThemeContext";
 import { AREAS, type AreaKey } from "@/lib/types";
 import { toast } from "sonner";
-import { LogOut, User, UploadCloud, Briefcase } from "lucide-react";
+import { LogOut, User, UploadCloud, Briefcase, Moon, Sun } from "lucide-react";
 
 const Configuracoes = () => {
   const { user, signOut } = useAuth();
   const { profile, updateAreas } = useProfile();
+  const { theme, toggleTheme } = useTheme();
   const [loading, setLoading] = useState(false);
   const [hasLegacy, setHasLegacy] = useState(false);
 
@@ -60,6 +63,28 @@ const Configuracoes = () => {
           <Button variant="outline" onClick={() => signOut()} className="w-full rounded-xl">
             <LogOut className="h-4 w-4 mr-2" /> Sair
           </Button>
+        </div>
+
+        {/* Appearance */}
+        <div className="rounded-2xl bg-card border border-border/60 p-5 shadow-soft">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="h-11 w-11 rounded-full bg-secondary text-secondary-foreground inline-flex items-center justify-center">
+                {theme === "dark" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+              </div>
+              <div className="min-w-0">
+                <h3 className="font-display text-lg">Modo escuro</h3>
+                <p className="text-xs text-muted-foreground">
+                  {theme === "dark" ? "Tema escuro ativado." : "Tema claro ativado."} Sua preferência fica salva.
+                </p>
+              </div>
+            </div>
+            <Switch
+              checked={theme === "dark"}
+              onCheckedChange={toggleTheme}
+              aria-label="Alternar modo escuro"
+            />
+          </div>
         </div>
 
         {/* Areas / Multi-perfil */}

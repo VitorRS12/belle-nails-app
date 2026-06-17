@@ -20,6 +20,7 @@ import Landing from "./pages/Landing.tsx";
 import Relatorio from "./pages/Relatorio.tsx";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ActiveAreaProvider } from "./contexts/ActiveAreaContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 
@@ -38,7 +39,7 @@ function AppInner() {
         <Route path="/agenda" element={<ProtectedRoute>{wrap(<Agenda />)}</ProtectedRoute>} />
         <Route path="/clientes" element={<ProtectedRoute>{wrap(<Clientes />)}</ProtectedRoute>} />
         <Route path="/atendimentos" element={<ProtectedRoute>{wrap(<Atendimentos />)}</ProtectedRoute>} />
-        <Route path="/relatorio" element={<ProtectedRoute>{wrap(<Relatorio />)}</ProtectedRoute>} />
+        <Route path="/relatorio" element={<ProtectedRoute>{wrap(<Dashboard initialTab="relatorio" />)}</ProtectedRoute>} />
         <Route path="/configuracoes" element={<ProtectedRoute>{wrap(<Configuracoes />)}</ProtectedRoute>} />
         <Route path="*" element={wrap(<NotFound />)} />
       </Routes>
@@ -48,19 +49,21 @@ function AppInner() {
 
 const App = () => (
   <ErrorBoundary>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <Router>
-          <AuthProvider>
-            <ActiveAreaProvider>
-              <AppInner />
-            </ActiveAreaProvider>
-          </AuthProvider>
-        </Router>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <Router>
+            <AuthProvider>
+              <ActiveAreaProvider>
+                <AppInner />
+              </ActiveAreaProvider>
+            </AuthProvider>
+          </Router>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   </ErrorBoundary>
 );
 

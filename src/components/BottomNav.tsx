@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Home, CalendarDays, Users, Sparkles, Settings, LayoutDashboard, FileText } from "lucide-react";
+import { Home, CalendarDays, Users, Sparkles, Settings, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
@@ -8,14 +8,13 @@ const items = [
   { to: "/agenda", icon: CalendarDays, label: "Agenda" },
   { to: "/clientes", icon: Users, label: "Clientes" },
   { to: "/atendimentos", icon: Sparkles, label: "Histórico" },
-  { to: "/relatorio", icon: FileText, label: "Relatório" },
   { to: "/configuracoes", icon: Settings, label: "Config" },
 ];
 
 export function BottomNav() {
   return (
     <nav className="fixed bottom-0 inset-x-0 z-40 border-t border-border bg-card/90 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]">
-      <ul className="grid grid-cols-7 max-w-md mx-auto">
+      <ul className="grid grid-cols-6 max-w-md mx-auto">
         {items.map(({ to, icon: Icon, label }) => (
           <li key={to}>
             <NavLink

@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { AppLayout } from "@/components/AppLayout";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { RelatorioContent } from "@/components/RelatorioContent";
 import { useAppointments, useClients } from "@/hooks/useStore";
 import { Input } from "@/components/ui/input";
 import {
@@ -60,7 +62,8 @@ const COLORS = [
   "hsl(280 40% 65%)",
 ];
 
-const Dashboard = () => {
+const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "relatorio" }) => {
+  const [tab, setTab] = useState<"overview" | "relatorio">(initialTab);
   const appts = useAppointments();
   const clients = useClients();
 
@@ -164,6 +167,13 @@ const Dashboard = () => {
       subtitle={format(new Date(), "EEEE, dd 'de' MMMM", { locale: ptBR })}
       title="Dashboard"
     >
+      <Tabs value={tab} onValueChange={(v) => setTab(v as "overview" | "relatorio")} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2 max-w-sm">
+          <TabsTrigger value="overview">Visão geral</TabsTrigger>
+          <TabsTrigger value="relatorio">Relatório</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-6 mt-0">
       {/* KPIs */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <KpiCard
@@ -357,7 +367,12 @@ const Dashboard = () => {
           </div>
         )}
       </section>
+        </TabsContent>
 
+        <TabsContent value="relatorio" className="mt-0">
+          <RelatorioContent />
+        </TabsContent>
+      </Tabs>
     </AppLayout>
   );
 };

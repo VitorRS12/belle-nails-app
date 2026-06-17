@@ -65,6 +65,28 @@ const Configuracoes = () => {
           </Button>
         </div>
 
+        {/* Appearance */}
+        <div className="rounded-2xl bg-card border border-border/60 p-5 shadow-soft">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="h-11 w-11 rounded-full bg-secondary text-secondary-foreground inline-flex items-center justify-center">
+                {theme === "dark" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+              </div>
+              <div className="min-w-0">
+                <h3 className="font-display text-lg">Modo escuro</h3>
+                <p className="text-xs text-muted-foreground">
+                  {theme === "dark" ? "Tema escuro ativado." : "Tema claro ativado."} Sua preferência fica salva.
+                </p>
+              </div>
+            </div>
+            <Switch
+              checked={theme === "dark"}
+              onCheckedChange={toggleTheme}
+              aria-label="Alternar modo escuro"
+            />
+          </div>
+        </div>
+
         {/* Areas / Multi-perfil */}
         <div className="rounded-2xl bg-card border border-border/60 p-5 shadow-soft">
           <div className="flex items-center gap-3 mb-4">

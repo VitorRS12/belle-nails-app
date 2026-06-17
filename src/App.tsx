@@ -49,19 +49,21 @@ function AppInner() {
 
 const App = () => (
   <ErrorBoundary>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <Router>
-          <AuthProvider>
-            <ActiveAreaProvider>
-              <AppInner />
-            </ActiveAreaProvider>
-          </AuthProvider>
-        </Router>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <Router>
+            <AuthProvider>
+              <ActiveAreaProvider>
+                <AppInner />
+              </ActiveAreaProvider>
+            </AuthProvider>
+          </Router>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   </ErrorBoundary>
 );
 

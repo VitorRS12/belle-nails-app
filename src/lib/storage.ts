@@ -6,7 +6,23 @@ import { toast } from "sonner";
 let _clients: Client[] = [];
 let _appts: Appointment[] = [];
 let _userId: string | null = null;
+let _companyId: string | null = null;
 let _hydrated = false;
+
+async function fetchCompanyId(userId: string): Promise<string | null> {
+  const { data } = await supabase
+    .from("company_members")
+    .select("company_id")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  return data?.company_id ?? null;
+}
+
+export function getCurrentCompanyId() {
+  return _companyId;
+}
 
 function emit() {
   window.dispatchEvent(new Event("manicure:update"));

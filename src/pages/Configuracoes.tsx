@@ -67,6 +67,10 @@ const Configuracoes = () => {
           </Button>
         </div>
 
+        {/* Empresa */}
+        <CompanySettingsCard />
+
+
         {/* Appearance */}
         <div className="relative overflow-hidden rounded-2xl border border-border/60 p-5 shadow-soft bg-card">
           {/* Ambient accent */}

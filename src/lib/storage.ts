@@ -219,11 +219,14 @@ export async function migrateLegacyData(): Promise<{ clients: number; appointmen
   const idMap = new Map<string, string>();
   const isUuid = (s: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
 
+  const companyId = _companyId ?? (await fetchCompanyId(_userId));
+  if (!companyId) throw new Error("company not found");
+
   const clientRows = legacyClients.map((c) => {
     const newId = isUuid(c.id) ? c.id : uid();
     idMap.set(c.id, newId);
     return {
-      id: newId, user_id: _userId!,
+      id: newId, user_id: _userId!, company_id: companyId,
       name: c.name, phone: c.phone ?? null, notes: c.notes ?? null,
       created_at: c.createdAt || new Date().toISOString(),
     };
@@ -232,7 +235,7 @@ export async function migrateLegacyData(): Promise<{ clients: number; appointmen
   const apptRows = legacyAppts.map((a) => {
     const newId = isUuid(a.id) ? a.id : uid();
     return {
-      id: newId, user_id: _userId!,
+      id: newId, user_id: _userId!, company_id: companyId,
       client_id: idMap.get(a.clientId) ?? a.clientId,
       client_name: a.clientName,
       date: a.date, time: a.time,
@@ -250,7 +253,8 @@ export async function migrateLegacyData(): Promise<{ clients: number; appointmen
   });
 
   if (clientRows.length) {
-    const { error } = await supabase.from("clients").upsert(clientRows);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await supabase.from("clients").upsert(clientRows as any);
     if (error) throw error;
   }
   if (apptRows.length) {

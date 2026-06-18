@@ -3,6 +3,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { CompanySettingsCard } from "@/components/CompanySettingsCard";
 import { hasLegacyData, migrateLegacyData } from "@/lib/storage";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";

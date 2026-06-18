@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           client_id: string
           client_name: string
+          company_id: string
           completed_at: string | null
           created_at: string
           date: string
@@ -37,6 +38,7 @@ export type Database = {
         Insert: {
           client_id: string
           client_name: string
+          company_id: string
           completed_at?: string | null
           created_at?: string
           date: string
@@ -56,6 +58,7 @@ export type Database = {
         Update: {
           client_id?: string
           client_name?: string
+          company_id?: string
           completed_at?: string | null
           created_at?: string
           date?: string
@@ -80,10 +83,18 @@ export type Database = {
             referencedRelation: "clients"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "appointments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
         ]
       }
       clients: {
         Row: {
+          company_id: string
           created_at: string
           id: string
           name: string
@@ -93,6 +104,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          company_id: string
           created_at?: string
           id?: string
           name: string
@@ -102,6 +114,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          company_id?: string
           created_at?: string
           id?: string
           name?: string
@@ -110,11 +123,88 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "clients_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      companies: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          owner_user_id: string
+          segment: string | null
+          settings: Json
+          slug: string
+          timezone: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          owner_user_id: string
+          segment?: string | null
+          settings?: Json
+          slug: string
+          timezone?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          owner_user_id?: string
+          segment?: string | null
+          settings?: Json
+          slug?: string
+          timezone?: string
+          updated_at?: string
+        }
         Relationships: []
+      }
+      company_members: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_members_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       custom_services: {
         Row: {
           area: string
+          company_id: string
           created_at: string
           id: string
           name: string
@@ -124,6 +214,7 @@ export type Database = {
         }
         Insert: {
           area?: string
+          company_id: string
           created_at?: string
           id?: string
           name: string
@@ -133,6 +224,7 @@ export type Database = {
         }
         Update: {
           area?: string
+          company_id?: string
           created_at?: string
           id?: string
           name?: string
@@ -140,11 +232,20 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "custom_services_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
           areas: string[]
+          company_id: string | null
           created_at: string
           display_name: string | null
           updated_at: string
@@ -152,6 +253,7 @@ export type Database = {
         }
         Insert: {
           areas?: string[]
+          company_id?: string | null
           created_at?: string
           display_name?: string | null
           updated_at?: string
@@ -159,9 +261,39 @@ export type Database = {
         }
         Update: {
           areas?: string[]
+          company_id?: string | null
           created_at?: string
           display_name?: string | null
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
         }
         Relationships: []
@@ -171,10 +303,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_company_id: { Args: { _user_id: string }; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_company_member: {
+        Args: { _company_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "super_admin" | "company_admin" | "professional" | "customer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -301,6 +444,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["super_admin", "company_admin", "professional", "customer"],
+    },
   },
 } as const

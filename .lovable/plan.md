@@ -1,101 +1,117 @@
-# Plano: Bellenails Multi-profissional + Dashboard Web
+## Transformação em Plataforma SaaS Multi-Tenant de Agendamentos
 
-## Visão geral
-
-Hoje o app guarda tudo no `localStorage` do celular (1 dispositivo = 1 conjunto de dados). Para ter **dashboard no navegador** e **várias profissionais**, cada uma com seus dados, precisamos mover os dados para a nuvem (Lovable Cloud) com login.
-
-A essência atual (agenda no celular, fluxo simples, visual rosa/dourado) será preservada — só ganha login na entrada e sincronização automática.
+Este é um projeto de grande porte que reescreve a fundação do app. Proponho dividir em **fases incrementais** para manter o sistema atual funcionando enquanto evoluímos. Cada fase entrega valor e pode ser validada antes da próxima.
 
 ---
 
-## Fase 1 — Fundação: Autenticação + Banco na nuvem
+### Estado atual (resumo)
 
-### O que muda para você
-- Ao abrir o app (celular ou web), pede **login com Google** (ou e-mail/senha).
-- Depois disso, tudo funciona igual — mas os dados ficam salvos na nuvem da sua conta.
-- Você pode acessar o mesmo conjunto de dados pelo celular **e** pelo navegador.
-
-### O que faço tecnicamente
-1. Criar tabelas no Lovable Cloud:
-   - `profiles` — dados da profissional (nome, áreas de atuação)
-   - `clients` — clientes (com `user_id`)
-   - `appointments` — agendamentos (com `user_id`, `services[]`, `materials[]`)
-   - `services_custom` — serviços personalizados criados pela profissional
-2. RLS (Row Level Security): cada profissional só vê os próprios dados.
-3. Tela de **Login / Cadastro** com Google + e-mail.
-4. Migrar `src/lib/storage.ts` de `localStorage` para Supabase client.
-5. Manter o backup Google Drive como opção extra (não mais obrigatório).
+- App single-tenant: cada usuário Supabase é uma profissional autônoma
+- Tabelas: `profiles`, `clients`, `appointments`, `custom_services` — todas escopadas por `user_id`
+- Sem conceito de empresa, papéis, ou cliente final
+- Auth: email/senha + Google (profissionais)
 
 ---
 
-## Fase 2 — Multi-perfil de profissões
+### Fase 1 — Fundação Multi-Tenant + Papéis (sem quebrar o app atual)
 
-### O que muda para você
-- No primeiro acesso (ou em Configurações), você marca suas áreas: **Manicure, Cabelo, Cílios, Sobrancelhas, Estética**.
-- Ao criar um atendimento, o catálogo mostra os serviços agrupados por categoria das áreas que você marcou.
-- Você pode adicionar/remover áreas a qualquer momento.
+**Objetivo:** introduzir `companies` (empresas) e `user_roles` mantendo todas as profissionais atuais funcionando como "empresa individual".
 
-### Catálogos (só nomes, você define o preço)
-- **Manicure/Pedicure** (já existe): pé, mão, gel, postiça, spa, francesinha, decoração…
-- **Cabelo**: corte feminino, corte masculino, escova, hidratação, coloração, mechas, luzes, progressiva, botox, reconstrução, penteado, finalização…
-- **Cílios**: fio a fio clássico, volume russo, volume brasileiro, híbrido, manutenção, remoção, lash lifting, tintura…
-- **Sobrancelhas**: design com pinça, design com cera, design com henna, micropigmentação, brow lamination, tintura…
-- **Estética facial** (opcional): limpeza de pele, peeling, massagem facial…
+**Backend (migração):**
+- Criar enum `app_role`: `super_admin`, `company_admin`, `professional`, `customer`
+- Criar tabela `companies` (nome, slug público, segmento, timezone, config)
+- Criar tabela `company_members` (company_id, user_id, role dentro da empresa)
+- Criar tabela `user_roles` (papéis globais — pattern de segurança recomendado)
+- Função `has_role(user_id, role)` SECURITY DEFINER
+- Função `get_user_company_id(user_id)` SECURITY DEFINER
+- Adicionar `company_id` em `clients`, `appointments`, `custom_services`, `profiles`
+- **Migração de dados:** para cada profile existente, criar uma `company` própria e popular `company_id` em todos os registros antigos
+- Atualizar RLS: escopo passa de `user_id` para `company_id` (com `user_id` permanecendo para auditoria)
+- GRANTs explícitos em todas as novas tabelas
 
-### O que faço tecnicamente
-- Adicionar campo `areas[]` no `profiles`.
-- Reorganizar `SERVICE_CATALOG` em `SERVICE_CATALOG_BY_AREA` (objeto com categorias).
-- No `AppointmentForm`, agrupar o cat selector por categoria (collapsible).
-- Filtrar pelas áreas ativas da profissional.
+**Frontend:**
+- Hook `useCompany()` que devolve a empresa ativa do usuário logado
+- Hook `useUserRole()` para checar permissões
+- Atualizar todos os hooks de dados para filtrar por `company_id` (transparente para a UI)
+- Tela de "Minha Empresa" em Configurações (nome, segmento, timezone)
 
----
-
-## Fase 3 — Dashboard Web
-
-### O que muda para você
-- Acesso por `bellenailsorigin.lovable.app` (ou domínio próprio) pelo navegador do PC.
-- Mesmo login Google → vê os mesmos dados do celular.
-- **Layout responsivo dedicado** para tela grande (não é só o app esticado):
-  - Sidebar com navegação (Visão geral, Agenda, Clientes, Atendimentos, Relatórios)
-  - Cards de KPIs (receita do mês, agendamentos da semana, ticket médio, top serviços)
-  - Gráficos: receita por mês, serviços mais vendidos, distribuição por área
-  - Tabela de atendimentos com filtros avançados (data, cliente, serviço, status)
-  - Calendário visual estilo Google Calendar
-
-### O que faço tecnicamente
-- Detectar viewport: `<lg` mostra o layout mobile atual; `≥lg` mostra `DashboardLayout` novo.
-- Componentes novos: `Sidebar`, `KpiCard`, `RevenueChart` (Recharts), `ServicesChart`, `AppointmentsTable`, `WeekCalendar`.
-- Mesmas rotas, layouts diferentes — sem duplicar lógica.
+**Critério de sucesso:** profissionais existentes continuam usando o app sem perceber mudança.
 
 ---
 
-## Detalhes técnicos
+### Fase 2 — Profissionais dentro da Empresa
 
-### Stack
-- **Auth**: Lovable Cloud + Google OAuth gerenciado (sem credenciais próprias)
-- **DB**: Supabase Postgres com RLS por `user_id`
-- **Frontend**: continua React + Vite + Tailwind
-- **Gráficos**: Recharts (já disponível em `components/ui/chart.tsx`)
+**Objetivo:** uma empresa pode ter múltiplas profissionais.
 
-### Migração de dados existentes
-Quando você fizer o primeiro login, ofereço importar os dados que já estão no `localStorage` do celular para a nuvem. Nada se perde.
-
-### Compatibilidade APK
-- Capacitor continua funcionando — só precisa regerar o APK uma vez para incluir a tela de login.
-- Após login, sessão persiste no celular.
+- Tabela `professionals` (company_id, user_id opcional, nome, foto, especialidades, ativo)
+- Tabela `professional_schedules` (professional_id, dia_semana, hora_inicio, hora_fim)
+- Tabela `professional_services` (relação N:N entre profissionais e serviços)
+- Adicionar `professional_id` em `appointments`
+- UI: tela "Equipe" no painel da empresa — convidar/cadastrar profissionais
+- Sistema de convite por e-mail (edge function) com link único
+- Filtro de agenda por profissional
 
 ---
 
-## Ordem de execução
+### Fase 3 — Catálogo de Serviços padronizado
 
-1. **Fase 1** (fundação) — sem ela nada funciona. ~1 iteração grande.
-2. **Fase 3** (dashboard web) — sua prioridade declarada. ~1 iteração média.
-3. **Fase 2** (multi-perfil) — adicionada depois sem quebrar nada. ~1 iteração média.
+- Migrar `custom_services` para tabela `services` ligada a `company_id`
+- Adicionar campos: descrição, categoria, **duração em minutos**, cor, status ativo/inativo
+- Atualizar `AppointmentForm` para usar a nova estrutura
+- Tela de gestão de serviços (CRUD completo)
 
 ---
 
-## Confirmações antes de começar
+### Fase 4 — Página Pública de Agendamento (Cliente Final)
 
-- [ ] OK migrar para Lovable Cloud agora (perde-se nada — importo do localStorage)?
-- [ ] OK login Google + e-mail/senha como métodos padrão?
-- [ ] Sigo com **Fase 1** já nesta resposta após aprovação?
+**Objetivo:** clientes finais agendam pelo site sem login obrigatório inicialmente.
+
+- Rota pública `/b/:companySlug` (página da empresa)
+- Fluxo: escolher serviço → profissional → data → horário → dados de contato → confirmar
+- Cálculo de horários disponíveis no servidor (edge function) respeitando duração + jornada + agendamentos existentes
+- Auth opcional para clientes (email/senha + Google) — papel `customer`
+- Tabela `customer_profiles` (separada de `professionals`, sem `company_id` — cliente pode agendar em várias empresas)
+- Agendamento cria registro em `appointments` com status `pendente_confirmacao`
+
+---
+
+### Fase 5 — Notificações
+
+- Edge function de envio de e-mail (confirmação, lembrete, cancelamento) via Resend
+- Templates HTML responsivos
+- Tabela `notification_log` para auditoria
+- Estrutura preparada para WhatsApp (placeholder) e push (Capacitor) — implementação futura
+
+---
+
+### Fase 6 — Painel Super Admin
+
+- Rota `/admin` protegida por `has_role(uid, 'super_admin')`
+- Listagem de empresas, métricas globais, gestão de planos
+- Tabela `subscription_plans` e `company_subscriptions` (estrutura, sem cobrança ainda)
+
+---
+
+### Fase 7 — Pagamentos e Assinaturas
+
+- Integração Stripe (built-in Lovable) para cobrança recorrente das empresas
+- Limites por plano aplicados via RLS/edge functions
+- Opcional: pagamento do cliente final no momento do agendamento
+
+---
+
+### Detalhes técnicos transversais
+
+- **Stack mantida:** React + Vite + TS + TanStack Query + Zustand + Tailwind + Framer Motion + shadcn/ui + Capacitor
+- **Segurança:** papéis em tabela separada (nunca em `profiles`), funções `SECURITY DEFINER` para evitar recursão de RLS, `company_id` obrigatório em todo registro tenant-scoped
+- **Estrutura de pastas:** evoluir para feature-based — `src/features/{auth,company,scheduling,billing,public-booking}/`
+- **Compatibilidade mobile:** manter HashRouter para Capacitor, evitar APIs incompatíveis com WebView
+- **Performance:** índices em `(company_id, date)`, `(professional_id, date)`, paginação em listagens
+
+---
+
+### O que sugiro começar agora
+
+**Fase 1 completa** — é a fundação sem a qual nada mais funciona, e é totalmente invisível para as profissionais que já usam o app. Quando aprovada, executo a migração de banco, ajusto os hooks de dados e adiciono a tela de configurações da empresa.
+
+Confirma que posso começar pela Fase 1? Se preferir um escopo inicial diferente (ex.: começar pela página pública de agendamento ainda single-tenant), me diz que eu reorganizo o plano.

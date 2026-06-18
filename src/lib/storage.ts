@@ -6,7 +6,23 @@ import { toast } from "sonner";
 let _clients: Client[] = [];
 let _appts: Appointment[] = [];
 let _userId: string | null = null;
+let _companyId: string | null = null;
 let _hydrated = false;
+
+async function fetchCompanyId(userId: string): Promise<string | null> {
+  const { data } = await supabase
+    .from("company_members")
+    .select("company_id")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  return data?.company_id ?? null;
+}
+
+export function getCurrentCompanyId() {
+  return _companyId;
+}
 
 function emit() {
   window.dispatchEvent(new Event("manicure:update"));
@@ -63,6 +79,7 @@ function rowToAppt(r: ApptRow): Appointment {
 export async function hydrateStores(userId: string) {
   _userId = userId;
   _hydrated = false;
+  _companyId = await fetchCompanyId(userId);
   const [cRes, aRes] = await Promise.all([
     supabase.from("clients").select("*").order("name"),
     supabase.from("appointments").select("*").order("date").limit(1000),
@@ -79,19 +96,20 @@ export function clearStores() {
   _clients = [];
   _appts = [];
   _userId = null;
+  _companyId = null;
   _hydrated = false;
   emit();
 }
 
 // ---------- write helpers ----------
 async function upsertClient(c: Client) {
-  if (!_userId) return;
+  if (!_userId || !_companyId) return;
   const { error } = await supabase.from("clients").upsert({
-    id: c.id, user_id: _userId,
+    id: c.id, user_id: _userId, company_id: _companyId,
     name: c.name,
     phone: c.phone ?? null,
     notes: c.notes ?? null,
-  });
+  } as never);
   if (error) {
     console.error("upsertClient failed:", error);
     toast.error("Falha ao salvar cliente.");
@@ -99,9 +117,9 @@ async function upsertClient(c: Client) {
 }
 
 async function upsertAppt(a: Appointment) {
-  if (!_userId) return;
+  if (!_userId || !_companyId) return;
   const row = {
-    id: a.id, user_id: _userId,
+    id: a.id, user_id: _userId, company_id: _companyId,
     client_id: a.clientId, client_name: a.clientName,
     date: a.date, time: a.time,
     service: a.service,
@@ -201,11 +219,14 @@ export async function migrateLegacyData(): Promise<{ clients: number; appointmen
   const idMap = new Map<string, string>();
   const isUuid = (s: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
 
+  const companyId = _companyId ?? (await fetchCompanyId(_userId));
+  if (!companyId) throw new Error("company not found");
+
   const clientRows = legacyClients.map((c) => {
     const newId = isUuid(c.id) ? c.id : uid();
     idMap.set(c.id, newId);
     return {
-      id: newId, user_id: _userId!,
+      id: newId, user_id: _userId!, company_id: companyId,
       name: c.name, phone: c.phone ?? null, notes: c.notes ?? null,
       created_at: c.createdAt || new Date().toISOString(),
     };
@@ -214,7 +235,7 @@ export async function migrateLegacyData(): Promise<{ clients: number; appointmen
   const apptRows = legacyAppts.map((a) => {
     const newId = isUuid(a.id) ? a.id : uid();
     return {
-      id: newId, user_id: _userId!,
+      id: newId, user_id: _userId!, company_id: companyId,
       client_id: idMap.get(a.clientId) ?? a.clientId,
       client_name: a.clientName,
       date: a.date, time: a.time,
@@ -232,7 +253,8 @@ export async function migrateLegacyData(): Promise<{ clients: number; appointmen
   });
 
   if (clientRows.length) {
-    const { error } = await supabase.from("clients").upsert(clientRows);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await supabase.from("clients").upsert(clientRows as any);
     if (error) throw error;
   }
   if (apptRows.length) {

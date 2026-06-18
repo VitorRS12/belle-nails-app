@@ -79,6 +79,7 @@ function rowToAppt(r: ApptRow): Appointment {
 export async function hydrateStores(userId: string) {
   _userId = userId;
   _hydrated = false;
+  _companyId = await fetchCompanyId(userId);
   const [cRes, aRes] = await Promise.all([
     supabase.from("clients").select("*").order("name"),
     supabase.from("appointments").select("*").order("date").limit(1000),
@@ -95,19 +96,20 @@ export function clearStores() {
   _clients = [];
   _appts = [];
   _userId = null;
+  _companyId = null;
   _hydrated = false;
   emit();
 }
 
 // ---------- write helpers ----------
 async function upsertClient(c: Client) {
-  if (!_userId) return;
+  if (!_userId || !_companyId) return;
   const { error } = await supabase.from("clients").upsert({
-    id: c.id, user_id: _userId,
+    id: c.id, user_id: _userId, company_id: _companyId,
     name: c.name,
     phone: c.phone ?? null,
     notes: c.notes ?? null,
-  });
+  } as never);
   if (error) {
     console.error("upsertClient failed:", error);
     toast.error("Falha ao salvar cliente.");
@@ -115,9 +117,9 @@ async function upsertClient(c: Client) {
 }
 
 async function upsertAppt(a: Appointment) {
-  if (!_userId) return;
+  if (!_userId || !_companyId) return;
   const row = {
-    id: a.id, user_id: _userId,
+    id: a.id, user_id: _userId, company_id: _companyId,
     client_id: a.clientId, client_name: a.clientName,
     date: a.date, time: a.time,
     service: a.service,

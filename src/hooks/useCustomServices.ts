@@ -15,14 +15,25 @@ export function useCustomServices() {
   const { user } = useAuth();
   const [services, setServices] = useState<CustomService[]>([]);
   const [loading, setLoading] = useState(true);
+  const [companyId, setCompanyId] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
     if (!user) {
       setServices([]);
+      setCompanyId(null);
       setLoading(false);
       return;
     }
     setLoading(true);
+    const { data: member } = await supabase
+      .from("company_members")
+      .select("company_id")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    setCompanyId(member?.company_id ?? null);
+
     const { data, error } = await supabase
       .from("custom_services")
       .select("id, area, name, price")
@@ -46,13 +57,13 @@ export function useCustomServices() {
 
   const add = useCallback(
     async (area: AreaKey, name: string, price: number) => {
-      if (!user) return null;
+      if (!user || !companyId) return null;
       const clean = name.trim();
       if (!clean) return null;
       const { data, error } = await supabase
         .from("custom_services")
         .upsert(
-          { user_id: user.id, area, name: clean, price },
+          { user_id: user.id, company_id: companyId, area, name: clean, price } as never,
           { onConflict: "user_id,area,name" },
         )
         .select("id, area, name, price")
@@ -75,7 +86,7 @@ export function useCustomServices() {
       });
       return saved;
     },
-    [user],
+    [user, companyId],
   );
 
   const remove = useCallback(async (id: string) => {

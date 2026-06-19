@@ -83,8 +83,8 @@ export function useServices() {
 
   const update = useCallback(
     async (id: string, patch: Partial<ServiceInput>) => {
-      const clean: Record<string, unknown> = { ...patch };
-      if (typeof clean.name === "string") clean.name = (clean.name as string).trim();
+      const clean = { ...patch };
+      if (typeof clean.name === "string") clean.name = clean.name.trim();
       const { error } = await supabase.from("services").update(clean).eq("id", id);
       if (error) {
         toast.error("Não foi possível salvar");

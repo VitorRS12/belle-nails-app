@@ -30,6 +30,7 @@ export type Database = {
           price: number
           professional_id: string | null
           service: string
+          service_id: string | null
           services: Json
           status: string
           time: string
@@ -51,6 +52,7 @@ export type Database = {
           price?: number
           professional_id?: string | null
           service: string
+          service_id?: string | null
           services?: Json
           status?: string
           time: string
@@ -72,6 +74,7 @@ export type Database = {
           price?: number
           professional_id?: string | null
           service?: string
+          service_id?: string | null
           services?: Json
           status?: string
           time?: string
@@ -98,6 +101,13 @@ export type Database = {
             columns: ["professional_id"]
             isOneToOne: false
             referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
             referencedColumns: ["id"]
           },
         ]
@@ -252,6 +262,36 @@ export type Database = {
           },
         ]
       }
+      customer_profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          phone: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       professional_schedules: {
         Row: {
           company_id: string
@@ -341,7 +381,7 @@ export type Database = {
             foreignKeyName: "professional_services_service_id_fkey"
             columns: ["service_id"]
             isOneToOne: false
-            referencedRelation: "custom_services"
+            referencedRelation: "services"
             referencedColumns: ["id"]
           },
         ]
@@ -424,6 +464,56 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      services: {
+        Row: {
+          active: boolean
+          category: string | null
+          color: string | null
+          company_id: string
+          created_at: string
+          description: string | null
+          duration_minutes: number
+          id: string
+          name: string
+          price: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category?: string | null
+          color?: string | null
+          company_id: string
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          name: string
+          price?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category?: string | null
+          color?: string | null
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          name?: string
+          price?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "services_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"

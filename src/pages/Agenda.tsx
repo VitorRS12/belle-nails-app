@@ -33,7 +33,7 @@ const Agenda = () => {
     () =>
       appts.filter(
         (a) =>
-          a.status === "scheduled" &&
+          (a.status === "scheduled" || a.status === "pendente_confirmacao") &&
           (profFilter === ALL || a.professionalId === profFilter)
       ),
     [appts, profFilter]

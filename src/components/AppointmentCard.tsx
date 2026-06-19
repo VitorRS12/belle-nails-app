@@ -23,12 +23,14 @@ const statusLabel: Record<Appointment["status"], string> = {
   scheduled: "Agendado",
   completed: "Concluído",
   cancelled: "Cancelado",
+  pendente_confirmacao: "Aguardando confirmação",
 };
 
 const statusStyles: Record<Appointment["status"], string> = {
   scheduled: "bg-accent-soft text-accent-foreground",
   completed: "bg-primary/10 text-primary",
   cancelled: "bg-destructive/10 text-destructive",
+  pendente_confirmacao: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
 };
 
 export function AppointmentCard({
@@ -81,7 +83,13 @@ export function AppointmentCard({
     setRescheduleOpen(false);
   };
 
-  const showQuickActions = showStatusActions && appt.status === "scheduled";
+  const showQuickActions =
+    showStatusActions && (appt.status === "scheduled" || appt.status === "pendente_confirmacao");
+
+  const confirmBooking = () => {
+    appointmentsStore.save({ ...appt, status: "scheduled" });
+    toast.success("Agendamento confirmado");
+  };
 
   return (
     <>
@@ -141,13 +149,23 @@ export function AppointmentCard({
 
         {showQuickActions && (
           <div className="mt-3 pt-3 border-t border-border/60 grid grid-cols-3 gap-2">
-            <Button
-              size="sm"
-              onClick={() => setCompleteOpen(true)}
-              className="bg-gradient-primary shadow-soft h-9 text-xs"
-            >
-              <CheckCircle2 className="h-4 w-4 mr-1" /> Concluir
-            </Button>
+            {appt.status === "pendente_confirmacao" ? (
+              <Button
+                size="sm"
+                onClick={confirmBooking}
+                className="bg-gradient-primary shadow-soft h-9 text-xs"
+              >
+                <CheckCircle2 className="h-4 w-4 mr-1" /> Confirmar
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                onClick={() => setCompleteOpen(true)}
+                className="bg-gradient-primary shadow-soft h-9 text-xs"
+              >
+                <CheckCircle2 className="h-4 w-4 mr-1" /> Concluir
+              </Button>
+            )}
             <Button
               size="sm"
               variant="secondary"

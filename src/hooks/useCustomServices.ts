@@ -1,3 +1,5 @@
+// Backwards-compatible shim over the new `services` table.
+// AppointmentForm and Equipe still use this hook; the catalog is now unified.
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -6,7 +8,7 @@ import { toast } from "sonner";
 
 export interface CustomService {
   id: string;
-  area: AreaKey;
+  area: AreaKey; // legacy; defaults to "manicure" since services no longer track area
   name: string;
   price: number;
 }
@@ -35,14 +37,15 @@ export function useCustomServices() {
     setCompanyId(member?.company_id ?? null);
 
     const { data, error } = await supabase
-      .from("custom_services")
-      .select("id, area, name, price")
+      .from("services")
+      .select("id, name, price")
+      .eq("active", true)
       .order("name");
     if (!error && data) {
       setServices(
         data.map((d) => ({
           id: d.id,
-          area: d.area as AreaKey,
+          area: "manicure" as AreaKey,
           name: d.name,
           price: Number(d.price) || 0,
         })),
@@ -56,17 +59,14 @@ export function useCustomServices() {
   }, [refresh]);
 
   const add = useCallback(
-    async (area: AreaKey, name: string, price: number) => {
+    async (_area: AreaKey, name: string, price: number) => {
       if (!user || !companyId) return null;
       const clean = name.trim();
       if (!clean) return null;
       const { data, error } = await supabase
-        .from("custom_services")
-        .upsert(
-          { user_id: user.id, company_id: companyId, area, name: clean, price } as never,
-          { onConflict: "user_id,area,name" },
-        )
-        .select("id, area, name, price")
+        .from("services")
+        .insert({ company_id: companyId, name: clean, price, duration_minutes: 60, active: true })
+        .select("id, name, price")
         .single();
       if (error || !data) {
         toast.error("Não foi possível salvar o serviço");
@@ -74,23 +74,18 @@ export function useCustomServices() {
       }
       const saved: CustomService = {
         id: data.id,
-        area: data.area as AreaKey,
+        area: "manicure",
         name: data.name,
         price: Number(data.price) || 0,
       };
-      setServices((cur) => {
-        const without = cur.filter(
-          (s) => !(s.area === saved.area && s.name === saved.name),
-        );
-        return [...without, saved].sort((a, b) => a.name.localeCompare(b.name));
-      });
+      setServices((cur) => [...cur, saved].sort((a, b) => a.name.localeCompare(b.name)));
       return saved;
     },
     [user, companyId],
   );
 
   const remove = useCallback(async (id: string) => {
-    const { error } = await supabase.from("custom_services").delete().eq("id", id);
+    const { error } = await supabase.from("services").delete().eq("id", id);
     if (error) {
       toast.error("Não foi possível remover o serviço");
       return false;

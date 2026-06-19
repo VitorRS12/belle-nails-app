@@ -19,6 +19,8 @@ import Dashboard from "./pages/Dashboard.tsx";
 import Landing from "./pages/Landing.tsx";
 import Relatorio from "./pages/Relatorio.tsx";
 import Equipe from "./pages/Equipe.tsx";
+import Servicos from "./pages/Servicos.tsx";
+import PublicBooking from "./pages/PublicBooking.tsx";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ActiveAreaProvider } from "./contexts/ActiveAreaContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -35,6 +37,7 @@ function AppInner() {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={wrap(<Landing />)} />
         <Route path="/auth" element={wrap(<Auth />)} />
+        <Route path="/b/:slug" element={wrap(<PublicBooking />)} />
         <Route path="/inicio" element={<ProtectedRoute>{wrap(<Index />)}</ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute>{wrap(<Dashboard />)}</ProtectedRoute>} />
         <Route path="/agenda" element={<ProtectedRoute>{wrap(<Agenda />)}</ProtectedRoute>} />
@@ -42,6 +45,7 @@ function AppInner() {
         <Route path="/atendimentos" element={<ProtectedRoute>{wrap(<Atendimentos />)}</ProtectedRoute>} />
         <Route path="/relatorio" element={<ProtectedRoute>{wrap(<Dashboard initialTab="relatorio" />)}</ProtectedRoute>} />
         <Route path="/equipe" element={<ProtectedRoute>{wrap(<Equipe />)}</ProtectedRoute>} />
+        <Route path="/servicos" element={<ProtectedRoute>{wrap(<Servicos />)}</ProtectedRoute>} />
         <Route path="/configuracoes" element={<ProtectedRoute>{wrap(<Configuracoes />)}</ProtectedRoute>} />
         <Route path="*" element={wrap(<NotFound />)} />
       </Routes>

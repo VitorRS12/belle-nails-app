@@ -4,18 +4,39 @@ import { AppointmentCard } from "@/components/AppointmentCard";
 import { AppointmentForm } from "@/components/AppointmentForm";
 import { EmptyState } from "@/components/EmptyState";
 import { useAppointments } from "@/hooks/useStore";
+import { useProfessionals } from "@/hooks/useProfessionals";
 import { Calendar } from "@/components/ui/calendar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { format, parseISO, isSameDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CalendarDays } from "lucide-react";
 
+const ALL = "__all__";
+
 const Agenda = () => {
   const appts = useAppointments();
+  const { professionals } = useProfessionals();
+  const activeProfessionals = useMemo(
+    () => professionals.filter((p) => p.active),
+    [professionals]
+  );
   const [selected, setSelected] = useState<Date>(new Date());
+  const [profFilter, setProfFilter] = useState<string>(ALL);
 
   const scheduled = useMemo(
-    () => appts.filter((a) => a.status === "scheduled"),
-    [appts]
+    () =>
+      appts.filter(
+        (a) =>
+          a.status === "scheduled" &&
+          (profFilter === ALL || a.professionalId === profFilter)
+      ),
+    [appts, profFilter]
   );
 
   const datesWithAppts = useMemo(
@@ -31,8 +52,29 @@ const Agenda = () => {
     [scheduled, selected]
   );
 
+  const profName = (id?: string) =>
+    id ? professionals.find((p) => p.id === id)?.name : undefined;
+
   return (
     <AppLayout subtitle="Agendamentos" title="Agenda" action={<AppointmentForm />}>
+      {activeProfessionals.length > 1 && (
+        <div className="mb-3">
+          <Select value={profFilter} onValueChange={setProfFilter}>
+            <SelectTrigger className="rounded-xl">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ALL}>Todas as profissionais</SelectItem>
+              {activeProfessionals.map((p) => (
+                <SelectItem key={p.id} value={p.id}>
+                  {p.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
       <div className="rounded-2xl bg-card border border-border/60 p-2 sm:p-4 shadow-soft flex justify-center">
         <Calendar
           mode="single"
@@ -64,7 +106,14 @@ const Agenda = () => {
         ) : (
           <div className="space-y-3">
             {dayAppts.map((a) => (
-              <AppointmentCard key={a.id} appt={a} showStatusActions />
+              <div key={a.id} className="space-y-1">
+                {activeProfessionals.length > 1 && a.professionalId && (
+                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground px-1">
+                    {profName(a.professionalId) ?? "—"}
+                  </p>
+                )}
+                <AppointmentCard appt={a} showStatusActions />
+              </div>
             ))}
           </div>
         )}

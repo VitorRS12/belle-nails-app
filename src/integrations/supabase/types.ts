@@ -292,6 +292,63 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_log: {
+        Row: {
+          appointment_id: string | null
+          channel: string
+          company_id: string | null
+          created_at: string
+          error: string | null
+          id: string
+          provider_id: string | null
+          recipient: string
+          status: string
+          subject: string | null
+          template: string
+        }
+        Insert: {
+          appointment_id?: string | null
+          channel?: string
+          company_id?: string | null
+          created_at?: string
+          error?: string | null
+          id?: string
+          provider_id?: string | null
+          recipient: string
+          status?: string
+          subject?: string | null
+          template: string
+        }
+        Update: {
+          appointment_id?: string | null
+          channel?: string
+          company_id?: string | null
+          created_at?: string
+          error?: string | null
+          id?: string
+          provider_id?: string | null
+          recipient?: string
+          status?: string
+          subject?: string | null
+          template?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_log_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_log_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       professional_schedules: {
         Row: {
           company_id: string

@@ -83,7 +83,13 @@ export function AppointmentCard({
     setRescheduleOpen(false);
   };
 
-  const showQuickActions = showStatusActions && appt.status === "scheduled";
+  const showQuickActions =
+    showStatusActions && (appt.status === "scheduled" || appt.status === "pendente_confirmacao");
+
+  const confirmBooking = () => {
+    appointmentsStore.save({ ...appt, status: "scheduled" });
+    toast.success("Agendamento confirmado");
+  };
 
   return (
     <>

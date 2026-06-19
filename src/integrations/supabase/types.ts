@@ -21,6 +21,7 @@ export type Database = {
           company_id: string
           completed_at: string | null
           created_at: string
+          customer_email: string | null
           date: string
           extra_reason: string | null
           extra_value: number | null
@@ -29,6 +30,7 @@ export type Database = {
           notes: string | null
           price: number
           professional_id: string | null
+          reminder_sent_at: string | null
           service: string
           service_id: string | null
           services: Json
@@ -43,6 +45,7 @@ export type Database = {
           company_id: string
           completed_at?: string | null
           created_at?: string
+          customer_email?: string | null
           date: string
           extra_reason?: string | null
           extra_value?: number | null
@@ -51,6 +54,7 @@ export type Database = {
           notes?: string | null
           price?: number
           professional_id?: string | null
+          reminder_sent_at?: string | null
           service: string
           service_id?: string | null
           services?: Json
@@ -65,6 +69,7 @@ export type Database = {
           company_id?: string
           completed_at?: string | null
           created_at?: string
+          customer_email?: string | null
           date?: string
           extra_reason?: string | null
           extra_value?: number | null
@@ -73,6 +78,7 @@ export type Database = {
           notes?: string | null
           price?: number
           professional_id?: string | null
+          reminder_sent_at?: string | null
           service?: string
           service_id?: string | null
           services?: Json

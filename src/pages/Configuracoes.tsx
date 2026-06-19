@@ -88,6 +88,24 @@ const Configuracoes = () => {
           <ChevronRight className="h-5 w-5 text-muted-foreground" />
         </Link>
 
+        {/* Serviços */}
+        <Link
+          to="/servicos"
+          className="flex items-center gap-3 rounded-2xl bg-card border border-border/60 p-5 shadow-soft transition-smooth hover:bg-accent-soft/40"
+        >
+          <div className="h-11 w-11 rounded-full bg-gradient-primary text-primary-foreground inline-flex items-center justify-center">
+            <Tag className="h-5 w-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h3 className="font-display text-lg">Serviços</h3>
+            <p className="text-xs text-muted-foreground">
+              Catálogo com duração, preço e cor — usado nos agendamentos e no site público.
+            </p>
+          </div>
+          <ChevronRight className="h-5 w-5 text-muted-foreground" />
+        </Link>
+
+
 
 
 

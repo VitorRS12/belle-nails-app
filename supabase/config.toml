@@ -1,1 +1,4 @@
 project_id = "dfrrpbqfdupdurecguvj"
+
+[functions.invite-professional]
+verify_jwt = true

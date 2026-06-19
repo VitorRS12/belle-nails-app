@@ -32,6 +32,7 @@ export interface Appointment {
   completedAt?: string; // ISO datetime
   extraValue?: number;
   extraReason?: string;
+  professionalId?: string;
 }
 
 // ---------- Multi-profile areas ----------

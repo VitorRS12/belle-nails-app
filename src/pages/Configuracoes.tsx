@@ -10,7 +10,8 @@ import { useProfile } from "@/hooks/useProfile";
 import { useTheme } from "@/contexts/ThemeContext";
 import { AREAS, type AreaKey } from "@/lib/types";
 import { toast } from "sonner";
-import { LogOut, User, UploadCloud, Briefcase, Moon, Sun } from "lucide-react";
+import { LogOut, User, UploadCloud, Briefcase, Moon, Sun, UsersRound, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Configuracoes = () => {
   const { user, signOut } = useAuth();
@@ -69,6 +70,25 @@ const Configuracoes = () => {
 
         {/* Empresa */}
         <CompanySettingsCard />
+
+        {/* Equipe */}
+        <Link
+          to="/equipe"
+          className="flex items-center gap-3 rounded-2xl bg-card border border-border/60 p-5 shadow-soft transition-smooth hover:bg-accent-soft/40"
+        >
+          <div className="h-11 w-11 rounded-full bg-gradient-primary text-primary-foreground inline-flex items-center justify-center">
+            <UsersRound className="h-5 w-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h3 className="font-display text-lg">Equipe</h3>
+            <p className="text-xs text-muted-foreground">
+              Gerencie as profissionais da sua empresa.
+            </p>
+          </div>
+          <ChevronRight className="h-5 w-5 text-muted-foreground" />
+        </Link>
+
+
 
 
         {/* Appearance */}

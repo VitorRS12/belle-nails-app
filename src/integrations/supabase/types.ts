@@ -28,6 +28,7 @@ export type Database = {
           materials: Json
           notes: string | null
           price: number
+          professional_id: string | null
           service: string
           services: Json
           status: string
@@ -48,6 +49,7 @@ export type Database = {
           materials?: Json
           notes?: string | null
           price?: number
+          professional_id?: string | null
           service: string
           services?: Json
           status?: string
@@ -68,6 +70,7 @@ export type Database = {
           materials?: Json
           notes?: string | null
           price?: number
+          professional_id?: string | null
           service?: string
           services?: Json
           status?: string
@@ -88,6 +91,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
             referencedColumns: ["id"]
           },
         ]
@@ -235,6 +245,147 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "custom_services_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professional_schedules: {
+        Row: {
+          company_id: string
+          created_at: string
+          end_time: string
+          id: string
+          professional_id: string
+          start_time: string
+          updated_at: string
+          weekday: number
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          end_time: string
+          id?: string
+          professional_id: string
+          start_time: string
+          updated_at?: string
+          weekday: number
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          end_time?: string
+          id?: string
+          professional_id?: string
+          start_time?: string
+          updated_at?: string
+          weekday?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_schedules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professional_schedules_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professional_services: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          professional_id: string
+          service_id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          professional_id: string
+          service_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          professional_id?: string
+          service_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_services_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professional_services_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professional_services_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "custom_services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professionals: {
+        Row: {
+          active: boolean
+          bio: string | null
+          company_id: string
+          created_at: string
+          id: string
+          name: string
+          photo_url: string | null
+          specialties: string[]
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          active?: boolean
+          bio?: string | null
+          company_id: string
+          created_at?: string
+          id?: string
+          name: string
+          photo_url?: string | null
+          specialties?: string[]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          active?: boolean
+          bio?: string | null
+          company_id?: string
+          created_at?: string
+          id?: string
+          name?: string
+          photo_url?: string | null
+          specialties?: string[]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professionals_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"

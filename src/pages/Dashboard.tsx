@@ -37,13 +37,14 @@ import {
   Legend,
 } from "recharts";
 
-type StatusFilter = "all" | "scheduled" | "completed" | "postponed" | "cancelled";
+type StatusFilter = "all" | "scheduled" | "completed" | "postponed" | "cancelled" | "pendente_confirmacao";
 
 const STATUS_LABELS: Record<Exclude<StatusFilter, "all">, string> = {
   scheduled: "Agendado",
   completed: "Concluído",
   postponed: "Adiado",
   cancelled: "Cancelado",
+  pendente_confirmacao: "Aguardando",
 };
 
 const STATUS_BADGE: Record<Exclude<StatusFilter, "all">, string> = {
@@ -51,6 +52,7 @@ const STATUS_BADGE: Record<Exclude<StatusFilter, "all">, string> = {
   completed: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
   postponed: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
   cancelled: "bg-destructive/15 text-destructive",
+  pendente_confirmacao: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
 };
 
 const COLORS = [

@@ -6,6 +6,7 @@ import {
   Sparkles,
   Settings,
   LayoutDashboard,
+  UsersRound,
 } from "lucide-react";
 import {
   Sidebar,
@@ -25,6 +26,7 @@ const items = [
   { to: "/agenda", icon: CalendarDays, label: "Agenda" },
   { to: "/clientes", icon: Users, label: "Clientes" },
   { to: "/atendimentos", icon: Sparkles, label: "Histórico" },
+  { to: "/equipe", icon: UsersRound, label: "Equipe" },
   { to: "/configuracoes", icon: Settings, label: "Configurações" },
 ];
 

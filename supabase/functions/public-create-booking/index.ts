@@ -139,6 +139,64 @@ Deno.serve(async (req) => {
       return json({ error: "Não foi possível criar o agendamento" }, 500);
     }
 
+    // Fire-and-forget notification emails (do not block booking response)
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+      const baseHeaders = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${anonKey}`,
+        apikey: anonKey,
+      };
+      const sendUrl = `${supabaseUrl}/functions/v1/send-notification-email`;
+      const formattedDate = new Date(b.date + "T00:00:00").toLocaleDateString("pt-BR");
+      const baseData = {
+        customerName: b.customerName.trim(),
+        companyName: company.name,
+        serviceName: service.name,
+        professionalName: prof.name,
+        date: formattedDate,
+        time: b.time,
+      };
+
+      // Customer confirmation
+      if (cleanEmail) {
+        fetch(sendUrl, {
+          method: "POST",
+          headers: baseHeaders,
+          body: JSON.stringify({
+            template: "booking_confirmation_customer",
+            to: cleanEmail,
+            data: baseData,
+            companyId: company.id,
+            appointmentId: appt.id,
+          }),
+        }).catch((e) => console.error("customer email failed", e));
+      }
+
+      // Company owner notification
+      const { data: ownerAuth } = await admin.auth.admin.getUserById(company.owner_user_id);
+      const ownerEmail = ownerAuth?.user?.email;
+      if (ownerEmail) {
+        fetch(sendUrl, {
+          method: "POST",
+          headers: baseHeaders,
+          body: JSON.stringify({
+            template: "booking_new_company",
+            to: ownerEmail,
+            data: {
+              ...baseData,
+              customerContact: cleanEmail || cleanPhone || "—",
+            },
+            companyId: company.id,
+            appointmentId: appt.id,
+          }),
+        }).catch((e) => console.error("company email failed", e));
+      }
+    } catch (notifyErr) {
+      console.error("notification dispatch failed", notifyErr);
+    }
+
     return json({
       ok: true,
       appointmentId: appt.id,
@@ -146,6 +204,7 @@ Deno.serve(async (req) => {
       professional: prof.name,
       service: service.name,
     });
+
   } catch (e) {
     console.error(e);
     return json({ error: (e as Error).message }, 500);

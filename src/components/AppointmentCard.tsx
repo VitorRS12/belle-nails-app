@@ -23,12 +23,14 @@ const statusLabel: Record<Appointment["status"], string> = {
   scheduled: "Agendado",
   completed: "Concluído",
   cancelled: "Cancelado",
+  pendente_confirmacao: "Aguardando confirmação",
 };
 
 const statusStyles: Record<Appointment["status"], string> = {
   scheduled: "bg-accent-soft text-accent-foreground",
   completed: "bg-primary/10 text-primary",
   cancelled: "bg-destructive/10 text-destructive",
+  pendente_confirmacao: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
 };
 
 export function AppointmentCard({

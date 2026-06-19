@@ -27,7 +27,7 @@ export interface Appointment {
   materials: Material[];
   price: number; // total (sum of services)
   notes?: string;
-  status: "scheduled" | "completed" | "cancelled";
+  status: "scheduled" | "completed" | "cancelled" | "pendente_confirmacao";
   createdAt: string;
   completedAt?: string; // ISO datetime
   extraValue?: number;

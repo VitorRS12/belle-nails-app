@@ -149,13 +149,23 @@ export function AppointmentCard({
 
         {showQuickActions && (
           <div className="mt-3 pt-3 border-t border-border/60 grid grid-cols-3 gap-2">
-            <Button
-              size="sm"
-              onClick={() => setCompleteOpen(true)}
-              className="bg-gradient-primary shadow-soft h-9 text-xs"
-            >
-              <CheckCircle2 className="h-4 w-4 mr-1" /> Concluir
-            </Button>
+            {appt.status === "pendente_confirmacao" ? (
+              <Button
+                size="sm"
+                onClick={confirmBooking}
+                className="bg-gradient-primary shadow-soft h-9 text-xs"
+              >
+                <CheckCircle2 className="h-4 w-4 mr-1" /> Confirmar
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                onClick={() => setCompleteOpen(true)}
+                className="bg-gradient-primary shadow-soft h-9 text-xs"
+              >
+                <CheckCircle2 className="h-4 w-4 mr-1" /> Concluir
+              </Button>
+            )}
             <Button
               size="sm"
               variant="secondary"

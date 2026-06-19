@@ -167,7 +167,7 @@ const Equipe = () => {
           <ListSkeleton rows={3} />
         ) : professionals.length === 0 ? (
           <EmptyState
-            icon={Users}
+            icon={<Users className="h-5 w-5" />}
             title="Nenhuma profissional cadastrada"
             description="Cadastre as profissionais da sua empresa para começar a agendar para cada uma."
           />

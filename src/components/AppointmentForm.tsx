@@ -9,6 +9,7 @@ import { appointmentsStore, clientsStore, uid } from "@/lib/storage";
 import { useClients } from "@/hooks/useStore";
 import { useProfile } from "@/hooks/useProfile";
 import { useCustomServices } from "@/hooks/useCustomServices";
+import { useProfessionals } from "@/hooks/useProfessionals";
 import { type Appointment, type Material, type ServiceItem, SERVICE_CATALOG_BY_AREA, AREAS, type AreaKey } from "@/lib/types";
 import { Plus, X, Star } from "lucide-react";
 import { toast } from "sonner";
@@ -33,12 +34,18 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
   const clients = useClients();
   const { profile } = useProfile();
   const { services: customCatalog, add: addCustomService } = useCustomServices();
+  const { professionals } = useProfessionals();
+  const activeProfessionals = useMemo(
+    () => professionals.filter((p) => p.active),
+    [professionals]
+  );
   const activeAreas: AreaKey[] = (profile?.areas?.length ? profile.areas : ["manicure"]) as AreaKey[];
   const [open, setOpen] = useState(false);
   const [clientId, setClientId] = useState(initial?.clientId ?? "");
   const [newClientName, setNewClientName] = useState("");
   const [date, setDate] = useState(initial?.date ?? defaultDate ?? new Date().toISOString().slice(0, 10));
   const [time, setTime] = useState(initial?.time ?? "09:00");
+  const [professionalId, setProfessionalId] = useState<string>(initial?.professionalId ?? "");
 
   const [services, setServices] = useState<ServiceItem[]>(initialServices(initial));
   const [pickerValue, setPickerValue] = useState<string>("");
@@ -63,7 +70,11 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
     setMaterials(initial?.materials ?? []);
     setNotes(initial?.notes ?? "");
     setStatus(initial?.status ?? "scheduled");
-  }, [open, initial, defaultDate]);
+    setProfessionalId(
+      initial?.professionalId ??
+        (activeProfessionals.length === 1 ? activeProfessionals[0].id : "")
+    );
+  }, [open, initial, defaultDate, activeProfessionals]);
 
   const total = useMemo(
     () => services.reduce((s, x) => s + (Number(x.price) || 0), 0),
@@ -153,6 +164,7 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
       notes: notes.trim() || undefined,
       status,
       createdAt: initial?.createdAt ?? new Date().toISOString(),
+      professionalId: professionalId || undefined,
     };
     appointmentsStore.save(appt);
     toast.success(initial ? "Atualizado!" : "Salvo com carinho ✨");
@@ -208,6 +220,24 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
               <Input type="time" value={time} onChange={(e) => setTime(e.target.value)} />
             </div>
           </div>
+
+          {activeProfessionals.length > 1 && (
+            <div className="space-y-2">
+              <Label>Profissional</Label>
+              <Select value={professionalId} onValueChange={setProfessionalId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione uma profissional" />
+                </SelectTrigger>
+                <SelectContent>
+                  {activeProfessionals.map((p) => (
+                    <SelectItem key={p.id} value={p.id}>
+                      {p.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           <div className="space-y-3">
             <Label>Serviços</Label>

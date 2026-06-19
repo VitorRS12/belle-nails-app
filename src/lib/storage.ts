@@ -58,6 +58,7 @@ type ApptRow = {
   status: Appointment["status"];
   extra_value: number | string | null; extra_reason: string | null;
   completed_at: string | null; created_at: string;
+  professional_id: string | null;
 };
 function rowToAppt(r: ApptRow): Appointment {
   return {
@@ -72,6 +73,7 @@ function rowToAppt(r: ApptRow): Appointment {
     extraReason: r.extra_reason ?? undefined,
     completedAt: r.completed_at ?? undefined,
     createdAt: r.created_at,
+    professionalId: r.professional_id ?? undefined,
   };
 }
 
@@ -131,6 +133,7 @@ async function upsertAppt(a: Appointment) {
     extra_value: a.extraValue ?? null,
     extra_reason: a.extraReason ?? null,
     completed_at: a.completedAt ?? null,
+    professional_id: a.professionalId ?? null,
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error } = await supabase.from("appointments").upsert(row as any);

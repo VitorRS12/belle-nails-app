@@ -12,6 +12,7 @@ export interface Professional {
   bio: string | null;
   specialties: string[];
   active: boolean;
+  email: string | null;
   created_at: string;
 }
 
@@ -37,7 +38,7 @@ export function useProfessionals() {
     setLoading(true);
     const { data, error } = await supabase
       .from("professionals")
-      .select("id, company_id, user_id, name, photo_url, bio, specialties, active, created_at")
+      .select("id, company_id, user_id, name, photo_url, bio, specialties, active, email, created_at")
       .eq("company_id", company.id)
       .order("created_at", { ascending: true });
     if (error) {

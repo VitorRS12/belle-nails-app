@@ -130,6 +130,8 @@ Deno.serve(async (req) => {
         price: Number(service.price) || 0,
         notes: b.notes?.trim() || null,
         status: "pendente_confirmacao",
+        customer_email: cleanEmail,
+
       })
       .select("id")
       .single();

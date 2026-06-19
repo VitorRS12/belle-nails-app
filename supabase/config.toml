@@ -2,3 +2,12 @@ project_id = "dfrrpbqfdupdurecguvj"
 
 [functions.invite-professional]
 verify_jwt = true
+
+[functions.public-company]
+verify_jwt = false
+
+[functions.public-availability]
+verify_jwt = false
+
+[functions.public-create-booking]
+verify_jwt = false

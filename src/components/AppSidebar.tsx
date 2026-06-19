@@ -7,6 +7,7 @@ import {
   Settings,
   LayoutDashboard,
   UsersRound,
+  Tag,
 } from "lucide-react";
 import {
   Sidebar,
@@ -27,6 +28,7 @@ const items = [
   { to: "/clientes", icon: Users, label: "Clientes" },
   { to: "/atendimentos", icon: Sparkles, label: "Histórico" },
   { to: "/equipe", icon: UsersRound, label: "Equipe" },
+  { to: "/servicos", icon: Tag, label: "Serviços" },
   { to: "/configuracoes", icon: Settings, label: "Configurações" },
 ];
 

@@ -10,7 +10,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { useTheme } from "@/contexts/ThemeContext";
 import { AREAS, type AreaKey } from "@/lib/types";
 import { toast } from "sonner";
-import { LogOut, User, UploadCloud, Briefcase, Moon, Sun, UsersRound, ChevronRight } from "lucide-react";
+import { LogOut, User, UploadCloud, Briefcase, Moon, Sun, UsersRound, ChevronRight, Tag } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Configuracoes = () => {

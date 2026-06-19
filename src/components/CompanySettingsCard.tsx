@@ -86,9 +86,17 @@ export function CompanySettingsCard() {
 
           <div className="space-y-1.5">
             <Label>Link público</Label>
-            <div className="text-sm text-muted-foreground font-mono px-3 py-2 rounded-md border border-dashed border-border bg-muted/30">
-              /b/{company.slug}
-            </div>
+            <a
+              href={`/b/${company.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-sm text-primary font-mono px-3 py-2 rounded-md border border-dashed border-border bg-muted/30 hover:bg-accent-soft/40 transition-smooth break-all"
+            >
+              {typeof window !== "undefined" ? window.location.origin : ""}/b/{company.slug}
+            </a>
+            <p className="text-[11px] text-muted-foreground">
+              Compartilhe este link para suas clientes agendarem online.
+            </p>
           </div>
 
           <Button

@@ -21,6 +21,7 @@ import Relatorio from "./pages/Relatorio.tsx";
 import Equipe from "./pages/Equipe.tsx";
 import Servicos from "./pages/Servicos.tsx";
 import PublicBooking from "./pages/PublicBooking.tsx";
+import HistoricoNotificacoes from "./pages/HistoricoNotificacoes.tsx";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ActiveAreaProvider } from "./contexts/ActiveAreaContext";
 import { ThemeProvider } from "./contexts/ThemeContext";

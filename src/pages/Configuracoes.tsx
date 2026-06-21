@@ -308,4 +308,24 @@ const Configuracoes = () => {
   );
 };
 
+function UsageRow({ label, used, max }: { label: string; used: number; max: number | null }) {
+  const unlimited = max === null || max === undefined;
+  const pct = unlimited ? 0 : Math.min(100, Math.round((used / Math.max(max, 1)) * 100));
+  const danger = !unlimited && pct >= 90;
+  const warn = !unlimited && pct >= 75 && pct < 90;
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-muted-foreground">{label}</span>
+        <span className={`tabular-nums ${danger ? "text-destructive" : warn ? "text-amber-600" : "text-foreground"}`}>
+          {used} / {unlimited ? "∞" : max}
+        </span>
+      </div>
+      {!unlimited && (
+        <Progress value={pct} className={danger ? "[&>div]:bg-destructive" : warn ? "[&>div]:bg-amber-500" : ""} />
+      )}
+    </div>
+  );
+}
+
 export default Configuracoes;

@@ -6,7 +6,7 @@ export type AppRole = "super_admin" | "company_admin" | "professional" | "custom
 
 export function useUserRoles() {
   const { user } = useAuth();
-  return useQuery({
+  const query = useQuery({
     queryKey: ["user_roles", user?.id],
     enabled: !!user?.id,
     staleTime: 60_000,
@@ -19,9 +19,19 @@ export function useUserRoles() {
       return (data ?? []).map((r) => r.role as AppRole);
     },
   });
+
+  const roles = query.data ?? [];
+  return {
+    ...query,
+    roles,
+    isSuperAdmin: roles.includes("super_admin"),
+    isCompanyAdmin: roles.includes("company_admin"),
+    isProfessional: roles.includes("professional"),
+    isCustomer: roles.includes("customer"),
+  };
 }
 
 export function useIsSuperAdmin() {
-  const { data, isLoading } = useUserRoles();
-  return { isSuperAdmin: (data ?? []).includes("super_admin"), isLoading };
+  const { isSuperAdmin, isLoading } = useUserRoles();
+  return { isSuperAdmin, isLoading };
 }

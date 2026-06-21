@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { supabase } from "@/integrations/supabase/client";
-import { useProfile } from "@/hooks/useProfile";
+import { useAuth } from "@/contexts/AuthContext";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Bell, Mail, AlertCircle, CheckCircle2 } from "lucide-react";
@@ -28,18 +28,30 @@ const TEMPLATE_LABEL: Record<string, string> = {
 };
 
 const HistoricoNotificacoes = () => {
-  const { profile } = useProfile();
+  const { user } = useAuth();
   const [rows, setRows] = useState<LogRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!profile?.company_id) return;
+    if (!user) return;
     let active = true;
     (async () => {
+      const { data: member } = await supabase
+        .from("company_members")
+        .select("company_id")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: true })
+        .limit(1)
+        .maybeSingle();
+      const companyId = member?.company_id;
+      if (!companyId) {
+        if (active) setLoading(false);
+        return;
+      }
       const { data, error } = await supabase
         .from("notification_log")
         .select("id, channel, template, recipient, subject, status, error, created_at")
-        .eq("company_id", profile.company_id)
+        .eq("company_id", companyId)
         .order("created_at", { ascending: false })
         .limit(200);
       if (!active) return;
@@ -49,15 +61,15 @@ const HistoricoNotificacoes = () => {
     return () => {
       active = false;
     };
-  }, [profile?.company_id]);
+  }, [user]);
 
   return (
     <AppLayout subtitle="Configurações" title="Histórico de notificações">
       {loading ? (
-        <ListSkeleton count={6} />
+        <ListSkeleton rows={6} />
       ) : rows.length === 0 ? (
         <EmptyState
-          icon={Bell}
+          icon={<Bell className="h-5 w-5" />}
           title="Nenhuma notificação enviada ainda"
           description="Quando um cliente agendar pelo seu site ou você confirmar / cancelar um atendimento, os e-mails aparecerão aqui."
         />

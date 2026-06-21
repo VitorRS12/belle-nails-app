@@ -3,10 +3,12 @@ import { AppLayout } from "@/components/AppLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfessionalSchedules, WEEKDAYS } from "@/hooks/useProfessionalSchedules";
+import { useProfessionalDayBlocks } from "@/hooks/useProfessionalDayBlocks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Select,
   SelectContent,
@@ -14,10 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Clock, Plus, X, CalendarDays } from "lucide-react";
+import { Clock, Plus, X, CalendarDays, Ban } from "lucide-react";
 import { ListSkeleton } from "@/components/ListSkeleton";
 import { EmptyState } from "@/components/EmptyState";
 import { toast } from "sonner";
+import { format, parseISO } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 type Me = { id: string; company_id: string; name: string } | null;
 
@@ -170,6 +174,120 @@ function Editor({
                 variant="ghost"
                 onClick={() => remove(s.id)}
                 aria-label="Remover"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <DayBlocksSection professionalId={professionalId} companyId={companyId} />
+    </div>
+  );
+}
+
+function DayBlocksSection({
+  professionalId,
+  companyId,
+}: {
+  professionalId: string;
+  companyId: string;
+}) {
+  const { blocks, loading, block, unblock } = useProfessionalDayBlocks(professionalId);
+  const [selected, setSelected] = useState<Date | undefined>(undefined);
+  const [reason, setReason] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const blockedDates = blocks.map((b) => parseISO(b.blocked_date));
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  const handleBlock = async () => {
+    if (!selected) return;
+    const iso = format(selected, "yyyy-MM-dd");
+    setSaving(true);
+    const ok = await block(companyId, iso, reason);
+    setSaving(false);
+    if (ok) {
+      toast.success("Dia bloqueado");
+      setSelected(undefined);
+      setReason("");
+    }
+  };
+
+  return (
+    <div className="space-y-3 pt-2">
+      <div className="rounded-2xl bg-card border border-border/60 p-4 shadow-soft">
+        <div className="flex items-center gap-2 mb-2">
+          <Ban className="h-4 w-4 text-primary" />
+          <h3 className="font-display text-lg">Bloquear dias específicos</h3>
+        </div>
+        <p className="text-xs text-muted-foreground mb-3">
+          Selecione um dia no calendário para desabilitar agendamentos (folga, férias, evento).
+        </p>
+
+        <div className="flex justify-center">
+          <Calendar
+            mode="single"
+            selected={selected}
+            onSelect={setSelected}
+            disabled={(d) => d < todayStart}
+            modifiers={{ blocked: blockedDates }}
+            modifiersClassNames={{
+              blocked: "bg-destructive/15 text-destructive line-through",
+            }}
+            locale={ptBR}
+            className="p-3 pointer-events-auto rounded-xl border border-border/60"
+          />
+        </div>
+
+        {selected && (
+          <div className="mt-3 space-y-2 animate-scale-in">
+            <Label className="text-xs">Motivo (opcional)</Label>
+            <Input
+              placeholder="Ex: folga, férias, consulta médica"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+            />
+            <Button
+              onClick={handleBlock}
+              disabled={saving}
+              className="w-full bg-gradient-primary shadow-soft"
+            >
+              <Ban className="h-4 w-4 mr-2" />
+              Bloquear {format(selected, "dd 'de' MMMM", { locale: ptBR })}
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {loading ? (
+        <ListSkeleton rows={2} />
+      ) : blocks.length === 0 ? (
+        <p className="text-xs text-muted-foreground text-center py-3">
+          Nenhum dia bloqueado.
+        </p>
+      ) : (
+        <ul className="space-y-2">
+          {blocks.map((b) => (
+            <li
+              key={b.id}
+              className="flex items-center justify-between rounded-xl border border-border/60 bg-card px-3 py-2 shadow-soft"
+            >
+              <div className="min-w-0">
+                <p className="text-sm font-medium">
+                  {format(parseISO(b.blocked_date), "EEE, dd 'de' MMM yyyy", { locale: ptBR })}
+                </p>
+                {b.reason && (
+                  <p className="text-xs text-muted-foreground truncate">{b.reason}</p>
+                )}
+              </div>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => unblock(b.id)}
+                aria-label="Desbloquear"
               >
                 <X className="h-4 w-4" />
               </Button>

@@ -355,6 +355,51 @@ export type Database = {
           },
         ]
       }
+      professional_day_blocks: {
+        Row: {
+          blocked_date: string
+          company_id: string
+          created_at: string
+          id: string
+          professional_id: string
+          reason: string | null
+          updated_at: string
+        }
+        Insert: {
+          blocked_date: string
+          company_id: string
+          created_at?: string
+          id?: string
+          professional_id: string
+          reason?: string | null
+          updated_at?: string
+        }
+        Update: {
+          blocked_date?: string
+          company_id?: string
+          created_at?: string
+          id?: string
+          professional_id?: string
+          reason?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_day_blocks_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professional_day_blocks_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       professional_schedules: {
         Row: {
           company_id: string

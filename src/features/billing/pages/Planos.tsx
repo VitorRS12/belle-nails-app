@@ -58,6 +58,7 @@ const Planos = () => {
 
   return (
     <AppLayout title="Planos" subtitle="Escolha o plano ideal para o seu salão">
+      <PaymentTestModeBanner />
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {Array.from({ length: 3 }).map((_, i) => (
@@ -119,7 +120,7 @@ const Planos = () => {
 
                 <Button
                   disabled={isCurrent || loadingId === p.id}
-                  onClick={() => handleSubscribe(p.id, isFree)}
+                  onClick={() => handleSubscribe(p.id, (p as any).paddle_price_id ?? null, isFree)}
                   className={
                     isCurrent
                       ? ""

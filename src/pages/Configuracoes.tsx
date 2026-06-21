@@ -78,6 +78,69 @@ const Configuracoes = () => {
         {/* Empresa */}
         <CompanySettingsCard />
 
+        {/* Plano atual + uso */}
+        {planData?.plan && (
+          <div className="rounded-2xl bg-card border border-border/60 p-5 shadow-soft space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="h-11 w-11 rounded-full bg-gradient-primary text-primary-foreground inline-flex items-center justify-center">
+                  <CreditCard className="h-5 w-5" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                    Plano atual
+                  </p>
+                  <h3 className="font-display text-lg truncate">
+                    {planData.plan.plan_name}{" "}
+                    <span className="text-xs text-muted-foreground font-normal">
+                      · {planData.plan.status}
+                    </span>
+                  </h3>
+                </div>
+              </div>
+              <Button asChild size="sm" variant="outline">
+                <Link to="/planos">Ver planos</Link>
+              </Button>
+            </div>
+
+            <UsageRow
+              label="Profissionais"
+              used={planData.usage.professionals}
+              max={planData.plan.max_professionals}
+            />
+            <UsageRow
+              label="Agendamentos no mês"
+              used={planData.usage.appointmentsThisMonth}
+              max={planData.plan.max_appointments_per_month}
+            />
+            <UsageRow
+              label="Serviços ativos"
+              used={planData.usage.services}
+              max={planData.plan.max_services}
+            />
+          </div>
+        )}
+
+        {/* Super Admin */}
+        {isSuperAdmin && (
+          <Link
+            to="/admin"
+            className="flex items-center gap-3 rounded-2xl bg-gradient-soft border border-primary/30 p-5 shadow-soft transition-smooth hover:bg-accent-soft/60"
+          >
+            <div className="h-11 w-11 rounded-full bg-primary text-primary-foreground inline-flex items-center justify-center">
+              <ShieldCheck className="h-5 w-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-display text-lg">Painel Super Admin</h3>
+              <p className="text-xs text-muted-foreground">
+                Gerenciar empresas, planos e métricas da plataforma.
+              </p>
+            </div>
+            <ChevronRight className="h-5 w-5 text-muted-foreground" />
+          </Link>
+        )}
+
+
         {/* Equipe */}
         <Link
           to="/equipe"

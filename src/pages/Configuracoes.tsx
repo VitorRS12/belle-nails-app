@@ -21,6 +21,9 @@ const Configuracoes = () => {
   const { user, signOut } = useAuth();
   const { profile, updateAreas } = useProfile();
   const { theme, toggleTheme } = useTheme();
+  const { company } = useCompany();
+  const { data: planData } = useCompanyPlan(company?.id);
+  const { isSuperAdmin } = useIsSuperAdmin();
   const [loading, setLoading] = useState(false);
   const [hasLegacy, setHasLegacy] = useState(false);
 

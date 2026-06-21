@@ -50,6 +50,7 @@ function AppInner() {
         <Route path="/servicos" element={<ProtectedRoute>{wrap(<Servicos />)}</ProtectedRoute>} />
         <Route path="/configuracoes" element={<ProtectedRoute>{wrap(<Configuracoes />)}</ProtectedRoute>} />
         <Route path="/notificacoes" element={<ProtectedRoute>{wrap(<HistoricoNotificacoes />)}</ProtectedRoute>} />
+        <Route path="/minha-jornada" element={<ProtectedRoute>{wrap(<MinhaJornada />)}</ProtectedRoute>} />
         <Route path="*" element={wrap(<NotFound />)} />
       </Routes>
     </AnimatePresence>

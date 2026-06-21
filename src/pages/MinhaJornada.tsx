@@ -3,10 +3,12 @@ import { AppLayout } from "@/components/AppLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfessionalSchedules, WEEKDAYS } from "@/hooks/useProfessionalSchedules";
+import { useProfessionalDayBlocks } from "@/hooks/useProfessionalDayBlocks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Select,
   SelectContent,
@@ -14,10 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Clock, Plus, X, CalendarDays } from "lucide-react";
+import { Clock, Plus, X, CalendarDays, Ban } from "lucide-react";
 import { ListSkeleton } from "@/components/ListSkeleton";
 import { EmptyState } from "@/components/EmptyState";
 import { toast } from "sonner";
+import { format, parseISO } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 type Me = { id: string; company_id: string; name: string } | null;
 

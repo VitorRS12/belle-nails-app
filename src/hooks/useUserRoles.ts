@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -6,36 +6,32 @@ export type AppRole = "super_admin" | "company_admin" | "professional" | "custom
 
 export function useUserRoles() {
   const { user } = useAuth();
-  const [roles, setRoles] = useState<AppRole[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!user) {
-      setRoles([]);
-      setLoading(false);
-      return;
-    }
-    let mounted = true;
-    void (async () => {
-      setLoading(true);
-      const { data } = await supabase
+  const query = useQuery({
+    queryKey: ["user_roles", user?.id],
+    enabled: !!user?.id,
+    staleTime: 60_000,
+    queryFn: async (): Promise<AppRole[]> => {
+      const { data, error } = await supabase
         .from("user_roles")
         .select("role")
-        .eq("user_id", user.id);
-      if (!mounted) return;
-      setRoles((data ?? []).map((r) => r.role as AppRole));
-      setLoading(false);
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, [user]);
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return (data ?? []).map((r) => r.role as AppRole);
+    },
+  });
 
+  const roles = query.data ?? [];
   return {
+    ...query,
     roles,
-    loading,
-    hasRole: (r: AppRole) => roles.includes(r),
     isSuperAdmin: roles.includes("super_admin"),
     isCompanyAdmin: roles.includes("company_admin"),
+    isProfessional: roles.includes("professional"),
+    isCustomer: roles.includes("customer"),
   };
+}
+
+export function useIsSuperAdmin() {
+  const { isSuperAdmin, isLoading } = useUserRoles();
+  return { isSuperAdmin, isLoading };
 }

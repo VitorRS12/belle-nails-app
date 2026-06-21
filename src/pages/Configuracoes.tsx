@@ -10,13 +10,20 @@ import { useProfile } from "@/hooks/useProfile";
 import { useTheme } from "@/contexts/ThemeContext";
 import { AREAS, type AreaKey } from "@/lib/types";
 import { toast } from "sonner";
-import { LogOut, User, UploadCloud, Briefcase, Moon, Sun, UsersRound, ChevronRight, Tag, Bell, CalendarDays } from "lucide-react";
+import { LogOut, User, UploadCloud, Briefcase, Moon, Sun, UsersRound, ChevronRight, Tag, Bell, CalendarDays, CreditCard, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useCompany } from "@/hooks/useCompany";
+import { useCompanyPlan } from "@/features/billing/hooks/useCompanyPlan";
+import { useIsSuperAdmin } from "@/hooks/useUserRoles";
+import { Progress } from "@/components/ui/progress";
 
 const Configuracoes = () => {
   const { user, signOut } = useAuth();
   const { profile, updateAreas } = useProfile();
   const { theme, toggleTheme } = useTheme();
+  const { company } = useCompany();
+  const { data: planData } = useCompanyPlan(company?.id);
+  const { isSuperAdmin } = useIsSuperAdmin();
   const [loading, setLoading] = useState(false);
   const [hasLegacy, setHasLegacy] = useState(false);
 
@@ -70,6 +77,69 @@ const Configuracoes = () => {
 
         {/* Empresa */}
         <CompanySettingsCard />
+
+        {/* Plano atual + uso */}
+        {planData?.plan && (
+          <div className="rounded-2xl bg-card border border-border/60 p-5 shadow-soft space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="h-11 w-11 rounded-full bg-gradient-primary text-primary-foreground inline-flex items-center justify-center">
+                  <CreditCard className="h-5 w-5" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                    Plano atual
+                  </p>
+                  <h3 className="font-display text-lg truncate">
+                    {planData.plan.plan_name}{" "}
+                    <span className="text-xs text-muted-foreground font-normal">
+                      · {planData.plan.status}
+                    </span>
+                  </h3>
+                </div>
+              </div>
+              <Button asChild size="sm" variant="outline">
+                <Link to="/planos">Ver planos</Link>
+              </Button>
+            </div>
+
+            <UsageRow
+              label="Profissionais"
+              used={planData.usage.professionals}
+              max={planData.plan.max_professionals}
+            />
+            <UsageRow
+              label="Agendamentos no mês"
+              used={planData.usage.appointmentsThisMonth}
+              max={planData.plan.max_appointments_per_month}
+            />
+            <UsageRow
+              label="Serviços ativos"
+              used={planData.usage.services}
+              max={planData.plan.max_services}
+            />
+          </div>
+        )}
+
+        {/* Super Admin */}
+        {isSuperAdmin && (
+          <Link
+            to="/admin"
+            className="flex items-center gap-3 rounded-2xl bg-gradient-soft border border-primary/30 p-5 shadow-soft transition-smooth hover:bg-accent-soft/60"
+          >
+            <div className="h-11 w-11 rounded-full bg-primary text-primary-foreground inline-flex items-center justify-center">
+              <ShieldCheck className="h-5 w-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-display text-lg">Painel Super Admin</h3>
+              <p className="text-xs text-muted-foreground">
+                Gerenciar empresas, planos e métricas da plataforma.
+              </p>
+            </div>
+            <ChevronRight className="h-5 w-5 text-muted-foreground" />
+          </Link>
+        )}
+
 
         {/* Equipe */}
         <Link
@@ -237,5 +307,25 @@ const Configuracoes = () => {
     </AppLayout>
   );
 };
+
+function UsageRow({ label, used, max }: { label: string; used: number; max: number | null }) {
+  const unlimited = max === null || max === undefined;
+  const pct = unlimited ? 0 : Math.min(100, Math.round((used / Math.max(max, 1)) * 100));
+  const danger = !unlimited && pct >= 90;
+  const warn = !unlimited && pct >= 75 && pct < 90;
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-muted-foreground">{label}</span>
+        <span className={`tabular-nums ${danger ? "text-destructive" : warn ? "text-amber-600" : "text-foreground"}`}>
+          {used} / {unlimited ? "∞" : max}
+        </span>
+      </div>
+      {!unlimited && (
+        <Progress value={pct} className={danger ? "[&>div]:bg-destructive" : warn ? "[&>div]:bg-amber-500" : ""} />
+      )}
+    </div>
+  );
+}
 
 export default Configuracoes;

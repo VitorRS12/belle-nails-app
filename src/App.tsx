@@ -23,6 +23,13 @@ import Servicos from "./pages/Servicos.tsx";
 import PublicBooking from "./pages/PublicBooking.tsx";
 import HistoricoNotificacoes from "./pages/HistoricoNotificacoes.tsx";
 import MinhaJornada from "./pages/MinhaJornada.tsx";
+import AdminDashboard from "./features/admin/pages/AdminDashboard.tsx";
+import AdminCompanies from "./features/admin/pages/AdminCompanies.tsx";
+import AdminPlans from "./features/admin/pages/AdminPlans.tsx";
+import { SuperAdminRoute } from "./features/admin/components/SuperAdminRoute.tsx";
+import Planos from "./features/billing/pages/Planos.tsx";
+import BillingSuccess from "./features/billing/pages/Sucesso.tsx";
+import BillingCanceled from "./features/billing/pages/Cancelado.tsx";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ActiveAreaProvider } from "./contexts/ActiveAreaContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -51,6 +58,12 @@ function AppInner() {
         <Route path="/configuracoes" element={<ProtectedRoute>{wrap(<Configuracoes />)}</ProtectedRoute>} />
         <Route path="/notificacoes" element={<ProtectedRoute>{wrap(<HistoricoNotificacoes />)}</ProtectedRoute>} />
         <Route path="/minha-jornada" element={<ProtectedRoute>{wrap(<MinhaJornada />)}</ProtectedRoute>} />
+        <Route path="/planos" element={<ProtectedRoute>{wrap(<Planos />)}</ProtectedRoute>} />
+        <Route path="/billing/sucesso" element={<ProtectedRoute>{wrap(<BillingSuccess />)}</ProtectedRoute>} />
+        <Route path="/billing/cancelado" element={<ProtectedRoute>{wrap(<BillingCanceled />)}</ProtectedRoute>} />
+        <Route path="/admin" element={<SuperAdminRoute>{wrap(<AdminDashboard />)}</SuperAdminRoute>} />
+        <Route path="/admin/empresas" element={<SuperAdminRoute>{wrap(<AdminCompanies />)}</SuperAdminRoute>} />
+        <Route path="/admin/planos" element={<SuperAdminRoute>{wrap(<AdminPlans />)}</SuperAdminRoute>} />
         <Route path="*" element={wrap(<NotFound />)} />
       </Routes>
     </AnimatePresence>

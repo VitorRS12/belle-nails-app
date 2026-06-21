@@ -1,0 +1,159 @@
+import { AppLayout } from "@/components/AppLayout";
+import { usePlans } from "@/features/admin/hooks/usePlans";
+import { useCompany } from "@/hooks/useCompany";
+import { useCompanyPlan } from "@/features/billing/hooks/useCompanyPlan";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { supabase } from "@/integrations/supabase/client";
+import { Check, Infinity as InfinityIcon, Sparkles } from "lucide-react";
+import { toast } from "sonner";
+import { useState } from "react";
+
+const formatPrice = (cents: number, currency: string) =>
+  (cents / 100).toLocaleString("pt-BR", { style: "currency", currency });
+
+const limitText = (n: number | null, suffix: string) =>
+  n === null || n === undefined ? `${suffix} ilimitados` : `Até ${n} ${suffix}`;
+
+const Planos = () => {
+  const { company } = useCompany();
+  const { data: plans, isLoading } = usePlans({ onlyActive: true });
+  const { data: current } = useCompanyPlan(company?.id);
+  const [loadingId, setLoadingId] = useState<string | null>(null);
+
+  const currentPlanId = current?.plan?.plan_id;
+
+  const handleSubscribe = async (planId: string, isFree: boolean) => {
+    if (!company) return;
+    if (isFree) {
+      toast.info("Você já está no plano Free por padrão.");
+      return;
+    }
+    setLoadingId(planId);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout-session", {
+        body: { planId, companyId: company.id },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("URL de checkout não retornada");
+      }
+    } catch (e) {
+      toast.error(
+        "Pagamentos ainda não estão habilitados nesta conta. Tente novamente em breve."
+      );
+      console.error(e);
+    } finally {
+      setLoadingId(null);
+    }
+  };
+
+  return (
+    <AppLayout title="Planos" subtitle="Escolha o plano ideal para o seu salão">
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} className="h-72 w-full rounded-2xl" />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {(plans ?? []).map((p) => {
+            const isCurrent = p.id === currentPlanId;
+            const isFree = p.price_cents === 0;
+            return (
+              <article
+                key={p.id}
+                className={`rounded-2xl border p-5 shadow-soft flex flex-col gap-3 ${
+                  isCurrent
+                    ? "border-primary bg-gradient-soft"
+                    : "border-border/60 bg-card"
+                }`}
+              >
+                <header className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-display text-xl">{p.name}</h3>
+                    {isCurrent && (
+                      <span className="text-[10px] uppercase tracking-wider rounded-full bg-primary text-primary-foreground px-2 py-0.5">
+                        Atual
+                      </span>
+                    )}
+                  </div>
+                  {p.description && (
+                    <p className="text-xs text-muted-foreground">{p.description}</p>
+                  )}
+                </header>
+
+                <p className="font-display text-3xl">
+                  {formatPrice(p.price_cents, p.currency)}
+                  <span className="text-xs text-muted-foreground font-normal">
+                    /{p.interval === "month" ? "mês" : "ano"}
+                  </span>
+                </p>
+
+                <ul className="text-sm space-y-1.5 flex-1">
+                  <Feature text={limitText(p.max_professionals, "profissionais")} />
+                  <Feature text={limitText(p.max_appointments_per_month, "agendamentos/mês")} />
+                  <Feature text={limitText(p.max_services, "serviços")} />
+                  {(p.features as Record<string, boolean>)?.public_booking && (
+                    <Feature text="Página pública de agendamento" />
+                  )}
+                  {(p.features as Record<string, boolean>)?.email_notifications && (
+                    <Feature text="Notificações por e-mail" />
+                  )}
+                  {(p.features as Record<string, boolean>)?.reports && (
+                    <Feature text="Relatórios avançados" />
+                  )}
+                  {(p.features as Record<string, boolean>)?.branding_removal && (
+                    <Feature text="Sem marca Lovable" />
+                  )}
+                </ul>
+
+                <Button
+                  disabled={isCurrent || loadingId === p.id}
+                  onClick={() => handleSubscribe(p.id, isFree)}
+                  className={
+                    isCurrent
+                      ? ""
+                      : "bg-gradient-primary shadow-elegant"
+                  }
+                  variant={isCurrent ? "outline" : "default"}
+                >
+                  {isCurrent ? (
+                    "Plano atual"
+                  ) : loadingId === p.id ? (
+                    "Abrindo checkout…"
+                  ) : isFree ? (
+                    "Plano padrão"
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4 mr-1" /> Assinar
+                    </>
+                  )}
+                </Button>
+              </article>
+            );
+          })}
+        </div>
+      )}
+    </AppLayout>
+  );
+};
+
+function Feature({ text }: { text: string }) {
+  const unlimited = text.toLowerCase().includes("ilimitad");
+  return (
+    <li className="flex items-center gap-2">
+      {unlimited ? (
+        <InfinityIcon className="h-4 w-4 text-primary shrink-0" />
+      ) : (
+        <Check className="h-4 w-4 text-primary shrink-0" />
+      )}
+      <span>{text}</span>
+    </li>
+  );
+}
+
+export default Planos;

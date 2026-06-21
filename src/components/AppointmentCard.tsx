@@ -3,6 +3,7 @@ import { Clock, Pencil, Trash2, CheckCircle2, XCircle, CalendarClock } from "luc
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { appointmentsStore } from "@/lib/storage";
+import { notifyAppointmentStatus } from "@/lib/notifyAppointment";
 import { AppointmentForm } from "./AppointmentForm";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";

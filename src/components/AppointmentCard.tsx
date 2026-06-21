@@ -3,6 +3,7 @@ import { Clock, Pencil, Trash2, CheckCircle2, XCircle, CalendarClock } from "luc
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { appointmentsStore } from "@/lib/storage";
+import { notifyAppointmentStatus } from "@/lib/notifyAppointment";
 import { AppointmentForm } from "./AppointmentForm";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -58,6 +59,7 @@ export function AppointmentCard({
   const cancel = () => {
     if (!confirm("Cancelar este serviço?")) return;
     appointmentsStore.save({ ...appt, status: "cancelled" });
+    void notifyAppointmentStatus(appt.id, "cancelled");
     toast.success("Atendimento cancelado");
   };
 
@@ -88,6 +90,7 @@ export function AppointmentCard({
 
   const confirmBooking = () => {
     appointmentsStore.save({ ...appt, status: "scheduled" });
+    void notifyAppointmentStatus(appt.id, "confirmed");
     toast.success("Agendamento confirmado");
   };
 

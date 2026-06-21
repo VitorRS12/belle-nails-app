@@ -22,6 +22,7 @@ import Equipe from "./pages/Equipe.tsx";
 import Servicos from "./pages/Servicos.tsx";
 import PublicBooking from "./pages/PublicBooking.tsx";
 import HistoricoNotificacoes from "./pages/HistoricoNotificacoes.tsx";
+import MinhaJornada from "./pages/MinhaJornada.tsx";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ActiveAreaProvider } from "./contexts/ActiveAreaContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -49,6 +50,7 @@ function AppInner() {
         <Route path="/servicos" element={<ProtectedRoute>{wrap(<Servicos />)}</ProtectedRoute>} />
         <Route path="/configuracoes" element={<ProtectedRoute>{wrap(<Configuracoes />)}</ProtectedRoute>} />
         <Route path="/notificacoes" element={<ProtectedRoute>{wrap(<HistoricoNotificacoes />)}</ProtectedRoute>} />
+        <Route path="/minha-jornada" element={<ProtectedRoute>{wrap(<MinhaJornada />)}</ProtectedRoute>} />
         <Route path="*" element={wrap(<NotFound />)} />
       </Routes>
     </AnimatePresence>

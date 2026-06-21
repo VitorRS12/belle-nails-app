@@ -10,7 +10,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { useTheme } from "@/contexts/ThemeContext";
 import { AREAS, type AreaKey } from "@/lib/types";
 import { toast } from "sonner";
-import { LogOut, User, UploadCloud, Briefcase, Moon, Sun, UsersRound, ChevronRight, Tag, Bell } from "lucide-react";
+import { LogOut, User, UploadCloud, Briefcase, Moon, Sun, UsersRound, ChevronRight, Tag, Bell, CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Configuracoes = () => {
@@ -117,6 +117,23 @@ const Configuracoes = () => {
             <h3 className="font-display text-lg">Histórico de notificações</h3>
             <p className="text-xs text-muted-foreground">
               Veja todos os e-mails enviados aos clientes e à empresa.
+            </p>
+          </div>
+          <ChevronRight className="h-5 w-5 text-muted-foreground" />
+        </Link>
+
+        {/* Minha jornada */}
+        <Link
+          to="/minha-jornada"
+          className="flex items-center gap-3 rounded-2xl bg-card border border-border/60 p-5 shadow-soft transition-smooth hover:bg-accent-soft/40"
+        >
+          <div className="h-11 w-11 rounded-full bg-gradient-primary text-primary-foreground inline-flex items-center justify-center">
+            <CalendarDays className="h-5 w-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h3 className="font-display text-lg">Minha jornada</h3>
+            <p className="text-xs text-muted-foreground">
+              Escolha os dias e horários em que você atende.
             </p>
           </div>
           <ChevronRight className="h-5 w-5 text-muted-foreground" />

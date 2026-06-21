@@ -90,6 +90,7 @@ export function AppointmentCard({
 
   const confirmBooking = () => {
     appointmentsStore.save({ ...appt, status: "scheduled" });
+    void notifyAppointmentStatus(appt.id, "confirmed");
     toast.success("Agendamento confirmado");
   };
 

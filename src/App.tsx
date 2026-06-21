@@ -58,6 +58,12 @@ function AppInner() {
         <Route path="/configuracoes" element={<ProtectedRoute>{wrap(<Configuracoes />)}</ProtectedRoute>} />
         <Route path="/notificacoes" element={<ProtectedRoute>{wrap(<HistoricoNotificacoes />)}</ProtectedRoute>} />
         <Route path="/minha-jornada" element={<ProtectedRoute>{wrap(<MinhaJornada />)}</ProtectedRoute>} />
+        <Route path="/planos" element={<ProtectedRoute>{wrap(<Planos />)}</ProtectedRoute>} />
+        <Route path="/billing/sucesso" element={<ProtectedRoute>{wrap(<BillingSuccess />)}</ProtectedRoute>} />
+        <Route path="/billing/cancelado" element={<ProtectedRoute>{wrap(<BillingCanceled />)}</ProtectedRoute>} />
+        <Route path="/admin" element={<SuperAdminRoute>{wrap(<AdminDashboard />)}</SuperAdminRoute>} />
+        <Route path="/admin/empresas" element={<SuperAdminRoute>{wrap(<AdminCompanies />)}</SuperAdminRoute>} />
+        <Route path="/admin/planos" element={<SuperAdminRoute>{wrap(<AdminPlans />)}</SuperAdminRoute>} />
         <Route path="*" element={wrap(<NotFound />)} />
       </Routes>
     </AnimatePresence>

@@ -10,8 +10,12 @@ import { useProfile } from "@/hooks/useProfile";
 import { useTheme } from "@/contexts/ThemeContext";
 import { AREAS, type AreaKey } from "@/lib/types";
 import { toast } from "sonner";
-import { LogOut, User, UploadCloud, Briefcase, Moon, Sun, UsersRound, ChevronRight, Tag, Bell, CalendarDays } from "lucide-react";
+import { LogOut, User, UploadCloud, Briefcase, Moon, Sun, UsersRound, ChevronRight, Tag, Bell, CalendarDays, CreditCard, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useCompany } from "@/hooks/useCompany";
+import { useCompanyPlan } from "@/features/billing/hooks/useCompanyPlan";
+import { useIsSuperAdmin } from "@/hooks/useUserRoles";
+import { Progress } from "@/components/ui/progress";
 
 const Configuracoes = () => {
   const { user, signOut } = useAuth();

@@ -53,6 +53,15 @@ Deno.serve(async (req) => {
     }
     const duration = service.duration_minutes;
 
+    // Day block check (vacation, day-off, etc.)
+    const { data: block } = await admin
+      .from("professional_day_blocks")
+      .select("id")
+      .eq("professional_id", body.professionalId)
+      .eq("blocked_date", body.date)
+      .maybeSingle();
+    if (block) return json({ slots: [] });
+
     // Weekday for that date (JS getDay matches our 0..6 convention)
     const weekday = new Date(`${body.date}T12:00:00Z`).getUTCDay();
 

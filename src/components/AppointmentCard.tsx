@@ -59,6 +59,7 @@ export function AppointmentCard({
   const cancel = () => {
     if (!confirm("Cancelar este serviço?")) return;
     appointmentsStore.save({ ...appt, status: "cancelled" });
+    void notifyAppointmentStatus(appt.id, "cancelled");
     toast.success("Atendimento cancelado");
   };
 

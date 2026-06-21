@@ -1,10 +1,12 @@
 import { AppLayout } from "@/components/AppLayout";
 import { usePlans } from "@/features/admin/hooks/usePlans";
 import { useCompany } from "@/hooks/useCompany";
+import { useAuth } from "@/contexts/AuthContext";
 import { useCompanyPlan } from "@/features/billing/hooks/useCompanyPlan";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { supabase } from "@/integrations/supabase/client";
+import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { Check, Infinity as InfinityIcon, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -17,33 +19,37 @@ const limitText = (n: number | null, suffix: string) =>
 
 const Planos = () => {
   const { company } = useCompany();
+  const { user } = useAuth();
   const { data: plans, isLoading } = usePlans({ onlyActive: true });
   const { data: current } = useCompanyPlan(company?.id);
+  const { openCheckout } = usePaddleCheckout();
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
   const currentPlanId = current?.plan?.plan_id;
 
-  const handleSubscribe = async (planId: string, isFree: boolean) => {
+  const handleSubscribe = async (
+    planId: string,
+    priceId: string | null,
+    isFree: boolean,
+  ) => {
     if (!company) return;
     if (isFree) {
       toast.info("Você já está no plano Free por padrão.");
       return;
     }
+    if (!priceId) {
+      toast.error("Este plano ainda não está disponível para assinatura.");
+      return;
+    }
     setLoadingId(planId);
     try {
-      const { data, error } = await supabase.functions.invoke("create-checkout-session", {
-        body: { planId, companyId: company.id },
+      await openCheckout({
+        priceId,
+        customerEmail: user?.email,
+        customData: { companyId: company.id, userId: user?.id ?? "" },
       });
-      if (error) throw error;
-      if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error("URL de checkout não retornada");
-      }
     } catch (e) {
-      toast.error(
-        "Pagamentos ainda não estão habilitados nesta conta. Tente novamente em breve."
-      );
+      toast.error("Não foi possível abrir o checkout. Tente novamente.");
       console.error(e);
     } finally {
       setLoadingId(null);

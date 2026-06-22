@@ -66,7 +66,7 @@ export default defineConfig(({ mode }) => ({
             },
           },
           {
-            urlPattern: ({ url }) => url.origin === self.location.origin && /\.(?:png|jpg|jpeg|svg|webp|gif|ico)$/.test(url.pathname),
+            urlPattern: /\.(?:png|jpg|jpeg|svg|webp|gif|ico)$/,
             handler: "StaleWhileRevalidate",
             options: {
               cacheName: "bn-images",
@@ -74,7 +74,7 @@ export default defineConfig(({ mode }) => ({
             },
           },
           {
-            urlPattern: ({ url }) => url.origin === self.location.origin && url.pathname.startsWith("/assets/"),
+            urlPattern: /\/assets\/.*\.(?:js|css|woff2?)$/,
             handler: "CacheFirst",
             options: {
               cacheName: "bn-static-assets",

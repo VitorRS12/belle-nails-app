@@ -1,4 +1,4 @@
-import { CloudOff, CloudCheck, RefreshCw } from "lucide-react";
+import { CloudOff, Cloud, RefreshCw } from "lucide-react";
 import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 import { useSyncStatus } from "@/hooks/useSyncStatus";
 import { cn } from "@/lib/utils";
@@ -20,7 +20,7 @@ export function OfflineIndicator({ className }: { className?: string }) {
       ? `${pending} pendente${pending > 1 ? "s" : ""}`
       : "Online";
 
-  const Icon = !online ? CloudOff : pending > 0 ? RefreshCw : CloudCheck;
+  const Icon = !online ? CloudOff : pending > 0 ? RefreshCw : Cloud;
 
   return (
     <div

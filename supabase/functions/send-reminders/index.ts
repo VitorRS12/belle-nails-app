@@ -69,12 +69,12 @@ Deno.serve(async (req) => {
     const profName = new Map((profs ?? []).map((p) => [p.id, p.name]));
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const sendUrl = `${supabaseUrl}/functions/v1/send-notification-email`;
     const baseHeaders = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${anonKey}`,
-      apikey: anonKey,
+      Authorization: `Bearer ${serviceKey}`,
+      apikey: serviceKey,
     };
 
     let sent = 0;

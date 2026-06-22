@@ -1,130 +1,126 @@
-# Fases 6 + 7 — Super Admin e Pagamentos
+# Plano: Belle Nails PWA Offline-First
 
-## Visão geral
+Transformar a aplicação em um PWA mobile-first com persistência local em IndexedDB e arquitetura preparada para sincronização futura — **sem tocar em Supabase/backend agora**.
 
-Duas frentes independentes que serão entregues em sequência:
-
-1. **Fase 6** — Painel `/admin` para o dono da plataforma (você) gerenciar empresas, planos e ver métricas.
-2. **Fase 7** — Cobrança recorrente das empresas via Stripe (built-in do Lovable) com limites aplicados por plano.
-
-A Fase 7 depende dos planos criados na Fase 6, então faremos nessa ordem.
+> Observação importante: o projeto hoje já usa Supabase em vários pontos (`src/lib/storage.ts`, `useCompany`, edge functions, auth, etc.). Como você pediu para **não implementar Supabase agora**, vou tratar a camada Supabase existente como "adapter remoto desativado" e introduzir uma camada local autoritativa por cima. Nada será removido — apenas desviado para a base local. Se quiser que eu *remova* o código Supabase já existente, me avise; por padrão, vou apenas isolá-lo.
 
 ---
 
-## Fase 6 — Super Admin
+## 1. PWA (manifest + service worker + instalação)
 
-### Backend (migração única)
+- Adicionar `vite-plugin-pwa` com `registerType: "autoUpdate"` e `generateSW` (Workbox).
+- Atualizar `public/manifest.webmanifest`: já existe parcialmente — completar com `id`, `categories`, `screenshots`, `shortcuts` (Agenda, Clientes, Novo Atendimento) e ícones 192/384/512 + maskable.
+- Gerar ícones PWA (192, 384, 512, maskable, apple-touch 180) a partir do favicon atual via `imagegen` quando necessário.
+- `index.html`: já tem theme-color, apple-mobile-web-app-*; adicionar splash links iOS e `apple-touch-startup-image` mínimos.
+- **Service Worker** com estratégias:
+  - HTML/navegação → `NetworkFirst` (exclui `/~oauth`, `/b/:slug` continua online-first).
+  - Assets hashed (`/assets/*`) → `CacheFirst`.
+  - Imagens (`/favicon.png`, ícones, screenshots) → `StaleWhileRevalidate`.
+- **Registro guardado** em `src/pwa/registerSW.ts`: nunca registra em dev, iframe, hosts `*.lovableproject.com`, `*.lovable.app` de preview, ou com `?sw=off`. Em contextos negados, faz `unregister()` de `/sw.js`.
+- Banner "Nova versão disponível — Atualizar" usando o evento `onNeedRefresh` do `virtual:pwa-register`.
+- Prompt de instalação custom (`beforeinstallprompt`) num componente `InstallAppPrompt`, com instruções específicas para iOS Safari (Compartilhar → Adicionar à Tela de Início).
 
-- Promover o seu próprio usuário a `super_admin` (insert manual em `user_roles`).
-- Nova tabela `subscription_plans`:
-  - `name` (Free, Pro, Business…), `slug`, `description`
-  - `price_cents`, `currency`, `interval` (`month` / `year`)
-  - `max_professionals`, `max_appointments_per_month`, `max_services`
-  - `features` (jsonb — flags como "email", "site público", "relatórios")
-  - `active`, `sort_order`, `stripe_price_id` (preenchido na Fase 7)
-- Nova tabela `company_subscriptions`:
-  - `company_id`, `plan_id`, `status` (`trialing`, `active`, `past_due`, `canceled`)
-  - `current_period_start`, `current_period_end`, `trial_ends_at`
-  - `stripe_subscription_id`, `stripe_customer_id` (Fase 7)
-- Função `get_company_plan(company_id)` (SECURITY DEFINER) devolve o plano vigente.
-- Função `can_create_appointment(company_id)` checa contagem do mês vs `max_appointments_per_month`.
-- RLS:
-  - `subscription_plans` — leitura pública (planos aparecem na landing); escrita só super_admin.
-  - `company_subscriptions` — empresa vê a sua; super_admin vê todas.
+## 2. Camada de dados local (IndexedDB)
 
-### Frontend `/admin`
-
-- Rota protegida por `has_role(uid, 'super_admin')` (redireciona se não for).
-- Layout próprio (sem o sidebar de profissional).
-- Telas:
-  - **Visão geral**: total de empresas, ativas, MRR estimado, agendamentos do mês, gráfico de crescimento (últimos 30 dias).
-  - **Empresas**: tabela paginada (nome, plano, status, profissionais, agendamentos no mês, criado em). Ações: ver detalhes, mudar plano manualmente, suspender.
-  - **Planos**: CRUD dos `subscription_plans` (criar, editar limites e preço, ativar/desativar).
-- Hooks via TanStack Query: `useAdminMetrics`, `useAdminCompanies`, `usePlans`.
-- Componentes em `src/features/admin/`.
-
-### Aplicação de limites (frontend + servidor)
-
-- Hook `useCompanyPlan()` exposto no app da empresa — mostra plano atual, uso (X/Y profissionais, X/Y agendamentos), aviso quando passa de 80%.
-- Servidor: a edge function `public-create-booking` chama `can_create_appointment` antes de gravar; se exceder, devolve 402.
-- Bloqueios visuais quando limite atingido (CTA "Fazer upgrade").
-
----
-
-## Fase 7 — Pagamentos (Stripe built-in)
-
-### Pré-checagem
-
-Roda `recommend_payment_provider` (SaaS digital → Stripe built-in é o caminho indicado). Eu te explico o que vai acontecer e você confirma antes de habilitar.
-
-### Habilitação
-
-- `enable_stripe_payments` — provisiona ambiente de teste sem você precisar criar conta Stripe.
-- Tax handling: `managed_payments` (Stripe cuida de compliance fiscal global para SaaS digital, +3,5% por transação) — pode ser desligado depois.
-
-### Produtos no Stripe
-
-- Para cada plano em `subscription_plans` (exceto Free), criar produto + price recorrente via `batch_create_product`. Salvar `stripe_price_id` na tabela.
-
-### Checkout + Webhook
-
-- Edge function `create-checkout-session`:
-  - Recebe `planId`, identifica `companyId` do usuário logado.
-  - Cria/recupera `stripe_customer_id`, abre sessão de checkout, devolve `url`.
-- Edge function `stripe-webhook` (verify_jwt = false, valida assinatura):
-  - Eventos `checkout.session.completed`, `customer.subscription.updated/deleted`, `invoice.paid/failed`.
-  - Atualiza `company_subscriptions` (status, períodos, IDs Stripe).
-- Página `/planos` no painel da empresa — lista planos ativos, destaca o atual, botão "Assinar/Trocar" abre o checkout.
-- Página `/sucesso` e `/cancelado` para retorno do Stripe.
-- Portal do cliente Stripe (gerenciar cartão / cancelar) — botão "Gerenciar assinatura" em Configurações.
-
-### Trial e Free
-
-- Plano Free não tem assinatura Stripe — vira default ao criar empresa (a função `handle_new_user` ganha o `INSERT` em `company_subscriptions` com plano Free).
-- Trial opcional de 14 dias em planos pagos via `trial_period_days` no Stripe.
-
----
-
-## Arquitetura / pastas
+Nova pasta `src/data/` desacoplada da UI:
 
 ```text
-src/features/
-├── admin/
-│   ├── pages/AdminDashboard, AdminCompanies, AdminPlans
-│   ├── components/ (cards, tabelas)
-│   ├── hooks/useAdminMetrics, useAdminCompanies
-│   └── services/adminService
-└── billing/
-    ├── pages/Planos, Sucesso, Cancelado
-    ├── components/PlanCard, UsageMeter
-    ├── hooks/useCompanyPlan, useCheckout
-    └── services/billingService
-
-supabase/functions/
-├── create-checkout-session/
-├── create-billing-portal-session/
-└── stripe-webhook/
+src/data/
+├── db.ts                  # Dexie database + schema
+├── types.ts               # SyncableRecord<T>, SyncStatus
+├── repositories/
+│   ├── baseRepository.ts  # CRUD genérico + metadados de sync
+│   ├── clientsRepo.ts
+│   ├── appointmentsRepo.ts
+│   ├── servicesRepo.ts
+│   ├── professionalsRepo.ts
+│   ├── settingsRepo.ts
+│   └── outboxRepo.ts      # fila de mutações pendentes
+└── sync/
+    ├── syncEngine.ts      # interface SyncAdapter + orquestrador
+    ├── adapters/
+    │   └── nullAdapter.ts # adapter no-op usado agora
+    └── conflict.ts        # estratégia last-write-wins + marca 'conflict'
 ```
 
----
+- Biblioteca: **Dexie** (wrapper IndexedDB enxuto, escalável, ótimo TS).
+- Cada registro implementa:
+  ```ts
+  interface SyncableRecord {
+    id: string;            // uuid v4
+    createdAt: string;     // ISO
+    updatedAt: string;     // ISO
+    deletedAt?: string;    // soft delete
+    version: number;       // incrementa a cada update local
+    syncStatus: 'pending' | 'synced' | 'conflict';
+    remoteId?: string;     // reservado p/ futuro backend
+  }
+  ```
+- `baseRepository` expõe `list/get/create/update/remove/upsert` — sempre grava `syncStatus='pending'` e enfileira a operação na `outbox`.
+- `SyncEngine` lê a outbox e delega a um `SyncAdapter`. Hoje usamos `NullAdapter` (não faz nada, registros ficam `pending`). Quando ligarmos backend, basta plugar um `SupabaseAdapter` ou `RestAdapter`.
+- Hooks React (`useClients`, `useAppointments`, `useServices`, etc.) consomem os repositórios via `useLiveQuery` do Dexie → UI reativa sem polling.
+- **Migração leve**: na primeira carga, se houver dados em `localStorage` legados (`manicure_clients_v1`, `manicure_appointments_v1`), importa para IndexedDB e marca como `pending`.
 
-## Entregas em ordem (passos executáveis)
+## 3. Isolamento do Supabase atual
 
-1. Migração Fase 6 + tabela de planos + funções + RLS + seed (Free, Pro, Business).
-2. Layout/rotas `/admin` + telas Visão geral, Empresas, Planos.
-3. Hook `useCompanyPlan` + medidor de uso em `Configurações` + bloqueio em `public-create-booking`.
-4. `recommend_payment_provider` → confirmação → `enable_stripe_payments`.
-5. Criar produtos Stripe a partir dos planos.
-6. Edge functions `create-checkout-session`, `stripe-webhook`, `create-billing-portal-session`.
-7. Página `/planos` + `/sucesso` + `/cancelado` + botão "Gerenciar assinatura".
-8. Testes end-to-end no modo teste do Stripe.
+- `src/lib/storage.ts`, `useCompany`, hooks de profissionais/serviços, Auth etc. **permanecem no repo** mas deixam de ser a fonte primária. Onde a UI lê dados de negócio, passa a usar os novos hooks IndexedDB.
+- Páginas afetadas: `Clientes`, `Agenda`, `Atendimentos`, `Servicos`, `Equipe`, `Configuracoes`, `Dashboard`, `Relatorio`, `MinhaJornada`, `Index`.
+- `Auth.tsx` e rotas protegidas: como não vamos mexer no backend, mantemos o fluxo atual; para uso 100% offline adiciono **modo convidado local** (`localStorage` flag `bn:guest=true`) que permite acessar o app sem login. `ProtectedRoute` aceita usuário Supabase **ou** convidado local. Posso desativar o login completamente se preferir — diga e eu retiro.
+- Edge functions e features de billing/admin **não são tocadas** (continuam exigindo internet quando acessadas).
 
----
+## 4. Indicadores de status & UX offline
 
-## Perguntas rápidas antes de começar
+- `src/hooks/useNetworkStatus.ts` (online/offline + `navigator.connection`).
+- `src/hooks/useSyncStatus.ts` (conta itens `pending` / `conflict` da outbox via `useLiveQuery`).
+- Componentes:
+  - `OfflineBadge` no header (chip: "Offline", "Online", "Sincronizando…").
+  - `PendingChangesPill` ("3 alterações pendentes").
+  - Toasts: "Salvo localmente", "Sincronização concluída", "Sem conexão — alterações salvas no dispositivo".
+- Integração em `AppLayout`.
 
-1. **Planos iniciais** — sugiro **Free** (1 profissional, 30 agendamentos/mês), **Pro** (até 5 profissionais, ilimitado, R$ 49/mês) e **Business** (ilimitado, R$ 99/mês). Aprovo isso ou prefere outros valores/limites?
-2. **Seu e-mail de super_admin** — confirma que é o e-mail logado atualmente (`pedrohenriquedasilva0405@gmail.com` ou outro)?
-3. **Trial** — começa com 14 dias grátis nos planos pagos, ou já cobra na ativação?
+## 5. UX mobile premium
 
-Posso ajustar o plano com base nas suas respostas e seguir direto para a execução.
+- Revisar `AppLayout`, `BottomNav`, `AppointmentCard`, formulários:
+  - Alvos de toque mínimos 44×44.
+  - `safe-area-inset` (top/bottom) para iOS notch + home indicator.
+  - Tipografia fluida com `clamp()` para títulos.
+  - Microinterações com Framer Motion já disponível (`PageTransition` já existe; vou adicionar feedback em botões primários e cards).
+  - Pull-to-refresh **desativado** dentro do app instalado (overscroll-behavior contain).
+  - Skeletons em listas que hoje mostram tela vazia.
+- Tudo dentro da paleta atual (rosa/champagne Belle Nails) — sem repintar o design system.
+
+## 6. Arquitetura preparada para crescimento
+
+- `SyncAdapter` é a única interface a implementar quando o backend chegar.
+- Repositórios não conhecem React nem Supabase — testáveis isoladamente.
+- Pasta `src/data/` segue padrão repository + outbox, fácil trocar Dexie por outra storage no futuro.
+- Tipos exportados em `src/data/types.ts` consumidos pela UI via barrel `src/data/index.ts`.
+
+## 7. Detalhes técnicos
+
+- Dependências novas: `dexie`, `dexie-react-hooks`, `vite-plugin-pwa`, `workbox-window` (peer).
+- `vite.config.ts`: adicionar plugin PWA com manifest inline + `injectRegister: null` + `devOptions.enabled: false`.
+- `src/main.tsx`: importar `registerSW` (wrapper guardado).
+- Testes mínimos: `src/data/repositories/__tests__/clientsRepo.test.ts` com `fake-indexeddb` (já há vitest configurado).
+- SEO/index.html: manter `<title>` e meta atuais; adicionar `<link rel="apple-touch-icon" sizes="180x180">` se ícone for gerado.
+
+## 8. Entregáveis
+
+1. PWA instalável e atualizável (manifest + SW + prompt + ícones).
+2. IndexedDB com repositórios + outbox + SyncEngine (NullAdapter).
+3. Hooks reativos substituindo leitura Supabase nas páginas de negócio.
+4. Indicadores online/offline/pending no layout.
+5. Polimento mobile (safe-area, toques, microinterações).
+6. Documentação curta em `README.md` explicando como plugar um `SyncAdapter` futuro.
+
+## 9. Fora deste escopo (confirmar antes de fazer)
+
+- Remover código Supabase já existente do repositório.
+- Desligar Auth/Login e operar 100% como convidado.
+- Push notifications (requer backend / FCM).
+- Internacionalização e dark mode novos (mantém o atual).
+
+Me confirme dois pontos e sigo direto para a implementação:
+
+1. **Login Supabase**: mantenho como está (com fallback offline em modo convidado) ou desativo completamente por enquanto?
+2. **Dados existentes no Supabase do usuário**: ignoro (começa base local vazia + migração de `localStorage`) ou faço um *seed* único puxando do Supabase na primeira vez que houver internet?

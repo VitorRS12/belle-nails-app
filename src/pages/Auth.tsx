@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Capacitor } from "@capacitor/core";
 import { Browser } from "@capacitor/browser";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/contexts/AuthContext";
+import { enableGuestMode, isGuestMode } from "@/components/ProtectedRoute";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Sparkles } from "lucide-react";
+import { Sparkles, WifiOff } from "lucide-react";
 
 const GoogleIcon = () => (
   <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden>
@@ -25,6 +26,7 @@ const NATIVE_GOOGLE_REDIRECT_URI = "app.lovable.bellenails://oauth-callback";
 
 const Auth = () => {
   const { session, loading } = useAuth();
+  const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,6 +38,16 @@ const Auth = () => {
   }, []);
 
   if (!loading && session) return <Navigate to="/inicio" replace />;
+  if (!loading && !session && isGuestMode()) return <Navigate to="/inicio" replace />;
+
+  const continueOffline = () => {
+    enableGuestMode();
+    toast.success("Modo offline ativado", {
+      description: "Seus dados ficam salvos neste dispositivo.",
+    });
+    navigate("/inicio", { replace: true });
+  };
+
 
   const signInEmail = async () => {
     setBusy(true);
@@ -179,6 +191,14 @@ const Auth = () => {
             </TabsContent>
           </Tabs>
         </div>
+
+        <Button
+          variant="ghost"
+          onClick={continueOffline}
+          className="w-full h-11 rounded-xl gap-2 text-muted-foreground hover:text-foreground"
+        >
+          <WifiOff className="h-4 w-4" /> Usar offline neste dispositivo
+        </Button>
 
         <p className="text-center text-[11px] text-muted-foreground">
           Seus dados ficam protegidos. Cada profissional só vê os próprios clientes.

@@ -5,6 +5,8 @@ import { AppSidebar } from "./AppSidebar";
 import { AreaSwitcher } from "./AreaSwitcher";
 import { Breadcrumbs } from "./Breadcrumbs";
 import { ThemeToggle } from "./ThemeToggle";
+import { OfflineIndicator } from "./OfflineIndicator";
+import { InstallAppPrompt } from "./InstallAppPrompt";
 
 interface Props {
   title: string;
@@ -17,8 +19,7 @@ interface Props {
 export function AppLayout({ title, subtitle, action, children, wide }: Props) {
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-hero">
-        {/* Sidebar only renders visually on md+ thanks to Sidebar's offcanvas behavior on mobile */}
+      <div className="min-h-[100dvh] flex w-full bg-gradient-hero overscroll-none">
         <div className="hidden md:block">
           <AppSidebar />
         </div>
@@ -31,6 +32,7 @@ export function AppLayout({ title, subtitle, action, children, wide }: Props) {
               <h1 className="font-display text-lg text-foreground leading-tight">{title}</h1>
             </div>
             <div className="ml-auto flex items-center gap-3">
+              <OfflineIndicator />
               <AreaSwitcher />
               <ThemeToggle />
               {action}
@@ -38,7 +40,7 @@ export function AppLayout({ title, subtitle, action, children, wide }: Props) {
           </header>
 
           <main
-            className={`flex-1 pb-28 md:pb-8 pt-[env(safe-area-inset-top)] mx-auto w-full ${
+            className={`flex-1 pb-[calc(env(safe-area-inset-bottom)+6rem)] md:pb-8 pt-[env(safe-area-inset-top)] mx-auto w-full ${
               wide ? "max-w-6xl" : "max-w-md md:max-w-4xl"
             }`}
           >
@@ -52,6 +54,7 @@ export function AppLayout({ title, subtitle, action, children, wide }: Props) {
                 <h1 className="font-display text-3xl text-foreground leading-tight">{title}</h1>
               </div>
               <div className="flex items-center gap-2 shrink-0">
+                <OfflineIndicator />
                 <ThemeToggle />
                 {action}
               </div>
@@ -66,7 +69,10 @@ export function AppLayout({ title, subtitle, action, children, wide }: Props) {
         <div className="md:hidden">
           <BottomNav />
         </div>
+
+        <InstallAppPrompt />
       </div>
     </SidebarProvider>
   );
 }
+

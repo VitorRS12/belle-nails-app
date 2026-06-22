@@ -223,15 +223,30 @@
     @apply border-border;
   }
 
+  html, body {
+    /* Disable browser pull-to-refresh inside the installed app */
+    overscroll-behavior-y: contain;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-feature-settings: "ss01", "cv11";
+    text-rendering: optimizeLegibility;
   }
 
   h1, h2, h3, h4 {
     @apply font-display tracking-tight;
   }
+
+  /* Larger touch targets on mobile */
+  @media (pointer: coarse) {
+    button, [role="button"], a {
+      min-height: 40px;
+    }
+  }
 }
+
 
 @layer utilities {
   .bg-gradient-primary { background: var(--gradient-primary); }

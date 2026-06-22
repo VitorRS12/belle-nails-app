@@ -207,6 +207,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    try {
+      localStorage.removeItem("bn:guest");
+    } catch {
+      // ignore
+    }
     clearStores();
   };
 

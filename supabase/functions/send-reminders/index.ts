@@ -9,6 +9,13 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
+    const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+    if (token !== SERVICE_ROLE) {
+      return json({ error: "Unauthorized" }, 401);
+    }
+
     const admin = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
@@ -62,12 +69,12 @@ Deno.serve(async (req) => {
     const profName = new Map((profs ?? []).map((p) => [p.id, p.name]));
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const sendUrl = `${supabaseUrl}/functions/v1/send-notification-email`;
     const baseHeaders = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${anonKey}`,
-      apikey: anonKey,
+      Authorization: `Bearer ${serviceKey}`,
+      apikey: serviceKey,
     };
 
     let sent = 0;

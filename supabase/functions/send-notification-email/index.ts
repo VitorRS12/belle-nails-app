@@ -31,9 +31,26 @@ Deno.serve(async (req) => {
   try {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+    const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     if (!LOVABLE_API_KEY || !RESEND_API_KEY) {
       return json({ error: "Email provider not configured" }, 500);
     }
+
+    // Auth: accept either a valid user JWT or the service role key (server-to-server).
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+    let authorized = false;
+    if (token && token === SERVICE_ROLE) {
+      authorized = true;
+    } else if (token) {
+      const authClient = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_ANON_KEY")!,
+      );
+      const { data, error } = await authClient.auth.getUser(token);
+      if (!error && data?.user) authorized = true;
+    }
+    if (!authorized) return json({ error: "Unauthorized" }, 401);
 
     const body = (await req.json()) as Body;
     if (!body.template || !body.to || !body.data) {

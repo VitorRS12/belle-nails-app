@@ -144,11 +144,11 @@ Deno.serve(async (req) => {
     // Fire-and-forget notification emails (do not block booking response)
     try {
       const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-      const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+      const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
       const baseHeaders = {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${anonKey}`,
-        apikey: anonKey,
+        Authorization: `Bearer ${serviceKey}`,
+        apikey: serviceKey,
       };
       const sendUrl = `${supabaseUrl}/functions/v1/send-notification-email`;
       const formattedDate = new Date(b.date + "T00:00:00").toLocaleDateString("pt-BR");

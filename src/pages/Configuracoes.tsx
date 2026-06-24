@@ -1,16 +1,13 @@
-import { useState, useEffect } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CompanySettingsCard } from "@/components/CompanySettingsCard";
-import { hasLegacyData, migrateLegacyData } from "@/lib/storage";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
 import { useTheme } from "@/contexts/ThemeContext";
 import { AREAS, type AreaKey } from "@/lib/types";
 import { toast } from "sonner";
-import { LogOut, User, UploadCloud, Briefcase, Moon, Sun, UsersRound, ChevronRight, Tag, Bell, CalendarDays, CreditCard, ShieldCheck } from "lucide-react";
+import { LogOut, User, Briefcase, Moon, Sun, UsersRound, ChevronRight, Tag, Bell, CalendarDays, CreditCard, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCompany } from "@/hooks/useCompany";
 import { useCompanyPlan } from "@/features/billing/hooks/useCompanyPlan";
@@ -19,42 +16,20 @@ import { Progress } from "@/components/ui/progress";
 
 const Configuracoes = () => {
   const { user, signOut } = useAuth();
-  const { profile, updateAreas } = useProfile();
+  const { profile, updateArea } = useProfile();
   const { theme, toggleTheme } = useTheme();
   const { company } = useCompany();
   const { data: planData } = useCompanyPlan(company?.id);
   const { isSuperAdmin } = useIsSuperAdmin();
-  const [loading, setLoading] = useState(false);
-  const [hasLegacy, setHasLegacy] = useState(false);
 
-  const toggleArea = async (key: AreaKey) => {
-    const current = profile?.areas ?? ["manicure"];
-    const next = current.includes(key)
-      ? current.filter((a) => a !== key)
-      : [...current, key];
-    const ok = await updateAreas(next);
-    if (ok) toast.success("Áreas atualizadas");
-    else toast.error("Falha ao atualizar áreas");
+  const handleSetArea = async (key: AreaKey) => {
+    if (profile?.area === key) return;
+    const ok = await updateArea(key);
+    if (ok) toast.success("Área de atuação atualizada");
+    else toast.error("Falha ao atualizar a área");
   };
 
-  useEffect(() => {
-    setHasLegacy(hasLegacyData());
-  }, []);
 
-  const handleMigrate = async () => {
-    if (!confirm("Importar os dados salvos no celular para a nuvem?")) return;
-    setLoading(true);
-    try {
-      const r = await migrateLegacyData();
-      toast.success(`Importado: ${r.clients} clientes e ${r.appointments} atendimentos!`);
-      setHasLegacy(false);
-    } catch (e) {
-      console.error("Erro ao importar dados legados:", e);
-      toast.error("Não foi possível importar os dados. Tente novamente.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <AppLayout subtitle="Conta" title="Configurações">

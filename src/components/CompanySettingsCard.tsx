@@ -1,44 +1,60 @@
-import { useState } from "react";
-import { Building2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Building2, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCompany } from "@/hooks/useCompany";
 
-const SEGMENTS = [
-  "Beleza e estética",
-  "Saúde e bem-estar",
-  "Barbearia",
-  "Salão de cabelo",
-  "Clínica",
-  "Consultório",
-  "Personal trainer",
-  "Outro",
-];
+const INTERVAL_PRESETS = [10, 15, 20, 30, 45, 60];
 
 export function CompanySettingsCard() {
   const { company, loading, update } = useCompany();
   const [name, setName] = useState("");
-  const [segment, setSegment] = useState("");
+  const [intervalMode, setIntervalMode] = useState<string>("30");
+  const [customInterval, setCustomInterval] = useState<string>("");
   const [saving, setSaving] = useState(false);
-  const [touched, setTouched] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
-  // Hydrate local state once company loads
-  if (company && !touched && (name === "" && segment === "")) {
-    setName(company.name);
-    setSegment(company.segment ?? "");
-  }
+  useEffect(() => {
+    if (company && !hydrated) {
+      setName(company.name);
+      const v = company.appointment_interval_minutes ?? 30;
+      if (INTERVAL_PRESETS.includes(v)) {
+        setIntervalMode(String(v));
+        setCustomInterval("");
+      } else {
+        setIntervalMode("custom");
+        setCustomInterval(String(v));
+      }
+      setHydrated(true);
+    }
+  }, [company, hydrated]);
+
+  const resolvedInterval = (() => {
+    if (intervalMode === "custom") {
+      const n = parseInt(customInterval, 10);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    return parseInt(intervalMode, 10);
+  })();
+
+  const intervalValid =
+    Number.isFinite(resolvedInterval) && resolvedInterval >= 5 && resolvedInterval <= 240;
 
   const dirty =
     !!company &&
-    (name.trim() !== company.name || (segment || null) !== (company.segment || null));
+    (name.trim() !== company.name ||
+      (intervalValid && resolvedInterval !== company.appointment_interval_minutes));
 
   const handleSave = async () => {
-    if (!dirty) return;
+    if (!dirty || !intervalValid) return;
     setSaving(true);
-    await update({ name: name.trim(), segment: segment || null });
+    await update({
+      name: name.trim(),
+      appointment_interval_minutes: resolvedInterval,
+    });
     setSaving(false);
-    setTouched(true);
   };
 
   return (
@@ -58,30 +74,45 @@ export function CompanySettingsCard() {
       {loading || !company ? (
         <p className="text-sm text-muted-foreground">Carregando…</p>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="company-name">Nome</Label>
             <Input
               id="company-name"
               value={name}
-              onChange={(e) => { setName(e.target.value); setTouched(true); }}
+              onChange={(e) => setName(e.target.value)}
               placeholder="Nome da sua empresa"
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="company-segment">Segmento</Label>
-            <select
-              id="company-segment"
-              value={segment}
-              onChange={(e) => { setSegment(e.target.value); setTouched(true); }}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-            >
-              <option value="">Selecione…</option>
-              {SEGMENTS.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
+            <Label className="flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5" /> Intervalo da agenda
+            </Label>
+            <Select value={intervalMode} onValueChange={setIntervalMode}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {INTERVAL_PRESETS.map((m) => (
+                  <SelectItem key={m} value={String(m)}>{m} minutos</SelectItem>
+                ))}
+                <SelectItem value="custom">Personalizado…</SelectItem>
+              </SelectContent>
+            </Select>
+            {intervalMode === "custom" && (
+              <Input
+                type="number"
+                min={5}
+                max={240}
+                step={5}
+                placeholder="Minutos (entre 5 e 240)"
+                value={customInterval}
+                onChange={(e) => setCustomInterval(e.target.value)}
+                className={!intervalValid ? "border-destructive" : ""}
+              />
+            )}
+            <p className="text-[11px] text-muted-foreground">
+              Define de quanto em quanto tempo os horários da agenda são gerados.
+            </p>
           </div>
 
           <div className="space-y-1.5">
@@ -101,7 +132,7 @@ export function CompanySettingsCard() {
 
           <Button
             onClick={handleSave}
-            disabled={!dirty || saving}
+            disabled={!dirty || saving || !intervalValid}
             className="w-full bg-gradient-primary shadow-elegant rounded-xl"
           >
             {saving ? "Salvando…" : "Salvar alterações"}

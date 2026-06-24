@@ -7,9 +7,9 @@ export interface Company {
   id: string;
   name: string;
   slug: string;
-  segment: string | null;
   timezone: string;
   owner_user_id: string;
+  appointment_interval_minutes: number;
 }
 
 export function useCompany() {
@@ -40,7 +40,7 @@ export function useCompany() {
 
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, slug, segment, timezone, owner_user_id")
+      .select("id, name, slug, timezone, owner_user_id, appointment_interval_minutes")
       .eq("id", member.company_id)
       .maybeSingle();
 
@@ -53,7 +53,9 @@ export function useCompany() {
   }, [refresh]);
 
   const update = useCallback(
-    async (patch: Partial<Pick<Company, "name" | "segment" | "timezone">>) => {
+    async (
+      patch: Partial<Pick<Company, "name" | "timezone" | "appointment_interval_minutes">>
+    ) => {
       if (!company) return false;
       const { error } = await supabase
         .from("companies")
@@ -63,7 +65,7 @@ export function useCompany() {
         toast.error("Não foi possível salvar as alterações");
         return false;
       }
-      setCompany((c) => (c ? { ...c, ...patch } as Company : c));
+      setCompany((c) => (c ? ({ ...c, ...patch } as Company) : c));
       toast.success("Empresa atualizada");
       return true;
     },

@@ -2,6 +2,7 @@ export interface Client {
   id: string;
   name: string;
   phone?: string;
+  email?: string;
   notes?: string;
   createdAt: string;
 }
@@ -20,30 +21,29 @@ export interface Appointment {
   id: string;
   clientId: string;
   clientName: string;
+  clientEmail?: string;
   date: string; // ISO date "yyyy-MM-dd"
   time: string; // "HH:mm"
   service: string; // concatenated names for display / search
   services?: ServiceItem[]; // detailed breakdown
   materials: Material[];
-  price: number; // total (sum of services)
+  price: number;
   notes?: string;
   status: "scheduled" | "completed" | "cancelled" | "pendente_confirmacao";
   createdAt: string;
-  completedAt?: string; // ISO datetime
+  completedAt?: string;
   extraValue?: number;
   extraReason?: string;
   professionalId?: string;
 }
 
-// ---------- Multi-profile areas ----------
-export type AreaKey = "manicure" | "cabelo" | "cilios" | "sobrancelhas" | "estetica";
+// ---------- Áreas de atuação (apenas 3) ----------
+export type AreaKey = "manicure" | "cilios" | "sobrancelhas";
 
 export const AREAS: { key: AreaKey; label: string; emoji: string }[] = [
   { key: "manicure", label: "Manicure", emoji: "💅" },
-  { key: "cabelo", label: "Cabelo", emoji: "💇‍♀️" },
   { key: "cilios", label: "Cílios", emoji: "👁️" },
   { key: "sobrancelhas", label: "Sobrancelhas", emoji: "✨" },
-  { key: "estetica", label: "Estética", emoji: "🌸" },
 ];
 
 export const SERVICE_CATALOG_BY_AREA: Record<AreaKey, { name: string; price: number }[]> = {
@@ -66,19 +66,6 @@ export const SERVICE_CATALOG_BY_AREA: Record<AreaKey, { name: string; price: num
     { name: "Francesinha", price: 15 },
     { name: "Decoração (por unha)", price: 5 },
   ],
-  cabelo: [
-    { name: "Corte feminino", price: 60 },
-    { name: "Corte masculino", price: 40 },
-    { name: "Escova", price: 50 },
-    { name: "Hidratação", price: 70 },
-    { name: "Cronograma capilar", price: 120 },
-    { name: "Coloração raiz", price: 100 },
-    { name: "Coloração completa", price: 180 },
-    { name: "Mechas / luzes", price: 250 },
-    { name: "Progressiva", price: 200 },
-    { name: "Botox capilar", price: 150 },
-    { name: "Penteado", price: 80 },
-  ],
   cilios: [
     { name: "Aplicação fio a fio", price: 150 },
     { name: "Volume russo", price: 200 },
@@ -94,15 +81,6 @@ export const SERVICE_CATALOG_BY_AREA: Record<AreaKey, { name: string; price: num
     { name: "Brow lamination", price: 90 },
     { name: "Micropigmentação fio a fio", price: 350 },
     { name: "Tintura", price: 25 },
-  ],
-  estetica: [
-    { name: "Limpeza de pele", price: 100 },
-    { name: "Peeling", price: 130 },
-    { name: "Drenagem linfática", price: 90 },
-    { name: "Massagem relaxante", price: 100 },
-    { name: "Depilação buço", price: 15 },
-    { name: "Depilação axila", price: 25 },
-    { name: "Depilação perna inteira", price: 60 },
   ],
 };
 

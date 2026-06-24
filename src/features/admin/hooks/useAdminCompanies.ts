@@ -5,7 +5,6 @@ export interface AdminCompany {
   id: string;
   name: string;
   slug: string;
-  segment: string | null;
   created_at: string;
   plan_name: string | null;
   plan_id: string | null;
@@ -26,7 +25,7 @@ export function useAdminCompanies() {
       const [companies, subs, plans, professionals, appts] = await Promise.all([
         supabase
           .from("companies")
-          .select("id, name, slug, segment, created_at")
+          .select("id, name, slug, created_at")
           .order("created_at", { ascending: false }),
         supabase
           .from("company_subscriptions")
@@ -62,7 +61,6 @@ export function useAdminCompanies() {
           id: c.id,
           name: c.name,
           slug: c.slug,
-          segment: c.segment ?? null,
           created_at: c.created_at,
           plan_id: sub?.plan_id ?? null,
           plan_name: sub?.plan_name ?? null,

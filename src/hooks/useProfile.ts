@@ -6,7 +6,12 @@ import type { AreaKey } from "@/lib/types";
 export interface Profile {
   user_id: string;
   display_name: string | null;
-  areas: AreaKey[];
+  area: AreaKey;
+}
+
+const VALID_AREAS: AreaKey[] = ["manicure", "cilios", "sobrancelhas"];
+function normalizeArea(value: unknown): AreaKey {
+  return VALID_AREAS.includes(value as AreaKey) ? (value as AreaKey) : "manicure";
 }
 
 export function useProfile() {
@@ -23,14 +28,14 @@ export function useProfile() {
     setLoading(true);
     const { data, error } = await supabase
       .from("profiles")
-      .select("user_id, display_name, areas")
+      .select("user_id, display_name, area")
       .eq("user_id", user.id)
       .maybeSingle();
     if (!error && data) {
       setProfile({
         user_id: data.user_id,
         display_name: data.display_name,
-        areas: (data.areas ?? ["manicure"]) as AreaKey[],
+        area: normalizeArea(data.area),
       });
     }
     setLoading(false);
@@ -40,19 +45,19 @@ export function useProfile() {
     refresh();
   }, [refresh]);
 
-  const updateAreas = useCallback(
-    async (areas: AreaKey[]) => {
-      if (!user) return;
-      const safe = areas.length > 0 ? areas : (["manicure"] as AreaKey[]);
+  const updateArea = useCallback(
+    async (area: AreaKey) => {
+      if (!user) return false;
+      const safe = normalizeArea(area);
       const { error } = await supabase
         .from("profiles")
-        .update({ areas: safe })
+        .update({ area: safe })
         .eq("user_id", user.id);
-      if (!error) setProfile((p) => (p ? { ...p, areas: safe } : p));
+      if (!error) setProfile((p) => (p ? { ...p, area: safe } : p));
       return !error;
     },
     [user]
   );
 
-  return { profile, loading, refresh, updateAreas };
+  return { profile, loading, refresh, updateArea };
 }

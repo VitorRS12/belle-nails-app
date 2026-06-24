@@ -428,7 +428,7 @@ export default function PublicBooking() {
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="c-email" className="flex items-center gap-1.5">
-                    <Mail className="h-3.5 w-3.5" /> E-mail (opcional)
+                    <Mail className="h-3.5 w-3.5" /> E-mail <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="c-email"
@@ -436,7 +436,20 @@ export default function PublicBooking() {
                     value={customerEmail}
                     onChange={(e) => setCustomerEmail(e.target.value)}
                     maxLength={255}
+                    required
+                    aria-invalid={customerEmail.length > 0 && !emailValid}
+                    className={customerEmail.length > 0 && !emailValid ? "border-destructive" : ""}
                   />
+                  {customerEmail.length > 0 && !emailValid && (
+                    <p className="text-[11px] text-destructive">
+                      Informe um e-mail válido para receber a confirmação.
+                    </p>
+                  )}
+                  {customerEmail.length === 0 && (
+                    <p className="text-[11px] text-muted-foreground">
+                      Usaremos seu e-mail para enviar a confirmação do agendamento.
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="c-notes">Observações (opcional)</Label>
@@ -450,7 +463,7 @@ export default function PublicBooking() {
                 </div>
                 <Button
                   onClick={submit}
-                  disabled={submitting}
+                  disabled={!canSubmit}
                   className="w-full bg-gradient-primary h-11 shadow-elegant"
                 >
                   {submitting ? (

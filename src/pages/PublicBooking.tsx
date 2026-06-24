@@ -53,8 +53,8 @@ interface PublicCompany {
   id: string;
   name: string;
   slug: string;
-  segment: string | null;
   timezone: string;
+  appointment_interval_minutes?: number;
 }
 
 interface CompanyResponse {
@@ -150,14 +150,17 @@ export default function PublicBooking() {
     if (step === "time") void fetchSlots();
   }, [step, fetchSlots]);
 
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail.trim());
+  const canSubmit = !!customerName.trim() && emailValid && !submitting;
+
   const submit = async () => {
     if (!data || !slug || !serviceId || !professionalId || !date || !time) return;
     if (!customerName.trim()) {
       toast.error("Informe seu nome");
       return;
     }
-    if (!customerEmail.trim() && !customerPhone.trim()) {
-      toast.error("Informe e-mail ou telefone para contato");
+    if (!emailValid) {
+      toast.error("Informe um e-mail válido para confirmar o agendamento");
       return;
     }
     setSubmitting(true);
@@ -171,7 +174,7 @@ export default function PublicBooking() {
           date: format(date, "yyyy-MM-dd"),
           time,
           customerName,
-          customerEmail: customerEmail.trim() || undefined,
+          customerEmail: customerEmail.trim(),
           customerPhone: customerPhone.trim() || undefined,
           notes: notes.trim() || undefined,
         },
@@ -215,9 +218,6 @@ export default function PublicBooking() {
           Agendar online
         </p>
         <h1 className="font-display text-3xl text-foreground">{data.company.name}</h1>
-        {data.company.segment && (
-          <p className="text-sm text-muted-foreground">{data.company.segment}</p>
-        )}
       </header>
 
       <Stepper step={step} />
@@ -428,7 +428,7 @@ export default function PublicBooking() {
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="c-email" className="flex items-center gap-1.5">
-                    <Mail className="h-3.5 w-3.5" /> E-mail (opcional)
+                    <Mail className="h-3.5 w-3.5" /> E-mail <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="c-email"
@@ -436,7 +436,20 @@ export default function PublicBooking() {
                     value={customerEmail}
                     onChange={(e) => setCustomerEmail(e.target.value)}
                     maxLength={255}
+                    required
+                    aria-invalid={customerEmail.length > 0 && !emailValid}
+                    className={customerEmail.length > 0 && !emailValid ? "border-destructive" : ""}
                   />
+                  {customerEmail.length > 0 && !emailValid && (
+                    <p className="text-[11px] text-destructive">
+                      Informe um e-mail válido para receber a confirmação.
+                    </p>
+                  )}
+                  {customerEmail.length === 0 && (
+                    <p className="text-[11px] text-muted-foreground">
+                      Usaremos seu e-mail para enviar a confirmação do agendamento.
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="c-notes">Observações (opcional)</Label>
@@ -450,7 +463,7 @@ export default function PublicBooking() {
                 </div>
                 <Button
                   onClick={submit}
-                  disabled={submitting}
+                  disabled={!canSubmit}
                   className="w-full bg-gradient-primary h-11 shadow-elegant"
                 >
                   {submitting ? (

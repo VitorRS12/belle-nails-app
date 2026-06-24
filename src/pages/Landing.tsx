@@ -37,33 +37,33 @@ const screens = [
 const features = [
   {
     icon: CalendarDays,
-    title: "Agenda inteligente",
-    desc: "Organize horários, evite conflitos e visualize seu dia em segundos.",
+    title: "Agendamento inteligente",
+    desc: "Sua cliente agenda online em poucos toques e recebe a confirmação por e-mail automaticamente.",
   },
   {
     icon: Users,
-    title: "Clientes em um só lugar",
-    desc: "Histórico, preferências e contato — tudo à mão para um atendimento impecável.",
+    title: "Gestão de profissionais",
+    desc: "Cada profissional controla a própria agenda e recebe as solicitações de atendimento em tempo real.",
   },
   {
     icon: ClipboardList,
-    title: "Atendimentos registrados",
-    desc: "Acompanhe cada serviço realizado e mantenha um histórico completo.",
+    title: "Agenda personalizável",
+    desc: "Defina o intervalo dos horários — 10, 15, 30, 60 minutos ou o tempo que fizer sentido para você.",
   },
   {
     icon: LayoutDashboard,
-    title: "Painel com insights",
-    desc: "Veja receita, ocupação e desempenho do seu salão com clareza.",
+    title: "Comunicação automatizada",
+    desc: "E-mails automáticos para a cliente, para a profissional e para a proprietária a cada novo agendamento.",
   },
   {
     icon: ShieldCheck,
     title: "Dados protegidos",
-    desc: "Cada profissional só acessa os próprios clientes, com segurança de ponta.",
+    desc: "Cada profissional só acessa as próprias clientes, com criptografia e segurança de ponta.",
   },
   {
     icon: Sparkles,
-    title: "Feito para você brilhar",
-    desc: "Interface elegante, rápida e pensada para o dia a dia do salão.",
+    title: "Pensado para o seu segmento",
+    desc: "Feito sob medida para manicure, design de cílios e sobrancelhas — sem configurações que você não precisa.",
   },
 ];
 

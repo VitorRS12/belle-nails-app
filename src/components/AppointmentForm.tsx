@@ -39,7 +39,7 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
     () => professionals.filter((p) => p.active),
     [professionals]
   );
-  const activeAreas: AreaKey[] = (profile?.areas?.length ? profile.areas : ["manicure"]) as AreaKey[];
+  const activeAreas: AreaKey[] = [profile?.area ?? "manicure"];
   const [open, setOpen] = useState(false);
   const [clientId, setClientId] = useState(initial?.clientId ?? "");
   const [newClientName, setNewClientName] = useState("");

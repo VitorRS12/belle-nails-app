@@ -21,7 +21,7 @@ Deno.serve(async (req) => {
 
     const { data: company, error: cErr } = await admin
       .from("companies")
-      .select("id, name, slug, segment, timezone")
+      .select("id, name, slug, timezone, appointment_interval_minutes")
       .eq("slug", slug)
       .maybeSingle();
     if (cErr || !company) return json({ error: "Empresa não encontrada" }, 404);

@@ -226,25 +226,27 @@ const Configuracoes = () => {
           </div>
         </div>
 
-        {/* Areas / Multi-perfil */}
+        {/* Área de atuação (única) */}
         <div className="rounded-2xl bg-card border border-border/60 p-5 shadow-soft">
           <div className="flex items-center gap-3 mb-4">
             <Briefcase className="h-6 w-6 text-primary" />
             <div>
-              <h3 className="font-display text-lg">Áreas de atuação</h3>
+              <h3 className="font-display text-lg">Área de atuação</h3>
               <p className="text-xs text-muted-foreground">
-                Escolha as áreas em que você trabalha. Os catálogos de serviços aparecerão de acordo.
+                Selecione a área em que sua empresa atua. O catálogo de serviços é ajustado automaticamente.
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Área de atuação">
             {AREAS.map((a) => {
-              const active = (profile?.areas ?? ["manicure"]).includes(a.key);
+              const active = (profile?.area ?? "manicure") === a.key;
               return (
                 <button
                   key={a.key}
                   type="button"
-                  onClick={() => toggleArea(a.key)}
+                  role="radio"
+                  aria-checked={active}
+                  onClick={() => handleSetArea(a.key)}
                   className={`rounded-xl border px-3 py-3 text-left transition-smooth ${
                     active
                       ? "bg-gradient-primary text-primary-foreground border-transparent shadow-soft"
@@ -259,25 +261,10 @@ const Configuracoes = () => {
           </div>
         </div>
 
-        {/* Migration */}
-        {hasLegacy && (
-          <div className="rounded-2xl bg-gradient-soft border border-accent/40 p-5 shadow-soft">
-            <div className="flex items-center gap-3 mb-3">
-              <UploadCloud className="h-6 w-6 text-primary" />
-              <div>
-                <h3 className="font-display text-lg">Dados do celular detectados</h3>
-                <p className="text-xs text-muted-foreground">Importe seus dados antigos para a nuvem para acessá-los em qualquer lugar.</p>
-              </div>
-            </div>
-            <Button onClick={handleMigrate} disabled={loading} className="w-full bg-gradient-primary shadow-elegant rounded-xl">
-              <UploadCloud className="h-4 w-4 mr-2" /> Importar dados do celular
-            </Button>
-          </div>
-        )}
-
         <p className="text-xs text-muted-foreground text-center px-4">
           Seus dados são salvos automaticamente na nuvem e ficam disponíveis no celular e no navegador.
         </p>
+
       </div>
     </AppLayout>
   );

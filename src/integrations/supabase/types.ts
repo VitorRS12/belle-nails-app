@@ -161,33 +161,33 @@ export type Database = {
       }
       companies: {
         Row: {
+          appointment_interval_minutes: number
           created_at: string
           id: string
           name: string
           owner_user_id: string
-          segment: string | null
           settings: Json
           slug: string
           timezone: string
           updated_at: string
         }
         Insert: {
+          appointment_interval_minutes?: number
           created_at?: string
           id?: string
           name: string
           owner_user_id: string
-          segment?: string | null
           settings?: Json
           slug: string
           timezone?: string
           updated_at?: string
         }
         Update: {
+          appointment_interval_minutes?: number
           created_at?: string
           id?: string
           name?: string
           owner_user_id?: string
-          segment?: string | null
           settings?: Json
           slug?: string
           timezone?: string
@@ -615,7 +615,7 @@ export type Database = {
       }
       profiles: {
         Row: {
-          areas: string[]
+          area: string
           company_id: string | null
           created_at: string
           display_name: string | null
@@ -623,7 +623,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          areas?: string[]
+          area?: string
           company_id?: string | null
           created_at?: string
           display_name?: string | null
@@ -631,7 +631,7 @@ export type Database = {
           user_id: string
         }
         Update: {
-          areas?: string[]
+          area?: string
           company_id?: string | null
           created_at?: string
           display_name?: string | null

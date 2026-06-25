@@ -225,8 +225,14 @@ const Landing = () => {
         </div>
       </section>
 
-      <footer className="border-t border-border/50 py-8 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} Belle Nails · Feito com carinho.
+      <footer className="border-t border-border/50 py-8 text-center text-xs text-muted-foreground space-y-3">
+        <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+          <Link to="/precos" className="hover:text-foreground transition-smooth">Preços</Link>
+          <Link to="/termos" className="hover:text-foreground transition-smooth">Termos de Uso</Link>
+          <Link to="/privacidade" className="hover:text-foreground transition-smooth">Privacidade</Link>
+          <Link to="/reembolso" className="hover:text-foreground transition-smooth">Reembolso</Link>
+        </nav>
+        <div>© {new Date().getFullYear()} Belle Nails · Feito com carinho.</div>
       </footer>
     </div>
   );

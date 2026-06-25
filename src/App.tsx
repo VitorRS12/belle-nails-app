@@ -30,6 +30,10 @@ import { SuperAdminRoute } from "./features/admin/components/SuperAdminRoute.tsx
 import Planos from "./features/billing/pages/Planos.tsx";
 import BillingSuccess from "./features/billing/pages/Sucesso.tsx";
 import BillingCanceled from "./features/billing/pages/Cancelado.tsx";
+import Precos from "./pages/Precos.tsx";
+import Termos from "./pages/legal/Termos.tsx";
+import Privacidade from "./pages/legal/Privacidade.tsx";
+import Reembolso from "./pages/legal/Reembolso.tsx";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ActiveAreaProvider } from "./contexts/ActiveAreaContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -47,6 +51,10 @@ function AppInner() {
         <Route path="/" element={wrap(<Landing />)} />
         <Route path="/auth" element={wrap(<Auth />)} />
         <Route path="/b/:slug" element={wrap(<PublicBooking />)} />
+        <Route path="/precos" element={wrap(<Precos />)} />
+        <Route path="/termos" element={wrap(<Termos />)} />
+        <Route path="/privacidade" element={wrap(<Privacidade />)} />
+        <Route path="/reembolso" element={wrap(<Reembolso />)} />
         <Route path="/inicio" element={<ProtectedRoute>{wrap(<Index />)}</ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute>{wrap(<Dashboard />)}</ProtectedRoute>} />
         <Route path="/agenda" element={<ProtectedRoute>{wrap(<Agenda />)}</ProtectedRoute>} />

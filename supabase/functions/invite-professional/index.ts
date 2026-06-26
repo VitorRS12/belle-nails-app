@@ -80,9 +80,16 @@ Deno.serve(async (req) => {
     if (updErr) return json({ error: updErr.message }, 500);
 
     // 5) Send the invitation email
-    const redirectTo = req.headers.get("origin")
-      ? `${req.headers.get("origin")}/auth`
-      : undefined;
+    // Use a hardcoded allowlist to prevent open-redirect via spoofed Origin header
+    const ALLOWED_ORIGINS = [
+      "https://bellenailsorigin.lovable.app",
+      "https://id-preview--8011af2c-9eff-47f8-bbdd-af8a9c4a5689.lovable.app",
+    ];
+    const origin = req.headers.get("origin") ?? "";
+    const safeOrigin = ALLOWED_ORIGINS.includes(origin)
+      ? origin
+      : "https://bellenailsorigin.lovable.app";
+    const redirectTo = `${safeOrigin}/auth`;
 
     const { error: inviteErr } = await admin.auth.admin.inviteUserByEmail(email, {
       data: {

@@ -73,9 +73,9 @@ export default function Precos() {
         <div className="text-center mb-14">
           <h1 className="font-display text-4xl sm:text-5xl tracking-tight">Planos e preços</h1>
           <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
-            Comece grátis. Evolua quando quiser. Todos os planos pagos incluem{" "}
-            <strong>30 dias de teste</strong> sem compromisso.
+            Todos os planos incluem <strong>30 dias de teste grátis</strong>. Cancele quando quiser durante o período.
           </p>
+
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">

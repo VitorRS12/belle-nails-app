@@ -13,6 +13,7 @@ import { useProfessionals } from "@/hooks/useProfessionals";
 import { type Appointment, type Material, type ServiceItem, SERVICE_CATALOG_BY_AREA, AREAS, type AreaKey } from "@/lib/types";
 import { Plus, X, Star } from "lucide-react";
 import { toast } from "sonner";
+import { useTrialStatus } from "@/features/billing/hooks/useTrialStatus";
 
 interface Props {
   trigger?: React.ReactNode;
@@ -32,6 +33,7 @@ function initialServices(initial?: Appointment): ServiceItem[] {
 
 export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Props) {
   const clients = useClients();
+  const { isReadOnly } = useTrialStatus();
   const { profile } = useProfile();
   const { services: customCatalog, add: addCustomService } = useCustomServices();
   const { professionals } = useProfessionals();
@@ -131,6 +133,9 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
   };
 
   const submit = () => {
+    if (isReadOnly) {
+      return toast.error("Seu teste expirou. Assine um plano para continuar criando agendamentos.");
+    }
     let finalClientId = clientId;
     let finalClientName = clients.find((c) => c.id === clientId)?.name ?? "";
 

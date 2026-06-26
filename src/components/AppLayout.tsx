@@ -26,8 +26,8 @@ export function AppLayout({ title, subtitle, action, children, wide }: Props) {
         </div>
 
         <div className="flex-1 flex flex-col min-w-0">
-        <div className="flex-1 flex flex-col min-w-0">
           <TrialBanner />
+
           <header className="hidden md:flex h-16 items-center border-b border-border/60 bg-card/40 backdrop-blur-xl px-4">
             <SidebarTrigger />
             <div className="ml-3 flex flex-col gap-0.5">

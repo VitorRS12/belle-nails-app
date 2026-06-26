@@ -64,7 +64,7 @@ const Planos = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {(plans ?? []).map((p) => {
             const isCurrent = p.id === currentPlanId;
-            const isFree = p.price_cents === 0;
+
             return (
               <article
                 key={p.id}

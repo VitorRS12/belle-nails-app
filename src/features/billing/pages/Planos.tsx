@@ -30,13 +30,8 @@ const Planos = () => {
   const handleSubscribe = async (
     planId: string,
     priceId: string | null,
-    isFree: boolean,
   ) => {
     if (!company) return;
-    if (isFree) {
-      toast.info("Você já está no plano Free por padrão.");
-      return;
-    }
     if (!priceId) {
       toast.error("Este plano ainda não está disponível para assinatura.");
       return;
@@ -69,7 +64,7 @@ const Planos = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {(plans ?? []).map((p) => {
             const isCurrent = p.id === currentPlanId;
-            const isFree = p.price_cents === 0;
+
             return (
               <article
                 key={p.id}
@@ -120,7 +115,7 @@ const Planos = () => {
 
                 <Button
                   disabled={isCurrent || loadingId === p.id}
-                  onClick={() => handleSubscribe(p.id, (p as any).paddle_price_id ?? null, isFree)}
+                  onClick={() => handleSubscribe(p.id, (p as any).paddle_price_id ?? null)}
                   className={
                     isCurrent
                       ? ""
@@ -132,8 +127,6 @@ const Planos = () => {
                     "Plano atual"
                   ) : loadingId === p.id ? (
                     "Abrindo checkout…"
-                  ) : isFree ? (
-                    "Plano padrão"
                   ) : (
                     <>
                       <Sparkles className="h-4 w-4 mr-1" /> Assinar

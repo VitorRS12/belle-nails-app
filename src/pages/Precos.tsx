@@ -14,23 +14,23 @@ type Plan = {
 
 const PLANS: Plan[] = [
   {
-    name: "Free",
-    price: "R$ 0",
+    name: "Starter",
+    price: "R$ 30",
     period: "/mês",
-    description: "Para começar a organizar sua agenda.",
+    description: "Para profissionais autônomos. 30 dias de teste grátis.",
     features: [
       "1 profissional",
-      "Até 30 agendamentos / mês",
+      "Agendamentos ilimitados",
       "Página pública de agendamento",
       "Cadastro de clientes e serviços",
     ],
-    cta: "Começar grátis",
+    cta: "Começar 30 dias grátis",
   },
   {
     name: "Pro",
     price: "R$ 49",
     period: "/mês",
-    description: "Para profissionais e pequenos estúdios.",
+    description: "Para pequenos estúdios. 30 dias de teste grátis.",
     features: [
       "Até 5 profissionais",
       "Agendamentos ilimitados",
@@ -39,13 +39,13 @@ const PLANS: Plan[] = [
       "Relatórios e histórico",
     ],
     highlighted: true,
-    cta: "Assinar Pro",
+    cta: "Começar 30 dias grátis",
   },
   {
     name: "Business",
     price: "R$ 99",
     period: "/mês",
-    description: "Para estúdios em crescimento.",
+    description: "Para estúdios em crescimento. 30 dias de teste grátis.",
     features: [
       "Profissionais ilimitados",
       "Agendamentos ilimitados",
@@ -53,7 +53,7 @@ const PLANS: Plan[] = [
       "Suporte prioritário",
       "Acesso a recursos avançados",
     ],
-    cta: "Assinar Business",
+    cta: "Começar 30 dias grátis",
   },
 ];
 

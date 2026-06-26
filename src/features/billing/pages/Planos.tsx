@@ -115,7 +115,7 @@ const Planos = () => {
 
                 <Button
                   disabled={isCurrent || loadingId === p.id}
-                  onClick={() => handleSubscribe(p.id, (p as any).paddle_price_id ?? null, isFree)}
+                  onClick={() => handleSubscribe(p.id, (p as any).paddle_price_id ?? null)}
                   className={
                     isCurrent
                       ? ""
@@ -127,8 +127,6 @@ const Planos = () => {
                     "Plano atual"
                   ) : loadingId === p.id ? (
                     "Abrindo checkout…"
-                  ) : isFree ? (
-                    "Plano padrão"
                   ) : (
                     <>
                       <Sparkles className="h-4 w-4 mr-1" /> Assinar

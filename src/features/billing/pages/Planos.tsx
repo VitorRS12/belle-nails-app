@@ -30,13 +30,8 @@ const Planos = () => {
   const handleSubscribe = async (
     planId: string,
     priceId: string | null,
-    isFree: boolean,
   ) => {
     if (!company) return;
-    if (isFree) {
-      toast.info("Você já está no plano Free por padrão.");
-      return;
-    }
     if (!priceId) {
       toast.error("Este plano ainda não está disponível para assinatura.");
       return;

@@ -1,0 +1,17 @@
+# Belle Nails
+
+> Agenda online elegante e gestão completa para profissionais de beleza — manicure, design de cílios e sobrancelhas. Permite agendamentos públicos, cadastro de clientes, notificações automáticas e relatórios.
+
+Belle Nails é um SaaS brasileiro de agendamento e gestão para salões e profissionais autônomos da área de beleza. Cada salão tem uma página pública de agendamento, controle de profissionais, serviços e horários, além de notificações automáticas por e-mail para clientes e proprietárias.
+
+## Pages
+
+- [Início](/): Apresentação do produto, recursos e capturas de tela.
+- [Preços](/precos): Planos Starter, Pro e Business — todos com 30 dias de teste grátis.
+- [Entrar](/auth): Login e cadastro de novas contas.
+
+## Optional
+
+- [Termos de Uso](/termos): Condições de uso do serviço.
+- [Política de Privacidade](/privacidade): Tratamento de dados pessoais (LGPD).
+- [Política de Reembolso](/reembolso): Garantia de 30 dias e processo via Paddle.

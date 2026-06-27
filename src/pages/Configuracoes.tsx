@@ -13,6 +13,7 @@ import { useCompany } from "@/hooks/useCompany";
 import { useCompanyPlan } from "@/features/billing/hooks/useCompanyPlan";
 import { useIsSuperAdmin } from "@/hooks/useUserRoles";
 import { Progress } from "@/components/ui/progress";
+import { InstallAppCard } from "@/components/InstallAppCard";
 
 const Configuracoes = () => {
   const { user, signOut } = useAuth();
@@ -49,6 +50,9 @@ const Configuracoes = () => {
             <LogOut className="h-4 w-4 mr-2" /> Sair
           </Button>
         </div>
+
+        {/* Instalar app (PWA) */}
+        <InstallAppCard />
 
         {/* Empresa */}
         <CompanySettingsCard />

@@ -51,6 +51,9 @@ const Configuracoes = () => {
           </Button>
         </div>
 
+        {/* Instalar app (PWA) */}
+        <InstallAppCard />
+
         {/* Empresa */}
         <CompanySettingsCard />
 

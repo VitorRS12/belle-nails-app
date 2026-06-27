@@ -1,8 +1,13 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { ReactNode } from "react";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 export function LegalLayout({ title, children }: { title: string; children: ReactNode }) {
+  usePageMeta({
+    title: `${title} · Belle Nails`,
+    description: `${title} da Belle Nails — SaaS de agendamento e gestão para profissionais de beleza.`,
+  });
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border/50">

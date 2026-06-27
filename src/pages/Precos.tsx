@@ -59,6 +59,12 @@ const PLANS: Plan[] = [
 ];
 
 export default function Precos() {
+  usePageMeta({
+    title: "Preços e planos · Belle Nails",
+    description:
+      "Planos Starter (R$30), Pro (R$49) e Business da Belle Nails. Todos com 30 dias de teste grátis e pagamento via Paddle.",
+    path: "/precos",
+  });
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border/50">

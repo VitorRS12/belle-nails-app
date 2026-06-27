@@ -1,6 +1,6 @@
-import { useEffect } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePageMeta } from "@/hooks/usePageMeta";
 import { Button } from "@/components/ui/button";
 import {
   Sparkles,
@@ -70,21 +70,12 @@ const features = [
 const Landing = () => {
   const { session, loading } = useAuth();
 
-  useEffect(() => {
-    document.title = "Belle Nails · A agenda elegante do seu salão";
-    const meta =
-      document.querySelector('meta[name="description"]') ||
-      (() => {
-        const m = document.createElement("meta");
-        m.setAttribute("name", "description");
-        document.head.appendChild(m);
-        return m;
-      })();
-    meta.setAttribute(
-      "content",
-      "Belle Nails — uma agenda elegante e completa para profissionais de beleza. Clientes, atendimentos e relatórios em um só app.",
-    );
-  }, []);
+  usePageMeta({
+    title: "Belle Nails · A agenda elegante do seu salão",
+    description:
+      "Belle Nails — agenda online e gestão completa para manicures, designers de cílios e sobrancelhas. Página pública de agendamento, notificações automáticas e relatórios.",
+    path: "/",
+  });
 
   if (!loading && session) return <Navigate to="/inicio" replace />;
 
@@ -104,6 +95,9 @@ const Landing = () => {
           </Button>
         </Link>
       </header>
+
+      <main id="main">
+
 
       {/* Hero */}
       <section className="max-w-6xl mx-auto px-6 pt-16 pb-20 text-center">
@@ -224,6 +218,7 @@ const Landing = () => {
           </Link>
         </div>
       </section>
+      </main>
 
       <footer className="border-t border-border/50 py-8 text-center text-xs text-muted-foreground space-y-3">
         <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">

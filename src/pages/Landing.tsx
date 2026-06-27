@@ -96,6 +96,9 @@ const Landing = () => {
         </Link>
       </header>
 
+      <main id="main">
+
+
       {/* Hero */}
       <section className="max-w-6xl mx-auto px-6 pt-16 pb-20 text-center">
         <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/60 backdrop-blur px-4 py-1.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-6 animate-fade-in">
@@ -215,6 +218,7 @@ const Landing = () => {
           </Link>
         </div>
       </section>
+      </main>
 
       <footer className="border-t border-border/50 py-8 text-center text-xs text-muted-foreground space-y-3">
         <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">

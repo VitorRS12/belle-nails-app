@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 type Plan = {
   name: string;

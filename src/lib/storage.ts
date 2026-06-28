@@ -8,6 +8,7 @@
  * backend.
  */
 import { appointmentsRepo, clientsRepo } from "@/data";
+import { pullFromSupabase } from "@/data/sync/supabasePull";
 import type { AppointmentRecord, ClientRecord } from "@/data/types";
 import type { Appointment, Client } from "./types";
 import { toast } from "sonner";

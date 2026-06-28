@@ -84,7 +84,15 @@ export async function hydrateStores(userId: string) {
   try {
     if (hasLegacyData()) {
       await migrateLegacyData();
-      return; // migrateLegacyData re-hydrates
+    }
+    // Pull remote data for authenticated users so rows created via the public
+    // booking flow / other devices appear in the local IndexedDB cache.
+    if (userId && userId !== "guest") {
+      try {
+        await pullFromSupabase(userId);
+      } catch (err) {
+        console.warn("supabase pull failed (continuing with local data):", err);
+      }
     }
     await loadFromDexie();
   } catch (err) {

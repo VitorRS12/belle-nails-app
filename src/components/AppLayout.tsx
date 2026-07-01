@@ -36,7 +36,6 @@ export function AppLayout({ title, subtitle, action, children, wide }: Props) {
             <div className="ml-auto flex items-center gap-3">
               <OfflineIndicator />
               <AreaSwitcher />
-              <ThemeToggle />
               {action}
             </div>
           </header>

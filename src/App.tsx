@@ -55,6 +55,7 @@ function AppInner() {
         <Route path="/termos" element={wrap(<Termos />)} />
         <Route path="/privacidade" element={wrap(<Privacidade />)} />
         <Route path="/reembolso" element={wrap(<Reembolso />)} />
+        <Route path="/cancelar-agendamento" element={wrap(<CancelarAgendamento />)} />
         <Route path="/inicio" element={<ProtectedRoute>{wrap(<Index />)}</ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute>{wrap(<Dashboard />)}</ProtectedRoute>} />
         <Route path="/agenda" element={<ProtectedRoute>{wrap(<Agenda />)}</ProtectedRoute>} />

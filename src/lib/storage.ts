@@ -208,6 +208,7 @@ async function persistAppt(a: Appointment, isUpdate: boolean) {
     } else {
       await appointmentsRepo.create(payload);
     }
+    void syncEngine.flush();
   } catch (e) {
     console.error("persistAppt failed:", e);
     toast.error("Falha ao salvar atendimento localmente.");

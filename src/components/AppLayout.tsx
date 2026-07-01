@@ -56,7 +56,6 @@ export function AppLayout({ title, subtitle, action, children, wide }: Props) {
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
                 <OfflineIndicator />
-                <ThemeToggle />
                 {action}
               </div>
             </header>

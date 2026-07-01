@@ -133,7 +133,7 @@ Deno.serve(async (req) => {
         customer_email: cleanEmail,
 
       })
-      .select("id")
+      .select("id, cancellation_token")
       .single();
 
     if (apptErr || !appt) {

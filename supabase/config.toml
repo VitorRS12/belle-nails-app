@@ -18,4 +18,8 @@ verify_jwt = false
 [functions.send-reminders]
 verify_jwt = false
 
+[functions.public-cancel-booking]
+verify_jwt = false
+
+
 

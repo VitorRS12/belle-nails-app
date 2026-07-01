@@ -7,8 +7,10 @@
  * a future SyncAdapter is the only thing needed to push these changes to a
  * backend.
  */
-import { appointmentsRepo, clientsRepo } from "@/data";
+import { appointmentsRepo, clientsRepo, syncEngine } from "@/data";
 import { pullFromSupabase } from "@/data/sync/supabasePull";
+import { SupabaseAdapter, resetSupabaseAdapterScope } from "@/data/sync/supabaseAdapter";
+import { startRealtimeSync, stopRealtimeSync } from "@/data/sync/realtime";
 import type { AppointmentRecord, ClientRecord } from "@/data/types";
 import type { Appointment, Client } from "./types";
 import { toast } from "sonner";

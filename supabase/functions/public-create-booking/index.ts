@@ -152,6 +152,10 @@ Deno.serve(async (req) => {
       };
       const sendUrl = `${supabaseUrl}/functions/v1/send-notification-email`;
       const formattedDate = new Date(b.date + "T00:00:00").toLocaleDateString("pt-BR");
+      const publicOrigin = Deno.env.get("PUBLIC_APP_ORIGIN") ?? "https://bellenailsorigin.lovable.app";
+      const cancelUrl = appt.cancellation_token
+        ? `${publicOrigin}/cancelar-agendamento?token=${appt.cancellation_token}`
+        : "";
       const baseData = {
         customerName: b.customerName.trim(),
         companyName: company.name,
@@ -159,6 +163,7 @@ Deno.serve(async (req) => {
         professionalName: prof.name,
         date: formattedDate,
         time: b.time,
+        cancelUrl,
       };
 
       // Customer confirmation

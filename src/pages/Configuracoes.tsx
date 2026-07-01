@@ -266,6 +266,9 @@ const Configuracoes = () => {
           Seus dados são salvos automaticamente na nuvem e ficam disponíveis no celular e no navegador.
         </p>
 
+        {/* Instalar app (PWA) — sempre no fim da página */}
+        <InstallAppCard />
+
       </div>
     </AppLayout>
   );

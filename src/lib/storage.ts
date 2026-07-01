@@ -90,11 +90,17 @@ export async function hydrateStores(userId: string) {
     // Pull remote data for authenticated users so rows created via the public
     // booking flow / other devices appear in the local IndexedDB cache.
     if (userId && userId !== "guest") {
+      // Wire the real Supabase adapter and start realtime + auto-flush.
+      resetSupabaseAdapterScope();
+      syncEngine.setAdapter(SupabaseAdapter);
       try {
         await pullFromSupabase(userId);
       } catch (err) {
         console.warn("supabase pull failed (continuing with local data):", err);
       }
+      // Flush any outbox entries piled up from earlier sessions.
+      void syncEngine.flush();
+      void startRealtimeSync(userId);
     }
     await loadFromDexie();
   } catch (err) {
@@ -104,6 +110,8 @@ export async function hydrateStores(userId: string) {
 }
 
 export function clearStores() {
+  stopRealtimeSync();
+  resetSupabaseAdapterScope();
   // Local-first: keep the IndexedDB data on logout, only drop the in-memory cache.
   _clients = [];
   _appts = [];

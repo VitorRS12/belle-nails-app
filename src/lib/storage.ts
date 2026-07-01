@@ -155,7 +155,7 @@ export const appointmentsStore = {
   remove: (id: string) => {
     _appts = _appts.filter((a) => a.id !== id);
     emit();
-    void appointmentsRepo.remove(id).catch((e) => {
+    void appointmentsRepo.remove(id).then(() => syncEngine.flush()).catch((e) => {
       console.error("appointmentsRepo.remove failed:", e);
       toast.error("Falha ao remover atendimento.");
     });

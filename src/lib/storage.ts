@@ -135,7 +135,7 @@ export const clientsStore = {
     _clients = _clients.filter((c) => c.id !== id);
     _appts = _appts.filter((a) => a.clientId !== id);
     emit();
-    void clientsRepo.remove(id).catch((e) => {
+    void clientsRepo.remove(id).then(() => syncEngine.flush()).catch((e) => {
       console.error("clientsRepo.remove failed:", e);
       toast.error("Falha ao remover cliente.");
     });

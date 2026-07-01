@@ -4,7 +4,6 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { AreaSwitcher } from "./AreaSwitcher";
 import { Breadcrumbs } from "./Breadcrumbs";
-import { ThemeToggle } from "./ThemeToggle";
 import { OfflineIndicator } from "./OfflineIndicator";
 import { InstallAppPrompt } from "./InstallAppPrompt";
 import { TrialBanner } from "@/features/billing/components/TrialBanner";
@@ -37,7 +36,6 @@ export function AppLayout({ title, subtitle, action, children, wide }: Props) {
             <div className="ml-auto flex items-center gap-3">
               <OfflineIndicator />
               <AreaSwitcher />
-              <ThemeToggle />
               {action}
             </div>
           </header>
@@ -58,7 +56,6 @@ export function AppLayout({ title, subtitle, action, children, wide }: Props) {
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
                 <OfflineIndicator />
-                <ThemeToggle />
                 {action}
               </div>
             </header>

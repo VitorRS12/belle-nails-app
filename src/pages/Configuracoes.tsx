@@ -51,9 +51,6 @@ const Configuracoes = () => {
           </Button>
         </div>
 
-        {/* Instalar app (PWA) */}
-        <InstallAppCard />
-
         {/* Empresa */}
         <CompanySettingsCard />
 
@@ -268,6 +265,9 @@ const Configuracoes = () => {
         <p className="text-xs text-muted-foreground text-center px-4">
           Seus dados são salvos automaticamente na nuvem e ficam disponíveis no celular e no navegador.
         </p>
+
+        {/* Instalar app (PWA) — sempre no fim da página */}
+        <InstallAppCard />
 
       </div>
     </AppLayout>

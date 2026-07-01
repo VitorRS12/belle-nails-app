@@ -13,6 +13,7 @@ type Template =
   | "booking_new_company"
   | "booking_confirmed_customer"
   | "booking_cancelled_customer"
+  | "booking_cancelled_company"
   | "booking_reminder_customer";
 
 interface Body {
@@ -23,7 +24,10 @@ interface Body {
   appointmentId?: string;
 }
 
-const FROM = Deno.env.get("NOTIFICATION_FROM") ?? "Bellenails <onboarding@resend.dev>";
+const FROM = Deno.env.get("NOTIFICATION_FROM") ?? "Belle Nails <onboarding@resend.dev>";
+const LOGO_URL =
+  Deno.env.get("NOTIFICATION_LOGO_URL") ?? "https://bellenailsorigin.lovable.app/favicon.png";
+const BRAND_NAME = "Belle Nails";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -129,12 +133,27 @@ const esc = (v: unknown) =>
 function layout(title: string, body: string) {
   return `<!doctype html><html><body style="margin:0;background:#f7f7f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#111;">
   <div style="max-width:560px;margin:0 auto;padding:32px 24px;">
+    <div style="text-align:center;margin-bottom:20px;">
+      <img src="${LOGO_URL}" alt="${esc(BRAND_NAME)}" width="56" height="56"
+        style="width:56px;height:56px;border-radius:50%;display:inline-block;object-fit:cover;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08);" />
+      <div style="margin-top:8px;font-weight:600;font-size:14px;color:#444;letter-spacing:.4px;">${esc(BRAND_NAME)}</div>
+    </div>
     <div style="background:#fff;border-radius:16px;padding:32px 28px;box-shadow:0 1px 3px rgba(0,0,0,.05);">
       <h1 style="margin:0 0 16px;font-size:22px;font-weight:600;">${esc(title)}</h1>
       ${body}
     </div>
     <p style="margin-top:24px;font-size:12px;color:#888;text-align:center;">Enviado automaticamente — não responda este e-mail.</p>
   </div></body></html>`;
+}
+
+function ctaButton(label: string, url: string, variant: "primary" | "danger" = "primary") {
+  const bg = variant === "danger" ? "#dc2626" : "#111";
+  return `<p style="text-align:center;margin:20px 0;">
+    <a href="${esc(url)}"
+      style="display:inline-block;background:${bg};color:#fff;text-decoration:none;padding:12px 22px;border-radius:999px;font-weight:600;font-size:14px;">
+      ${esc(label)}
+    </a>
+  </p>`;
 }
 
 function renderTemplate(t: Template, d: Record<string, unknown>) {
@@ -144,6 +163,7 @@ function renderTemplate(t: Template, d: Record<string, unknown>) {
   const professional = esc(d.professionalName);
   const date = esc(d.date);
   const time = esc(d.time);
+  const cancelUrl = typeof d.cancelUrl === "string" ? d.cancelUrl : "";
 
   switch (t) {
     case "booking_confirmation_customer":
@@ -157,7 +177,8 @@ function renderTemplate(t: Template, d: Record<string, unknown>) {
             <tr><td style="padding:6px 0;color:#666;">Profissional</td><td style="text-align:right;"><strong>${professional}</strong></td></tr>
             <tr><td style="padding:6px 0;color:#666;">Data</td><td style="text-align:right;"><strong>${date} às ${time}</strong></td></tr>
           </table>
-          <p>Você receberá uma nova mensagem assim que for confirmado.</p>`),
+          <p>Você receberá uma nova mensagem assim que for confirmado.</p>
+          ${cancelUrl ? `<p style="color:#666;font-size:13px;margin-top:24px;">Precisa cancelar? Use o botão abaixo — a profissional será avisada automaticamente.</p>${ctaButton("Cancelar agendamento", cancelUrl, "danger")}` : ""}`),
       };
     case "booking_new_company":
       return {
@@ -183,7 +204,8 @@ function renderTemplate(t: Template, d: Record<string, unknown>) {
             <tr><td style="padding:6px 0;color:#666;">Profissional</td><td style="text-align:right;"><strong>${professional}</strong></td></tr>
             <tr><td style="padding:6px 0;color:#666;">Quando</td><td style="text-align:right;"><strong>${date} às ${time}</strong></td></tr>
           </table>
-          <p>Te esperamos!</p>`),
+          <p>Te esperamos!</p>
+          ${cancelUrl ? ctaButton("Preciso cancelar", cancelUrl, "danger") : ""}`),
       };
     case "booking_cancelled_customer":
       return {
@@ -192,6 +214,18 @@ function renderTemplate(t: Template, d: Record<string, unknown>) {
           <p>Olá, ${customer}.</p>
           <p>Seu agendamento de <strong>${service}</strong> com ${professional} em <strong>${date} às ${time}</strong> foi cancelado.</p>
           <p>Se desejar, agende um novo horário pelo nosso site.</p>`),
+      };
+    case "booking_cancelled_company":
+      return {
+        subject: `Agendamento cancelado pelo cliente — ${d.customerName}`,
+        html: layout("Agendamento cancelado pelo cliente", `
+          <p>O cliente <strong>${customer}</strong> cancelou o agendamento abaixo:</p>
+          <table style="width:100%;margin:16px 0;border-collapse:collapse;">
+            <tr><td style="padding:6px 0;color:#666;">Serviço</td><td style="text-align:right;"><strong>${service}</strong></td></tr>
+            <tr><td style="padding:6px 0;color:#666;">Profissional</td><td style="text-align:right;"><strong>${professional}</strong></td></tr>
+            <tr><td style="padding:6px 0;color:#666;">Quando</td><td style="text-align:right;"><strong>${date} às ${time}</strong></td></tr>
+          </table>
+          <p>O horário voltou a ficar disponível na sua agenda.</p>`),
       };
     case "booking_reminder_customer":
       return {
@@ -202,9 +236,11 @@ function renderTemplate(t: Template, d: Record<string, unknown>) {
             <tr><td style="padding:6px 0;color:#666;">Serviço</td><td style="text-align:right;"><strong>${service}</strong></td></tr>
             <tr><td style="padding:6px 0;color:#666;">Profissional</td><td style="text-align:right;"><strong>${professional}</strong></td></tr>
             <tr><td style="padding:6px 0;color:#666;">Quando</td><td style="text-align:right;"><strong>${date} às ${time}</strong></td></tr>
-          </table>`),
+          </table>
+          ${cancelUrl ? ctaButton("Preciso cancelar", cancelUrl, "danger") : ""}`),
       };
     default:
       return null;
   }
 }
+

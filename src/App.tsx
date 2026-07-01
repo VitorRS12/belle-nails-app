@@ -34,6 +34,7 @@ import Precos from "./pages/Precos.tsx";
 import Termos from "./pages/legal/Termos.tsx";
 import Privacidade from "./pages/legal/Privacidade.tsx";
 import Reembolso from "./pages/legal/Reembolso.tsx";
+import CancelarAgendamento from "./pages/CancelarAgendamento.tsx";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ActiveAreaProvider } from "./contexts/ActiveAreaContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -55,6 +56,7 @@ function AppInner() {
         <Route path="/termos" element={wrap(<Termos />)} />
         <Route path="/privacidade" element={wrap(<Privacidade />)} />
         <Route path="/reembolso" element={wrap(<Reembolso />)} />
+        <Route path="/cancelar-agendamento" element={wrap(<CancelarAgendamento />)} />
         <Route path="/inicio" element={<ProtectedRoute>{wrap(<Index />)}</ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute>{wrap(<Dashboard />)}</ProtectedRoute>} />
         <Route path="/agenda" element={<ProtectedRoute>{wrap(<Agenda />)}</ProtectedRoute>} />

@@ -7,8 +7,10 @@
  * a future SyncAdapter is the only thing needed to push these changes to a
  * backend.
  */
-import { appointmentsRepo, clientsRepo } from "@/data";
+import { appointmentsRepo, clientsRepo, syncEngine } from "@/data";
 import { pullFromSupabase } from "@/data/sync/supabasePull";
+import { SupabaseAdapter, resetSupabaseAdapterScope } from "@/data/sync/supabaseAdapter";
+import { startRealtimeSync, stopRealtimeSync } from "@/data/sync/realtime";
 import type { AppointmentRecord, ClientRecord } from "@/data/types";
 import type { Appointment, Client } from "./types";
 import { toast } from "sonner";
@@ -88,11 +90,17 @@ export async function hydrateStores(userId: string) {
     // Pull remote data for authenticated users so rows created via the public
     // booking flow / other devices appear in the local IndexedDB cache.
     if (userId && userId !== "guest") {
+      // Wire the real Supabase adapter and start realtime + auto-flush.
+      resetSupabaseAdapterScope();
+      syncEngine.setAdapter(SupabaseAdapter);
       try {
         await pullFromSupabase(userId);
       } catch (err) {
         console.warn("supabase pull failed (continuing with local data):", err);
       }
+      // Flush any outbox entries piled up from earlier sessions.
+      void syncEngine.flush();
+      void startRealtimeSync(userId);
     }
     await loadFromDexie();
   } catch (err) {
@@ -102,6 +110,8 @@ export async function hydrateStores(userId: string) {
 }
 
 export function clearStores() {
+  stopRealtimeSync();
+  resetSupabaseAdapterScope();
   // Local-first: keep the IndexedDB data on logout, only drop the in-memory cache.
   _clients = [];
   _appts = [];
@@ -125,7 +135,7 @@ export const clientsStore = {
     _clients = _clients.filter((c) => c.id !== id);
     _appts = _appts.filter((a) => a.clientId !== id);
     emit();
-    void clientsRepo.remove(id).catch((e) => {
+    void clientsRepo.remove(id).then(() => syncEngine.flush()).catch((e) => {
       console.error("clientsRepo.remove failed:", e);
       toast.error("Falha ao remover cliente.");
     });
@@ -145,7 +155,7 @@ export const appointmentsStore = {
   remove: (id: string) => {
     _appts = _appts.filter((a) => a.id !== id);
     emit();
-    void appointmentsRepo.remove(id).catch((e) => {
+    void appointmentsRepo.remove(id).then(() => syncEngine.flush()).catch((e) => {
       console.error("appointmentsRepo.remove failed:", e);
       toast.error("Falha ao remover atendimento.");
     });
@@ -166,6 +176,7 @@ async function persistClient(c: Client, isUpdate: boolean) {
     } else {
       await clientsRepo.create(payload);
     }
+    void syncEngine.flush();
   } catch (e) {
     console.error("persistClient failed:", e);
     toast.error("Falha ao salvar cliente localmente.");
@@ -197,6 +208,7 @@ async function persistAppt(a: Appointment, isUpdate: boolean) {
     } else {
       await appointmentsRepo.create(payload);
     }
+    void syncEngine.flush();
   } catch (e) {
     console.error("persistAppt failed:", e);
     toast.error("Falha ao salvar atendimento localmente.");

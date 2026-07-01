@@ -4,7 +4,6 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { AreaSwitcher } from "./AreaSwitcher";
 import { Breadcrumbs } from "./Breadcrumbs";
-import { ThemeToggle } from "./ThemeToggle";
 import { OfflineIndicator } from "./OfflineIndicator";
 import { InstallAppPrompt } from "./InstallAppPrompt";
 import { TrialBanner } from "@/features/billing/components/TrialBanner";

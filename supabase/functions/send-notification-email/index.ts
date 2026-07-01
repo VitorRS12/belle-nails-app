@@ -13,6 +13,7 @@ type Template =
   | "booking_new_company"
   | "booking_confirmed_customer"
   | "booking_cancelled_customer"
+  | "booking_cancelled_company"
   | "booking_reminder_customer";
 
 interface Body {
@@ -23,7 +24,10 @@ interface Body {
   appointmentId?: string;
 }
 
-const FROM = Deno.env.get("NOTIFICATION_FROM") ?? "Bellenails <onboarding@resend.dev>";
+const FROM = Deno.env.get("NOTIFICATION_FROM") ?? "Belle Nails <onboarding@resend.dev>";
+const LOGO_URL =
+  Deno.env.get("NOTIFICATION_LOGO_URL") ?? "https://bellenailsorigin.lovable.app/favicon.png";
+const BRAND_NAME = "Belle Nails";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });

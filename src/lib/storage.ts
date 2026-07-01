@@ -176,6 +176,7 @@ async function persistClient(c: Client, isUpdate: boolean) {
     } else {
       await clientsRepo.create(payload);
     }
+    void syncEngine.flush();
   } catch (e) {
     console.error("persistClient failed:", e);
     toast.error("Falha ao salvar cliente localmente.");

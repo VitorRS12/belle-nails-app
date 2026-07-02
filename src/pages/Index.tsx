@@ -14,13 +14,14 @@ const Dashboard = () => {
     const sorted = [...appts].sort((a, b) =>
       (a.date + a.time).localeCompare(b.date + b.time)
     );
+    const isActive = (s: string) => s === "scheduled" || s === "pendente_confirmacao";
     const todayScheduled = sorted.filter(
-      (a) => isToday(parseISO(a.date)) && a.status === "scheduled"
+      (a) => isToday(parseISO(a.date)) && isActive(a.status)
     );
     const upcoming = sorted
       .filter((a) => {
         const d = parseISO(a.date);
-        return isFuture(d) && !isToday(d) && a.status === "scheduled";
+        return isFuture(d) && !isToday(d) && isActive(a.status);
       })
       .slice(0, 4);
     const monthStart = startOfMonth(new Date());

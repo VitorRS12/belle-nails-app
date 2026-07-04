@@ -21,10 +21,29 @@ async function resolvePlanIdByPriceExternalId(priceExternalId: string): Promise<
   return (data as any)?.id ?? null;
 }
 
+async function resolveCompanyIdFromSession(sessionId: string | undefined): Promise<string | null> {
+  if (!sessionId) return null;
+  const { data, error } = await getSupabase()
+    .from("checkout_sessions")
+    .select("company_id, consumed_at")
+    .eq("id", sessionId)
+    .maybeSingle();
+  if (error || !data) return null;
+  // Mark as consumed (idempotent — allow updates by webhook retries)
+  await getSupabase()
+    .from("checkout_sessions")
+    .update({ consumed_at: new Date().toISOString() })
+    .eq("id", sessionId);
+  return (data as any).company_id as string;
+}
+
 async function handleSubscriptionCreated(data: any, env: PaddleEnv) {
-  const companyId: string | undefined = data?.customData?.companyId;
+  // Trust ONLY a server-issued sessionId (bound to an authorized company owner).
+  // The legacy companyId in customData is client-controlled and is intentionally ignored.
+  const sessionId: string | undefined = data?.customData?.sessionId;
+  const companyId = await resolveCompanyIdFromSession(sessionId);
   if (!companyId) {
-    console.warn("No companyId in customData; skipping");
+    console.warn("No valid checkout session on subscription; skipping", { sessionId });
     return;
   }
   const item = data.items?.[0];

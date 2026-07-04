@@ -38,10 +38,18 @@ const Planos = () => {
     }
     setLoadingId(planId);
     try {
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data, error } = await supabase.functions.invoke("create-checkout-session", {
+        body: { companyId: company.id },
+      });
+      if (error || !data?.sessionId) {
+        toast.error("Não foi possível iniciar o checkout. Tente novamente.");
+        return;
+      }
       await openCheckout({
         priceId,
         customerEmail: user?.email,
-        customData: { companyId: company.id, userId: user?.id ?? "" },
+        customData: { sessionId: data.sessionId },
       });
     } catch (e) {
       toast.error("Não foi possível abrir o checkout. Tente novamente.");

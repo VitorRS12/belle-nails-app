@@ -11,10 +11,56 @@ import {
   ShieldCheck,
   ArrowRight,
   Eye,
+  Check,
 } from "lucide-react";
 import dashboardShot from "@/assets/screenshots/painel.png.asset.json";
 import agendaShot from "@/assets/screenshots/agenda.png.asset.json";
 import clientesShot from "@/assets/screenshots/clientes.png.asset.json";
+
+const plans = [
+  {
+    name: "Starter",
+    price: "R$ 30",
+    period: "/mês",
+    description: "Para profissionais autônomos.",
+    features: [
+      "1 profissional",
+      "Agendamentos ilimitados",
+      "Página pública de agendamento",
+      "Cadastro de clientes e serviços",
+    ],
+    cta: "Começar 30 dias grátis",
+  },
+  {
+    name: "Pro",
+    price: "R$ 49",
+    period: "/mês",
+    description: "Para pequenos estúdios.",
+    features: [
+      "Até 5 profissionais",
+      "Agendamentos ilimitados",
+      "Notificações automáticas por e-mail",
+      "Lembretes 24h antes",
+      "Relatórios e histórico",
+    ],
+    highlighted: true,
+    cta: "Começar 30 dias grátis",
+  },
+  {
+    name: "Business",
+    price: "R$ 99",
+    period: "/mês",
+    description: "Para estúdios em crescimento.",
+    features: [
+      "Profissionais ilimitados",
+      "Agendamentos ilimitados",
+      "Gestão de bloqueios e jornadas",
+      "Suporte prioritário",
+      "Recursos avançados",
+    ],
+    cta: "Começar 30 dias grátis",
+  },
+];
 
 const screens = [
   {

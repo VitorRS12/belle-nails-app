@@ -184,6 +184,39 @@
     --sidebar-primary: 35 60% 40%;
     --sidebar-ring: 35 60% 40%;
   }
+
+  /* Dark-mode overrides per area — precedence over light area tokens */
+  .dark[data-area="cilios"] {
+    --primary: 285 75% 72%;
+    --primary-foreground: 340 30% 8%;
+    --primary-glow: 285 90% 80%;
+    --accent: 290 55% 68%;
+    --accent-soft: 285 30% 20%;
+    --ring: 285 75% 72%;
+    --gradient-primary: linear-gradient(135deg, hsl(280 65% 55%), hsl(290 80% 72%));
+    --gradient-gold: linear-gradient(135deg, hsl(38 65% 58%), hsl(38 80% 72%));
+    --gradient-hero: linear-gradient(135deg, hsl(280 30% 10%) 0%, hsl(285 32% 13%) 50%, hsl(300 28% 12%) 100%);
+    --shadow-soft: 0 4px 24px -6px hsl(285 70% 35% / 0.5);
+    --shadow-elegant: 0 14px 48px -14px hsl(285 80% 50% / 0.55);
+    --sidebar-primary: 285 75% 72%;
+    --sidebar-ring: 285 75% 72%;
+  }
+
+  .dark[data-area="sobrancelhas"] {
+    --primary: 38 75% 65%;
+    --primary-foreground: 340 30% 8%;
+    --primary-glow: 40 85% 74%;
+    --accent: 42 65% 62%;
+    --accent-soft: 38 30% 20%;
+    --ring: 38 75% 65%;
+    --gradient-primary: linear-gradient(135deg, hsl(35 65% 52%), hsl(42 80% 68%));
+    --gradient-gold: linear-gradient(135deg, hsl(40 65% 58%), hsl(45 78% 72%));
+    --gradient-hero: linear-gradient(135deg, hsl(35 28% 10%) 0%, hsl(40 30% 13%) 50%, hsl(45 28% 12%) 100%);
+    --shadow-soft: 0 4px 24px -6px hsl(38 70% 40% / 0.45);
+    --shadow-elegant: 0 14px 48px -14px hsl(38 80% 48% / 0.5);
+    --sidebar-primary: 38 75% 65%;
+    --sidebar-ring: 38 75% 65%;
+  }
 }
 
 @layer base {

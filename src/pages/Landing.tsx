@@ -264,7 +264,72 @@ const Landing = () => {
           </Link>
         </div>
       </section>
-      </main>
+
+      {/* Pricing */}
+      <section id="precos" className="max-w-6xl mx-auto px-6 pb-24">
+        <div className="text-center mb-14">
+          <p className="text-[11px] uppercase tracking-[0.25em] text-accent-foreground/80 mb-3">
+            Planos e preços
+          </p>
+          <h2 className="font-display text-4xl sm:text-5xl tracking-tight">
+            Escolha o plano <em className="italic text-primary">ideal</em> para você.
+          </h2>
+          <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
+            Todos os planos incluem <strong className="text-foreground">30 dias de teste grátis</strong>. Sem compromisso — cancele quando quiser durante o período.
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-3">
+          {plans.map((p) => (
+            <div
+              key={p.name}
+              className={`rounded-3xl border p-8 flex flex-col backdrop-blur transition-smooth ${
+                p.highlighted
+                  ? "border-primary/60 bg-card shadow-elegant md:scale-[1.04] relative"
+                  : "border-border/60 bg-card/70 hover:shadow-soft"
+              }`}
+            >
+              {p.highlighted && (
+                <span className="self-start mb-4 text-[11px] uppercase tracking-[0.18em] font-semibold px-3 py-1 rounded-full bg-gradient-gold text-foreground/80 shadow-gold">
+                  Mais popular
+                </span>
+              )}
+              <h3 className="font-display text-2xl">{p.name}</h3>
+              <p className="text-sm text-muted-foreground mt-1.5">{p.description}</p>
+              <div className="mt-6 flex items-baseline gap-1.5">
+                <span className="font-display text-5xl tracking-tight">{p.price}</span>
+                <span className="text-muted-foreground">{p.period}</span>
+              </div>
+              <ul className="mt-7 space-y-3 flex-1">
+                {p.features.map((f) => (
+                  <li key={f} className="flex items-start gap-2.5 text-sm text-foreground/85">
+                    <Check className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link to="/auth" className="mt-8 block">
+                <Button
+                  size="lg"
+                  className={`w-full h-12 rounded-full ${
+                    p.highlighted ? "bg-gradient-primary shadow-elegant" : ""
+                  }`}
+                  variant={p.highlighted ? "default" : "outline"}
+                >
+                  {p.cta}
+                </Button>
+              </Link>
+            </div>
+          ))}
+        </div>
+
+        <p className="text-center text-xs text-muted-foreground mt-10">
+          Pagamentos processados pela Paddle.com (Merchant of Record). Veja nossa{" "}
+          <Link to="/reembolso" className="underline hover:text-foreground">Política de Reembolso</Link>,{" "}
+          <Link to="/privacidade" className="underline hover:text-foreground">Privacidade</Link> e{" "}
+          <Link to="/termos" className="underline hover:text-foreground">Termos de Uso</Link>.
+        </p>
+      </section>
 
       <footer className="border-t border-border/50 py-8 text-center text-xs text-muted-foreground space-y-3">
         <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">

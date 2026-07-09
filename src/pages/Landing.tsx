@@ -330,6 +330,9 @@ const Landing = () => {
           <Link to="/termos" className="underline hover:text-foreground">Termos de Uso</Link>.
         </p>
       </section>
+      </main>
+
+
 
       <footer className="border-t border-border/50 py-8 text-center text-xs text-muted-foreground space-y-3">
         <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">

@@ -5,9 +5,11 @@ export default function Privacidade() {
     <LegalLayout title="Política de Privacidade">
       <h2>1. Quem somos</h2>
       <p>
-        Esta Política descreve como a <strong>Belle Nails</strong> trata dados pessoais. Para os
-        dados que coletamos diretamente de você (cadastro, uso do serviço), a Belle Nails atua como
-        <em> controladora</em> dos dados pessoais.
+        Esta Política descreve como <strong>Edelson Vitor dos Santos Dutra</strong>, pessoa física
+        inscrita no CPF sob o nº <strong>065.235.185-90</strong>, atuando comercialmente sob o nome{" "}
+        <strong>Belle Nails</strong> ("Belle Nails", "nós"), trata dados pessoais. Para os dados
+        que coletamos diretamente de você (cadastro, uso do serviço), a Belle Nails atua como{" "}
+        <em>controladora</em> dos dados pessoais, nos termos da LGPD (Lei nº 13.709/2018).
       </p>
 
       <h2>2. Dados que coletamos</h2>

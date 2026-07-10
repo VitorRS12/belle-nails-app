@@ -5,8 +5,10 @@ export default function Termos() {
     <LegalLayout title="Termos de Uso">
       <h2>1. Identificação do prestador</h2>
       <p>
-        Este serviço é operado por <strong>Belle Nails</strong> ("Belle Nails", "nós"). Ao utilizar
-        a plataforma, você celebra um contrato diretamente com a Belle Nails.
+        Este serviço é operado por <strong>Edelson Vitor dos Santos Dutra</strong>, pessoa física
+        inscrita no CPF sob o nº <strong>065.235.185-90</strong>, que atua comercialmente sob o
+        nome <strong>Belle Nails</strong> ("Belle Nails", "nós"). Ao utilizar a plataforma, você
+        celebra um contrato diretamente com Edelson Vitor dos Santos Dutra (Belle Nails).
       </p>
 
       <h2>2. Aceitação</h2>

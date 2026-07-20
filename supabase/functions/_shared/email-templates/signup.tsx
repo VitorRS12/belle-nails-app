@@ -1,21 +1,7 @@
 /// <reference types="npm:@types/react@18.3.1" />
 
 import * as React from 'npm:react@18.3.1'
-
-import {
-  Body,
-  Button,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Img,
-  Link,
-  Preview,
-  Section,
-  Text,
-} from 'npm:@react-email/components@0.0.22'
+import { EmailLayout, InfoBox } from './_layout.tsx'
 
 interface SignupEmailProps {
   siteName: string
@@ -30,54 +16,29 @@ export const SignupEmail = ({
   recipient,
   confirmationUrl,
 }: SignupEmailProps) => (
-  <Html lang="pt-BR" dir="ltr">
-    <Head />
-    <Preview>Confirme seu email para começar a usar o {siteName}</Preview>
-    <Body style={main}>
-      <Container style={container}>
-        <Section style={header}>
-          <Img src="https://bellenailsapp.com/favicon.png" alt={siteName} width="56" height="56" style={logo} />
-          <Text style={brand}>{siteName}</Text>
-        </Section>
-        <Section style={card}>
-          <Heading style={h1}>Bem-vinda ao Belle Nails</Heading>
-          <Text style={text}>
-            Olá! Obrigado por criar sua conta em{' '}
-            <Link href={siteUrl} style={link}>{siteName}</Link>.
-          </Text>
-          <Text style={text}>
-            Para começar a gerenciar seus agendamentos, confirme o email <strong>{recipient}</strong> clicando no botão abaixo:
-          </Text>
-          <Section style={{ textAlign: 'center' as const, margin: '32px 0' }}>
-            <Button style={button} href={confirmationUrl}>
-              Confirmar meu email
-            </Button>
-          </Section>
-          <Text style={footer}>
-            Se você não criou uma conta, é só ignorar este email.
-          </Text>
-        </Section>
-        <Hr style={hr} />
-        <Text style={smallFooter}>
-          Enviado por {siteName} · Cuidando da sua beleza com carinho
-        </Text>
-      </Container>
-    </Body>
-  </Html>
+  <EmailLayout
+    siteName={siteName}
+    siteUrl={siteUrl}
+    preview={`Confirme seu email para começar a usar o ${siteName}`}
+    eyebrow="Bem-vinda"
+    heading={`Que bom ter você no ${siteName}`}
+    intro={
+      <>
+        Estamos felizes em receber você! Falta só um passinho para começar a organizar seus atendimentos, clientes e agenda em um só lugar.
+      </>
+    }
+    ctaLabel="Confirmar meu email"
+    ctaUrl={confirmationUrl}
+    secondaryNote={
+      <>
+        Este link confirma o email <strong>{recipient}</strong>. Se você não criou uma conta, pode ignorar esta mensagem — nada será ativado.
+      </>
+    }
+  >
+    <InfoBox>
+      ✨ Após confirmar, você terá acesso a agenda inteligente, lembretes automáticos e página pública de agendamentos.
+    </InfoBox>
+  </EmailLayout>
 )
 
 export default SignupEmail
-
-const main = { backgroundColor: '#ffffff', fontFamily: 'Georgia, "Times New Roman", serif' }
-const container = { padding: '32px 20px', maxWidth: '560px', margin: '0 auto' }
-const header = { textAlign: 'center' as const, marginBottom: '24px' }
-const logo = { display: 'inline-block', borderRadius: '50%' }
-const brand = { fontSize: '20px', fontWeight: 'bold' as const, color: '#C74D6C', margin: '8px 0 0', letterSpacing: '0.5px' }
-const card = { backgroundColor: '#FDF7F5', borderRadius: '16px', padding: '32px 28px', border: '1px solid #F3E1E4' }
-const h1 = { fontSize: '24px', fontWeight: 'bold' as const, color: '#3B2028', margin: '0 0 16px', textAlign: 'center' as const }
-const text = { fontSize: '15px', color: '#5A404A', lineHeight: '1.6', margin: '0 0 16px' }
-const link = { color: '#C74D6C', textDecoration: 'underline' }
-const button = { backgroundColor: '#C74D6C', color: '#ffffff', fontSize: '15px', fontWeight: 'bold' as const, borderRadius: '12px', padding: '14px 28px', textDecoration: 'none', display: 'inline-block' }
-const footer = { fontSize: '13px', color: '#7A6970', margin: '24px 0 0', lineHeight: '1.5' }
-const hr = { borderColor: '#F3E1E4', margin: '24px 0' }
-const smallFooter = { fontSize: '12px', color: '#9B8A90', textAlign: 'center' as const, margin: 0 }

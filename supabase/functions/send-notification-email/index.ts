@@ -130,30 +130,61 @@ const esc = (v: unknown) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!)
   );
 
-function layout(title: string, body: string) {
-  return `<!doctype html><html><body style="margin:0;background:#f7f7f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#111;">
-  <div style="max-width:560px;margin:0 auto;padding:32px 24px;">
-    <div style="text-align:center;margin-bottom:20px;">
-      <img src="${LOGO_URL}" alt="${esc(BRAND_NAME)}" width="56" height="56"
-        style="width:56px;height:56px;border-radius:50%;display:inline-block;object-fit:cover;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08);" />
-      <div style="margin-top:8px;font-weight:600;font-size:14px;color:#444;letter-spacing:.4px;">${esc(BRAND_NAME)}</div>
+function layout(opts: { eyebrow?: string; title: string; body: string; footerNote?: string }) {
+  const { eyebrow, title, body, footerNote } = opts;
+  return `<!doctype html><html lang="pt-BR"><body style="margin:0;padding:24px 0;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#3B2028;">
+  <div style="max-width:580px;margin:0 auto;padding:0 16px;">
+    <!-- Hero -->
+    <div style="background:linear-gradient(135deg,#FFF1F4 0%,#FCE4EC 45%,#F8BBD0 100%);border-radius:24px 24px 0 0;padding:36px 24px 28px;text-align:center;">
+      <img src="${LOGO_URL}" alt="${esc(BRAND_NAME)}" width="52" height="52"
+        style="width:52px;height:52px;border-radius:50%;display:inline-block;object-fit:cover;border:3px solid #ffffff;box-shadow:0 4px 12px rgba(199,77,108,0.18);" />
+      <div style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:bold;color:#8E2E4A;margin:12px 0 4px;letter-spacing:0.6px;">${esc(BRAND_NAME)}</div>
+      <div style="font-size:12px;color:#B76B82;letter-spacing:2px;text-transform:uppercase;">Beleza que cuida de você</div>
     </div>
-    <div style="background:#fff;border-radius:16px;padding:32px 28px;box-shadow:0 1px 3px rgba(0,0,0,.05);">
-      <h1 style="margin:0 0 16px;font-size:22px;font-weight:600;">${esc(title)}</h1>
+    <!-- Card -->
+    <div style="background:#FFFAFB;border:1px solid #F5D9E0;border-top:none;border-radius:0 0 24px 24px;padding:36px 32px 32px;">
+      ${eyebrow ? `<div style="font-size:11px;font-weight:bold;color:#C74D6C;letter-spacing:2.5px;text-transform:uppercase;text-align:center;margin-bottom:8px;">${esc(eyebrow)}</div>` : ""}
+      <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:bold;color:#3B2028;margin:0 0 20px;text-align:center;line-height:1.25;">${esc(title)}</h1>
       ${body}
     </div>
-    <p style="margin-top:24px;font-size:12px;color:#888;text-align:center;">Enviado automaticamente — não responda este e-mail.</p>
+    <!-- Footer -->
+    <div style="padding:24px 16px 8px;text-align:center;">
+      <div style="font-family:Georgia,'Times New Roman',serif;font-size:14px;color:#8E2E4A;font-style:italic;margin-bottom:8px;">Com carinho, equipe ${esc(BRAND_NAME)} 💗</div>
+      ${footerNote ? `<div style="font-size:12px;color:#9B8A90;margin-bottom:4px;">${footerNote}</div>` : ""}
+      <div style="font-size:11px;color:#B7A9AE;margin-top:12px;">Enviado automaticamente — não responda este email.</div>
+    </div>
   </div></body></html>`;
 }
 
 function ctaButton(label: string, url: string, variant: "primary" | "danger" = "primary") {
-  const bg = variant === "danger" ? "#dc2626" : "#111";
-  return `<p style="text-align:center;margin:20px 0;">
+  const bg = variant === "danger"
+    ? "linear-gradient(135deg,#DC2626 0%,#991B1B 100%)"
+    : "linear-gradient(135deg,#C74D6C 0%,#9E3556 100%)";
+  const shadow = variant === "danger"
+    ? "0 6px 16px rgba(220,38,38,0.28)"
+    : "0 6px 16px rgba(199,77,108,0.28)";
+  return `<div style="text-align:center;margin:28px 0 12px;">
     <a href="${esc(url)}"
-      style="display:inline-block;background:${bg};color:#fff;text-decoration:none;padding:12px 22px;border-radius:999px;font-weight:600;font-size:14px;">
+      style="display:inline-block;background:${bg};color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:999px;font-weight:bold;font-size:15px;letter-spacing:0.3px;box-shadow:${shadow};">
       ${esc(label)}
     </a>
-  </p>`;
+  </div>`;
+}
+
+function detailsTable(rows: Array<[string, string]>) {
+  return `<div style="background:#FDF0F3;border:1px solid #F5D9E0;border-radius:14px;padding:8px 20px;margin:20px 0;">
+    <table style="width:100%;border-collapse:collapse;">
+      ${rows.map(([k, v], i) => `
+        <tr>
+          <td style="padding:12px 0;color:#8B6F78;font-size:13px;letter-spacing:0.3px;${i > 0 ? "border-top:1px solid #F5D9E0;" : ""}">${esc(k)}</td>
+          <td style="padding:12px 0;text-align:right;color:#3B2028;font-weight:bold;font-size:14px;${i > 0 ? "border-top:1px solid #F5D9E0;" : ""}">${v}</td>
+        </tr>`).join("")}
+    </table>
+  </div>`;
+}
+
+function lead(text: string) {
+  return `<p style="font-size:15px;color:#5A404A;line-height:1.65;margin:0 0 16px;">${text}</p>`;
 }
 
 function renderTemplate(t: Template, d: Record<string, unknown>) {
@@ -165,79 +196,100 @@ function renderTemplate(t: Template, d: Record<string, unknown>) {
   const time = esc(d.time);
   const cancelUrl = typeof d.cancelUrl === "string" ? d.cancelUrl : "";
 
+  const details = detailsTable([
+    ["Serviço", `<strong>${service}</strong>`],
+    ["Profissional", professional],
+    ["Data & horário", `${date} · ${time}`],
+  ]);
+
   switch (t) {
     case "booking_confirmation_customer":
       return {
         subject: `Recebemos seu agendamento — ${d.companyName}`,
-        html: layout("Agendamento recebido", `
-          <p>Olá, ${customer}!</p>
-          <p>Recebemos seu pedido de agendamento em <strong>${company}</strong>. Ele está aguardando confirmação.</p>
-          <table style="width:100%;margin:16px 0;border-collapse:collapse;">
-            <tr><td style="padding:6px 0;color:#666;">Serviço</td><td style="text-align:right;"><strong>${service}</strong></td></tr>
-            <tr><td style="padding:6px 0;color:#666;">Profissional</td><td style="text-align:right;"><strong>${professional}</strong></td></tr>
-            <tr><td style="padding:6px 0;color:#666;">Data</td><td style="text-align:right;"><strong>${date} às ${time}</strong></td></tr>
-          </table>
-          <p>Você receberá uma nova mensagem assim que for confirmado.</p>
-          ${cancelUrl ? `<p style="color:#666;font-size:13px;margin-top:24px;">Precisa cancelar? Use o botão abaixo — a profissional será avisada automaticamente.</p>${ctaButton("Cancelar agendamento", cancelUrl, "danger")}` : ""}`),
+        html: layout({
+          eyebrow: "Agendamento recebido",
+          title: `Olá, ${customer} ✨`,
+          body: `
+            ${lead(`Recebemos seu pedido em <strong>${company}</strong>. Ele já entrou na agenda e está aguardando a confirmação da profissional.`)}
+            ${details}
+            ${lead("Assim que for confirmado você recebe um novo email — pode deixar com a gente.")}
+            ${cancelUrl ? `<div style="border-top:1px solid #F3E1E4;margin-top:24px;padding-top:16px;"><p style="font-size:13px;color:#7A6970;text-align:center;margin:0 0 4px;">Precisa cancelar?</p>${ctaButton("Cancelar agendamento", cancelUrl, "danger")}</div>` : ""}
+          `,
+        }),
       };
     case "booking_new_company":
       return {
         subject: `Novo agendamento — ${d.customerName} (${d.date} ${d.time})`,
-        html: layout("Novo agendamento recebido", `
-          <p>Um novo agendamento aguarda sua confirmação.</p>
-          <table style="width:100%;margin:16px 0;border-collapse:collapse;">
-            <tr><td style="padding:6px 0;color:#666;">Cliente</td><td style="text-align:right;"><strong>${customer}</strong></td></tr>
-            <tr><td style="padding:6px 0;color:#666;">Contato</td><td style="text-align:right;">${esc(d.customerContact)}</td></tr>
-            <tr><td style="padding:6px 0;color:#666;">Serviço</td><td style="text-align:right;"><strong>${service}</strong></td></tr>
-            <tr><td style="padding:6px 0;color:#666;">Profissional</td><td style="text-align:right;"><strong>${professional}</strong></td></tr>
-            <tr><td style="padding:6px 0;color:#666;">Quando</td><td style="text-align:right;"><strong>${date} ${time}</strong></td></tr>
-          </table>
-          <p>Acesse o painel para confirmar ou recusar.</p>`),
+        html: layout({
+          eyebrow: "Novo pedido",
+          title: "Um novo agendamento chegou",
+          body: `
+            ${lead(`<strong>${customer}</strong> pediu um horário e está aguardando sua confirmação.`)}
+            ${detailsTable([
+              ["Cliente", `<strong>${customer}</strong>`],
+              ["Contato", esc(d.customerContact)],
+              ["Serviço", service],
+              ["Profissional", professional],
+              ["Quando", `${date} · ${time}`],
+            ])}
+            ${lead("Abra o painel do Belle Nails para confirmar, remarcar ou recusar.")}
+          `,
+          footerNote: "Você recebe estes avisos porque é membro desta empresa.",
+        }),
       };
     case "booking_confirmed_customer":
       return {
         subject: `Agendamento confirmado — ${d.companyName}`,
-        html: layout("Agendamento confirmado ✅", `
-          <p>Olá, ${customer}! Seu agendamento foi confirmado.</p>
-          <table style="width:100%;margin:16px 0;border-collapse:collapse;">
-            <tr><td style="padding:6px 0;color:#666;">Serviço</td><td style="text-align:right;"><strong>${service}</strong></td></tr>
-            <tr><td style="padding:6px 0;color:#666;">Profissional</td><td style="text-align:right;"><strong>${professional}</strong></td></tr>
-            <tr><td style="padding:6px 0;color:#666;">Quando</td><td style="text-align:right;"><strong>${date} às ${time}</strong></td></tr>
-          </table>
-          <p>Te esperamos!</p>
-          ${cancelUrl ? ctaButton("Preciso cancelar", cancelUrl, "danger") : ""}`),
+        html: layout({
+          eyebrow: "Está confirmado",
+          title: `Tudo certo, ${customer} 💗`,
+          body: `
+            ${lead(`Sua profissional confirmou seu agendamento em <strong>${company}</strong>. Já pode marcar na agenda!`)}
+            ${details}
+            ${lead("Te esperamos com muito carinho.")}
+            ${cancelUrl ? `<div style="border-top:1px solid #F3E1E4;margin-top:24px;padding-top:16px;"><p style="font-size:13px;color:#7A6970;text-align:center;margin:0 0 4px;">Imprevisto de última hora?</p>${ctaButton("Preciso cancelar", cancelUrl, "danger")}</div>` : ""}
+          `,
+        }),
       };
     case "booking_cancelled_customer":
       return {
         subject: `Agendamento cancelado — ${d.companyName}`,
-        html: layout("Agendamento cancelado", `
-          <p>Olá, ${customer}.</p>
-          <p>Seu agendamento de <strong>${service}</strong> com ${professional} em <strong>${date} às ${time}</strong> foi cancelado.</p>
-          <p>Se desejar, agende um novo horário pelo nosso site.</p>`),
+        html: layout({
+          eyebrow: "Agendamento cancelado",
+          title: `Olá, ${customer}`,
+          body: `
+            ${lead(`Seu agendamento em <strong>${company}</strong> foi cancelado.`)}
+            ${details}
+            ${lead("Sempre que quiser voltar, é só acessar nossa página de agendamentos para escolher um novo horário. Vamos adorar te receber. ✨")}
+          `,
+        }),
       };
     case "booking_cancelled_company":
       return {
-        subject: `Agendamento cancelado pelo cliente — ${d.customerName}`,
-        html: layout("Agendamento cancelado pelo cliente", `
-          <p>O cliente <strong>${customer}</strong> cancelou o agendamento abaixo:</p>
-          <table style="width:100%;margin:16px 0;border-collapse:collapse;">
-            <tr><td style="padding:6px 0;color:#666;">Serviço</td><td style="text-align:right;"><strong>${service}</strong></td></tr>
-            <tr><td style="padding:6px 0;color:#666;">Profissional</td><td style="text-align:right;"><strong>${professional}</strong></td></tr>
-            <tr><td style="padding:6px 0;color:#666;">Quando</td><td style="text-align:right;"><strong>${date} às ${time}</strong></td></tr>
-          </table>
-          <p>O horário voltou a ficar disponível na sua agenda.</p>`),
+        subject: `Cancelamento — ${d.customerName} (${d.date} ${d.time})`,
+        html: layout({
+          eyebrow: "Cancelamento de cliente",
+          title: "Um horário foi liberado",
+          body: `
+            ${lead(`A cliente <strong>${customer}</strong> cancelou o agendamento abaixo. O horário voltou a ficar disponível na sua agenda.`)}
+            ${details}
+          `,
+          footerNote: "Você recebe estes avisos porque é membro desta empresa.",
+        }),
       };
     case "booking_reminder_customer":
       return {
         subject: `Lembrete: ${d.serviceName} em ${d.date}`,
-        html: layout("Seu horário está chegando", `
-          <p>Olá, ${customer}! Passando para lembrar do seu agendamento:</p>
-          <table style="width:100%;margin:16px 0;border-collapse:collapse;">
-            <tr><td style="padding:6px 0;color:#666;">Serviço</td><td style="text-align:right;"><strong>${service}</strong></td></tr>
-            <tr><td style="padding:6px 0;color:#666;">Profissional</td><td style="text-align:right;"><strong>${professional}</strong></td></tr>
-            <tr><td style="padding:6px 0;color:#666;">Quando</td><td style="text-align:right;"><strong>${date} às ${time}</strong></td></tr>
-          </table>
-          ${cancelUrl ? ctaButton("Preciso cancelar", cancelUrl, "danger") : ""}`),
+        html: layout({
+          eyebrow: "Seu horário está chegando",
+          title: `Amanhã tem ${d.serviceName ? esc(d.serviceName) : "atendimento"} ✨`,
+          body: `
+            ${lead(`Olá, ${customer}! Passamos rapidinho para lembrar do seu agendamento em <strong>${company}</strong>.`)}
+            ${details}
+            ${lead("Nos vemos em breve. Se precisar remarcar, é só usar o botão abaixo.")}
+            ${cancelUrl ? ctaButton("Preciso cancelar", cancelUrl, "danger") : ""}
+          `,
+        }),
       };
     default:
       return null;

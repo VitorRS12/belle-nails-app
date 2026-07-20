@@ -130,6 +130,25 @@ const Auth = () => {
     }
   };
 
+  const signInApple = async () => {
+    setBusy(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth("apple", {
+        redirect_uri: window.location.origin,
+      });
+      if (result.error) {
+        setBusy(false);
+        toast.error("Erro ao entrar com Apple");
+        return;
+      }
+      if (!result.redirected) setBusy(false);
+    } catch (error) {
+      console.error("apple sign in failed:", error);
+      setBusy(false);
+      toast.error("Erro ao entrar com Apple");
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-5">
       <div className="w-full max-w-sm space-y-6 animate-fade-in">
@@ -151,6 +170,15 @@ const Auth = () => {
             className="w-full h-11 rounded-xl gap-2"
           >
             <GoogleIcon /> Continuar com Google
+          </Button>
+
+          <Button
+            onClick={signInApple}
+            disabled={busy}
+            variant="outline"
+            className="w-full h-11 rounded-xl gap-2"
+          >
+            <AppleIcon /> Continuar com Apple
           </Button>
 
           <div className="relative">

@@ -8,9 +8,12 @@ import {
   Container,
   Head,
   Heading,
+  Hr,
   Html,
+  Img,
   Link,
   Preview,
+  Section,
   Text,
 } from 'npm:@react-email/components@0.0.22'
 
@@ -20,32 +23,34 @@ interface InviteEmailProps {
   confirmationUrl: string
 }
 
-export const InviteEmail = ({
-  siteName,
-  siteUrl,
-  confirmationUrl,
-}: InviteEmailProps) => (
-  <Html lang="en" dir="ltr">
+export const InviteEmail = ({ siteName, siteUrl, confirmationUrl }: InviteEmailProps) => (
+  <Html lang="pt-BR" dir="ltr">
     <Head />
-    <Preview>You've been invited to join {siteName}</Preview>
+    <Preview>Você foi convidada para o {siteName}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>You've been invited</Heading>
-        <Text style={text}>
-          You've been invited to join{' '}
-          <Link href={siteUrl} style={link}>
-            <strong>{siteName}</strong>
-          </Link>
-          . Click the button below to accept the invitation and create your
-          account.
-        </Text>
-        <Button style={button} href={confirmationUrl}>
-          Accept Invitation
-        </Button>
-        <Text style={footer}>
-          If you weren't expecting this invitation, you can safely ignore this
-          email.
-        </Text>
+        <Section style={header}>
+          <Img src="https://bellenailsapp.com/favicon.png" alt={siteName} width="56" height="56" style={logo} />
+          <Text style={brand}>{siteName}</Text>
+        </Section>
+        <Section style={card}>
+          <Heading style={h1}>Você foi convidada</Heading>
+          <Text style={text}>
+            Uma empresa acaba de convidar você para participar do{' '}
+            <Link href={siteUrl} style={link}>{siteName}</Link> como profissional.
+          </Text>
+          <Text style={text}>
+            Aceite o convite para criar sua conta e começar a gerenciar sua agenda:
+          </Text>
+          <Section style={{ textAlign: 'center' as const, margin: '32px 0' }}>
+            <Button style={button} href={confirmationUrl}>Aceitar convite</Button>
+          </Section>
+          <Text style={footer}>
+            Se você não esperava este convite, pode ignorar este email com segurança.
+          </Text>
+        </Section>
+        <Hr style={hr} />
+        <Text style={smallFooter}>Enviado por {siteName}</Text>
       </Container>
     </Body>
   </Html>
@@ -53,27 +58,16 @@ export const InviteEmail = ({
 
 export default InviteEmail
 
-const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '20px 25px' }
-const h1 = {
-  fontSize: '22px',
-  fontWeight: 'bold' as const,
-  color: '#000000',
-  margin: '0 0 20px',
-}
-const text = {
-  fontSize: '14px',
-  color: '#55575d',
-  lineHeight: '1.5',
-  margin: '0 0 25px',
-}
-const link = { color: 'inherit', textDecoration: 'underline' }
-const button = {
-  backgroundColor: '#000000',
-  color: '#ffffff',
-  fontSize: '14px',
-  borderRadius: '8px',
-  padding: '12px 20px',
-  textDecoration: 'none',
-}
-const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
+const main = { backgroundColor: '#ffffff', fontFamily: 'Georgia, "Times New Roman", serif' }
+const container = { padding: '32px 20px', maxWidth: '560px', margin: '0 auto' }
+const header = { textAlign: 'center' as const, marginBottom: '24px' }
+const logo = { display: 'inline-block', borderRadius: '50%' }
+const brand = { fontSize: '20px', fontWeight: 'bold' as const, color: '#C74D6C', margin: '8px 0 0', letterSpacing: '0.5px' }
+const card = { backgroundColor: '#FDF7F5', borderRadius: '16px', padding: '32px 28px', border: '1px solid #F3E1E4' }
+const h1 = { fontSize: '24px', fontWeight: 'bold' as const, color: '#3B2028', margin: '0 0 16px', textAlign: 'center' as const }
+const text = { fontSize: '15px', color: '#5A404A', lineHeight: '1.6', margin: '0 0 16px' }
+const link = { color: '#C74D6C', textDecoration: 'underline' }
+const button = { backgroundColor: '#C74D6C', color: '#ffffff', fontSize: '15px', fontWeight: 'bold' as const, borderRadius: '12px', padding: '14px 28px', textDecoration: 'none', display: 'inline-block' }
+const footer = { fontSize: '13px', color: '#7A6970', margin: '24px 0 0', lineHeight: '1.5' }
+const hr = { borderColor: '#F3E1E4', margin: '24px 0' }
+const smallFooter = { fontSize: '12px', color: '#9B8A90', textAlign: 'center' as const, margin: 0 }

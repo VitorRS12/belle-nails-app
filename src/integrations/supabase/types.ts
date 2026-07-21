@@ -32,6 +32,7 @@ export type Database = {
           price: number
           professional_id: string | null
           reminder_sent_at: string | null
+          reminder_sent_hours: number[]
           service: string
           service_id: string | null
           services: Json
@@ -57,6 +58,7 @@ export type Database = {
           price?: number
           professional_id?: string | null
           reminder_sent_at?: string | null
+          reminder_sent_hours?: number[]
           service: string
           service_id?: string | null
           services?: Json
@@ -82,6 +84,7 @@ export type Database = {
           price?: number
           professional_id?: string | null
           reminder_sent_at?: string | null
+          reminder_sent_hours?: number[]
           service?: string
           service_id?: string | null
           services?: Json
@@ -201,6 +204,7 @@ export type Database = {
           id: string
           name: string
           owner_user_id: string
+          reminder_hours_before: number[]
           settings: Json
           slug: string
           timezone: string
@@ -212,6 +216,7 @@ export type Database = {
           id?: string
           name: string
           owner_user_id: string
+          reminder_hours_before?: number[]
           settings?: Json
           slug: string
           timezone?: string
@@ -223,6 +228,7 @@ export type Database = {
           id?: string
           name?: string
           owner_user_id?: string
+          reminder_hours_before?: number[]
           settings?: Json
           slug?: string
           timezone?: string

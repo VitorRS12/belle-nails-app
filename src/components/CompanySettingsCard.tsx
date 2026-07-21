@@ -142,6 +142,36 @@ export function CompanySettingsCard() {
             </p>
           </div>
 
+          <div className="space-y-2">
+            <Label className="flex items-center gap-1.5">
+              <BellRing className="h-3.5 w-3.5" /> Lembretes automáticos
+            </Label>
+            <div className="flex flex-wrap gap-2">
+              {REMINDER_OPTIONS.map((opt) => {
+                const active = reminders.includes(opt.value);
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => toggleReminder(opt.value)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-smooth ${
+                      active
+                        ? "bg-gradient-primary text-primary-foreground border-transparent shadow-soft"
+                        : "bg-background border-border hover:bg-accent-soft/40"
+                    }`}
+                    aria-pressed={active}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              Escolha quando enviar lembretes por e-mail antes do agendamento. Selecione um ou mais horários — deixe vazio para desativar.
+            </p>
+          </div>
+
+
           <div className="space-y-1.5">
             <Label>Link público</Label>
             <a

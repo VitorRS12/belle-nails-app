@@ -10,6 +10,7 @@ export interface Company {
   timezone: string;
   owner_user_id: string;
   appointment_interval_minutes: number;
+  reminder_hours_before: number[];
 }
 
 export function useCompany() {
@@ -40,7 +41,7 @@ export function useCompany() {
 
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, slug, timezone, owner_user_id, appointment_interval_minutes")
+      .select("id, name, slug, timezone, owner_user_id, appointment_interval_minutes, reminder_hours_before")
       .eq("id", member.company_id)
       .maybeSingle();
 
@@ -54,7 +55,7 @@ export function useCompany() {
 
   const update = useCallback(
     async (
-      patch: Partial<Pick<Company, "name" | "timezone" | "appointment_interval_minutes">>
+      patch: Partial<Pick<Company, "name" | "timezone" | "appointment_interval_minutes" | "reminder_hours_before">>
     ) => {
       if (!company) return false;
       const { error } = await supabase

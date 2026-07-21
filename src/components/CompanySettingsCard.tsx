@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Building2, Clock } from "lucide-react";
+import { Building2, Clock, BellRing } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,12 +7,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useCompany } from "@/hooks/useCompany";
 
 const INTERVAL_PRESETS = [10, 15, 20, 30, 45, 60];
+const REMINDER_OPTIONS: { value: number; label: string }[] = [
+  { value: 1, label: "1h antes" },
+  { value: 2, label: "2h antes" },
+  { value: 6, label: "6h antes" },
+  { value: 12, label: "12h antes" },
+  { value: 24, label: "24h antes" },
+  { value: 48, label: "48h antes" },
+];
 
 export function CompanySettingsCard() {
   const { company, loading, update } = useCompany();
   const [name, setName] = useState("");
   const [intervalMode, setIntervalMode] = useState<string>("30");
   const [customInterval, setCustomInterval] = useState<string>("");
+  const [reminders, setReminders] = useState<number[]>([24]);
   const [saving, setSaving] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
@@ -27,6 +36,11 @@ export function CompanySettingsCard() {
         setIntervalMode("custom");
         setCustomInterval(String(v));
       }
+      setReminders(
+        Array.isArray(company.reminder_hours_before) && company.reminder_hours_before.length
+          ? [...company.reminder_hours_before].sort((a, b) => b - a)
+          : [24],
+      );
       setHydrated(true);
     }
   }, [company, hydrated]);
@@ -42,10 +56,22 @@ export function CompanySettingsCard() {
   const intervalValid =
     Number.isFinite(resolvedInterval) && resolvedInterval >= 5 && resolvedInterval <= 240;
 
+  const remindersDirty =
+    !!company &&
+    JSON.stringify([...reminders].sort()) !==
+      JSON.stringify([...(company.reminder_hours_before ?? [24])].sort());
+
   const dirty =
     !!company &&
     (name.trim() !== company.name ||
-      (intervalValid && resolvedInterval !== company.appointment_interval_minutes));
+      (intervalValid && resolvedInterval !== company.appointment_interval_minutes) ||
+      remindersDirty);
+
+  const toggleReminder = (h: number) => {
+    setReminders((prev) =>
+      prev.includes(h) ? prev.filter((x) => x !== h) : [...prev, h].sort((a, b) => b - a),
+    );
+  };
 
   const handleSave = async () => {
     if (!dirty || !intervalValid) return;
@@ -53,6 +79,7 @@ export function CompanySettingsCard() {
     await update({
       name: name.trim(),
       appointment_interval_minutes: resolvedInterval,
+      reminder_hours_before: [...reminders].sort((a, b) => b - a),
     });
     setSaving(false);
   };
@@ -114,6 +141,36 @@ export function CompanySettingsCard() {
               Define de quanto em quanto tempo os horários da agenda são gerados.
             </p>
           </div>
+
+          <div className="space-y-2">
+            <Label className="flex items-center gap-1.5">
+              <BellRing className="h-3.5 w-3.5" /> Lembretes automáticos
+            </Label>
+            <div className="flex flex-wrap gap-2">
+              {REMINDER_OPTIONS.map((opt) => {
+                const active = reminders.includes(opt.value);
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => toggleReminder(opt.value)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-smooth ${
+                      active
+                        ? "bg-gradient-primary text-primary-foreground border-transparent shadow-soft"
+                        : "bg-background border-border hover:bg-accent-soft/40"
+                    }`}
+                    aria-pressed={active}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              Escolha quando enviar lembretes por e-mail antes do agendamento. Selecione um ou mais horários — deixe vazio para desativar.
+            </p>
+          </div>
+
 
           <div className="space-y-1.5">
             <Label>Link público</Label>

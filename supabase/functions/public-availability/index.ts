@@ -42,6 +42,19 @@ Deno.serve(async (req) => {
       return json({ error: "Profissional indisponível" }, 404);
     }
 
+    // Company slot step (appointment interval)
+    const { data: company } = await admin
+      .from("companies")
+      .select("appointment_interval_minutes")
+      .eq("id", body.companyId)
+      .maybeSingle();
+    const slotStep =
+      company?.appointment_interval_minutes &&
+      company.appointment_interval_minutes >= 5 &&
+      company.appointment_interval_minutes <= 240
+        ? company.appointment_interval_minutes
+        : DEFAULT_SLOT_STEP_MINUTES;
+
     // Service duration
     const { data: service } = await admin
       .from("services")

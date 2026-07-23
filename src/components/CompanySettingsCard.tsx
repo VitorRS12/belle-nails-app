@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCompany } from "@/hooks/useCompany";
 
-const INTERVAL_PRESETS = [10, 15, 20, 30, 45, 60];
+const INTERVAL_PRESETS = [10, 15, 20, 30, 45, 60, 90, 120, 180, 240];
 const REMINDER_OPTIONS: { value: number; label: string }[] = [
   { value: 1, label: "1h antes" },
   { value: 2, label: "2h antes" },

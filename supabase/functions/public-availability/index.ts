@@ -14,7 +14,7 @@ interface Body {
   date: string; // yyyy-MM-dd
 }
 
-const SLOT_STEP_MINUTES = 30;
+const DEFAULT_SLOT_STEP_MINUTES = 30;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });

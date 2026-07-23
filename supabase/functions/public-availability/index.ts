@@ -111,7 +111,7 @@ Deno.serve(async (req) => {
     for (const block of schedules) {
       const blockStart = toMinutes(block.start_time);
       const blockEnd = toMinutes(block.end_time);
-      for (let t = blockStart; t + duration <= blockEnd; t += SLOT_STEP_MINUTES) {
+      for (let t = blockStart; t + duration <= blockEnd; t += slotStep) {
         if (isToday && t <= nowMin + 30) continue; // 30min buffer for same-day
         const slotEnd = t + duration;
         const conflict = busy.some(([bs, be]) => t < be && slotEnd > bs);

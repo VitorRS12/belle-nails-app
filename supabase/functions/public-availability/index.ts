@@ -1,5 +1,6 @@
 // Public endpoint: returns available time slots for a professional + service on a given date.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { computeSlots, toMinutes } from "../_shared/availability.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",

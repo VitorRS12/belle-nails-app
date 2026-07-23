@@ -1,5 +1,6 @@
 // Public endpoint: returns available time slots for a professional + service on a given date.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { computeSlots, toMinutes } from "../_shared/availability.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -95,29 +96,25 @@ Deno.serve(async (req) => {
       .neq("status", "cancelled");
 
     // Build busy intervals (start, end) in minutes
-    const busy: Array<[number, number]> = (appts ?? []).map((a) => {
+    const busy = (appts ?? []).map((a) => {
       const start = toMinutes(a.time);
-      // We don't store duration on appointments; assume same `duration` minimum.
-      // Use 60 as safety default if services array is empty.
+      // We don't store duration on appointments; assume 60 as safety default.
       const dur = 60;
-      return [start, start + dur];
+      return { start, end: start + dur };
     });
 
     const today = new Date();
     const isToday = body.date === today.toISOString().slice(0, 10);
     const nowMin = isToday ? today.getHours() * 60 + today.getMinutes() : -1;
 
-    const slots: string[] = [];
-    for (const block of schedules) {
-      const blockStart = toMinutes(block.start_time);
-      const blockEnd = toMinutes(block.end_time);
-      for (let t = blockStart; t + duration <= blockEnd; t += slotStep) {
-        if (isToday && t <= nowMin + 30) continue; // 30min buffer for same-day
-        const slotEnd = t + duration;
-        const conflict = busy.some(([bs, be]) => t < be && slotEnd > bs);
-        if (!conflict) slots.push(fromMinutes(t));
-      }
-    }
+    const slots = computeSlots({
+      schedules,
+      busy,
+      durationMinutes: duration,
+      slotStepMinutes: slotStep,
+      isToday,
+      nowMinutes: nowMin,
+    });
 
     return json({ slots });
   } catch (e) {
@@ -126,15 +123,6 @@ Deno.serve(async (req) => {
   }
 });
 
-function toMinutes(hms: string): number {
-  const [h, m] = hms.split(":").map(Number);
-  return h * 60 + m;
-}
-function fromMinutes(t: number): string {
-  const h = Math.floor(t / 60).toString().padStart(2, "0");
-  const m = (t % 60).toString().padStart(2, "0");
-  return `${h}:${m}`;
-}
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,

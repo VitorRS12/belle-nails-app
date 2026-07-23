@@ -14,7 +14,7 @@ interface Body {
   date: string; // yyyy-MM-dd
 }
 
-const SLOT_STEP_MINUTES = 30;
+const DEFAULT_SLOT_STEP_MINUTES = 30;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -41,6 +41,19 @@ Deno.serve(async (req) => {
     if (!prof || prof.company_id !== body.companyId || !prof.active) {
       return json({ error: "Profissional indisponível" }, 404);
     }
+
+    // Company slot step (appointment interval)
+    const { data: company } = await admin
+      .from("companies")
+      .select("appointment_interval_minutes")
+      .eq("id", body.companyId)
+      .maybeSingle();
+    const slotStep =
+      company?.appointment_interval_minutes &&
+      company.appointment_interval_minutes >= 5 &&
+      company.appointment_interval_minutes <= 240
+        ? company.appointment_interval_minutes
+        : DEFAULT_SLOT_STEP_MINUTES;
 
     // Service duration
     const { data: service } = await admin
@@ -98,7 +111,7 @@ Deno.serve(async (req) => {
     for (const block of schedules) {
       const blockStart = toMinutes(block.start_time);
       const blockEnd = toMinutes(block.end_time);
-      for (let t = blockStart; t + duration <= blockEnd; t += SLOT_STEP_MINUTES) {
+      for (let t = blockStart; t + duration <= blockEnd; t += slotStep) {
         if (isToday && t <= nowMin + 30) continue; // 30min buffer for same-day
         const slotEnd = t + duration;
         const conflict = busy.some(([bs, be]) => t < be && slotEnd > bs);

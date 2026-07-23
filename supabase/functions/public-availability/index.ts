@@ -123,15 +123,6 @@ Deno.serve(async (req) => {
   }
 });
 
-function toMinutes(hms: string): number {
-  const [h, m] = hms.split(":").map(Number);
-  return h * 60 + m;
-}
-function fromMinutes(t: number): string {
-  const h = Math.floor(t / 60).toString().padStart(2, "0");
-  const m = (t % 60).toString().padStart(2, "0");
-  return `${h}:${m}`;
-}
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,

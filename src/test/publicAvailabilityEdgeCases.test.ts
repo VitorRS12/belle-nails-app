@@ -83,9 +83,9 @@ describe("public-availability — intervalos ímpares", () => {
       durationMinutes: 25,
       slotStepMinutes: 25,
     });
-    expect(slots).toEqual([
-      "09:00", "09:25", "09:50", "10:15", "10:40",
-    ]);
+    // 10:40 + 25 = 11:05 ultrapassa o fim (11:00)
+    expect(slots).toEqual(["09:00", "09:25", "09:50", "10:15"]);
+
   });
 
   it("gera slots com passo de 7 minutos e formata corretamente", () => {

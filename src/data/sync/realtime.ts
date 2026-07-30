@@ -158,5 +158,19 @@ export function stopRealtimeSync() {
     clearInterval(interval);
     interval = null;
   }
+  if (idleInterval) {
+    clearInterval(idleInterval);
+    idleInterval = null;
+  }
+  if (activityHandler) {
+    ACTIVITY_EVENTS.forEach((ev) => window.removeEventListener(ev, activityHandler!));
+    activityHandler = null;
+  }
+  if (visibilityHandler) {
+    document.removeEventListener("visibilitychange", visibilityHandler);
+    window.removeEventListener("focus", visibilityHandler);
+    visibilityHandler = null;
+  }
+
   currentUserId = null;
 }

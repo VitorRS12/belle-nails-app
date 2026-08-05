@@ -28,7 +28,9 @@
     "socialProof": "<strong>+120</strong> salões já usam",
     "rating": "4.9/5",
     "panelLabel": "Painel",
-    "panelAlt": "Painel do Belle Nails"
+    "panelAlt": "Painel do Belle Nails",
+    "openAllTheTime": "Agendamento aberto o tempo todo, mesmo quando você dorme.",
+    "noShowsReduction": "de faltas com lembretes automáticos 24h antes."
   },
   "trustedStrip": {
     "salons": "salões atendidos",

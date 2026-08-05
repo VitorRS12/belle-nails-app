@@ -1,21 +1,23 @@
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Home, CalendarDays, Users, Sparkles, Settings, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
-  { to: "/dashboard", icon: LayoutDashboard, label: "Painel" },
-  { to: "/inicio", icon: Home, label: "Início" },
-  { to: "/agenda", icon: CalendarDays, label: "Agenda" },
-  { to: "/clientes", icon: Users, label: "Clientes" },
-  { to: "/atendimentos", icon: Sparkles, label: "Histórico" },
-  { to: "/configuracoes", icon: Settings, label: "Config" },
-];
+  { to: "/dashboard", icon: LayoutDashboard, key: "dashboard" },
+  { to: "/inicio", icon: Home, key: "inicio" },
+  { to: "/agenda", icon: CalendarDays, key: "agenda" },
+  { to: "/clientes", icon: Users, key: "clientes" },
+  { to: "/atendimentos", icon: Sparkles, key: "atendimentos" },
+  { to: "/configuracoes", icon: Settings, key: "configuracoes" },
+] as const;
 
 export function BottomNav() {
+  const { t } = useTranslation("common");
   return (
     <nav className="fixed bottom-0 inset-x-0 z-40 border-t border-border bg-card/90 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]">
       <ul className="grid grid-cols-6 max-w-md mx-auto">
-        {items.map(({ to, icon: Icon, label }) => (
+        {items.map(({ to, icon: Icon, key }) => (
           <li key={to}>
             <NavLink
               to={to}
@@ -37,7 +39,7 @@ export function BottomNav() {
                   >
                     <Icon className="h-4 w-4" />
                   </span>
-                  <span className="font-medium">{label}</span>
+                  <span className="font-medium">{t(`bottomNav.${key}`)}</span>
                 </>
               )}
             </NavLink>

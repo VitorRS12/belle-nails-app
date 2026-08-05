@@ -1,1 +1,232 @@
-{}
+{
+  "actions": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "add": "Adicionar",
+    "close": "Fechar",
+    "confirm": "Confirmar",
+    "loading": "Carregando…",
+    "search": "Buscar",
+    "back": "Voltar"
+  },
+  "language": {
+    "change": "Mudar idioma"
+  },
+  "appSidebar": {
+    "brand": "Belle Nails",
+    "panel": "Painel",
+    "navigation": "Navegação",
+    "nav": {
+      "dashboard": "Dashboard",
+      "inicio": "Início",
+      "agenda": "Agenda",
+      "clientes": "Clientes",
+      "atendimentos": "Histórico",
+      "servicos": "Serviços",
+      "configuracoes": "Configurações"
+    }
+  },
+  "bottomNav": {
+    "dashboard": "Painel",
+    "inicio": "Início",
+    "agenda": "Agenda",
+    "clientes": "Clientes",
+    "atendimentos": "Histórico",
+    "configuracoes": "Config"
+  },
+  "breadcrumbs": {
+    "ariaLabel": "breadcrumb",
+    "labels": {
+      "inicio": "Início",
+      "dashboard": "Dashboard",
+      "agenda": "Agenda",
+      "clientes": "Clientes",
+      "atendimentos": "Histórico",
+      "configuracoes": "Configurações",
+      "relatorio": "Relatório"
+    }
+  },
+  "appointmentCard": {
+    "status": {
+      "scheduled": "Agendado",
+      "completed": "Concluído",
+      "cancelled": "Cancelado",
+      "pendente_confirmacao": "Aguardando confirmação"
+    },
+    "confirmRemove": "Remover este atendimento?",
+    "removed": "Removido",
+    "confirmCancel": "Cancelar este serviço?",
+    "cancelled": "Atendimento cancelado",
+    "completed": "Marcado como concluído ✨",
+    "rescheduled": "Reagendado!",
+    "confirmed": "Agendamento confirmado",
+    "extraPrefix": "+R$ {{value}}",
+    "materialQuantity": "{{name}} · {{quantity}}",
+    "confirm": "Confirmar",
+    "complete": "Concluir",
+    "postpone": "Adiar",
+    "cancel": "Cancelar",
+    "reschedule": {
+      "title": "Adiar / Reagendar",
+      "description": "Escolha a nova data e horário.",
+      "date": "Data",
+      "time": "Hora",
+      "confirmButton": "Confirmar novo horário"
+    },
+    "complete_dialog": {
+      "title": "Concluir atendimento",
+      "extraValue": "Valor extra (opcional)",
+      "extraValuePlaceholder": "0,00",
+      "extraReason": "Motivo do valor extra",
+      "extraReasonPlaceholder": "Ex: decoração especial, alongamento adicional…",
+      "totalLabel": "Total final",
+      "confirmButton": "Confirmar conclusão"
+    }
+  },
+  "appointmentForm": {
+    "title": {
+      "edit": "Editar atendimento",
+      "new": "Novo atendimento"
+    },
+    "readOnlyError": "Seu teste expirou. Assine um plano para continuar criando agendamentos.",
+    "errors": {
+      "customServiceName": "Informe o nome do serviço",
+      "selectOrCreateClient": "Selecione ou cadastre uma cliente",
+      "addService": "Adicione ao menos um serviço"
+    },
+    "customServiceSaved": "Serviço salvo na sua lista ✨",
+    "saved": {
+      "updated": "Atualizado!",
+      "created": "Salvo com carinho ✨"
+    },
+    "client": "Cliente",
+    "selectClient": "Selecione uma cliente",
+    "newClientPlaceholder": "ou cadastrar nova",
+    "newClientNameOnlyPlaceholder": "Nome da cliente",
+    "date": "Data",
+    "time": "Hora",
+    "professional": "Profissional",
+    "selectProfessional": "Selecione uma profissional",
+    "services": "Serviços",
+    "addFromList": "Adicionar serviço da lista",
+    "myServices": "⭐ Meus serviços",
+    "customServiceHint": "Criar serviço personalizado (fica salvo na sua lista)",
+    "customServiceNamePlaceholder": "Nome do serviço",
+    "customServicePricePlaceholder": "R$ 0,00",
+    "addAndSave": "Adicionar e salvar",
+    "total": "Total",
+    "materials": "Materiais utilizados",
+    "materialNamePlaceholder": "Nome",
+    "materialQtyPlaceholder": "Qtd",
+    "materialQuantity": "{{name}} · {{quantity}}",
+    "notes": "Observações",
+    "notesPlaceholder": "Detalhes, preferências...",
+    "status": "Status",
+    "statusOptions": {
+      "scheduled": "Agendado",
+      "completed": "Concluído",
+      "cancelled": "Cancelado"
+    },
+    "submit": "Salvar"
+  },
+  "companySettingsCard": {
+    "title": "Minha empresa",
+    "description": "Essas informações aparecerão na sua página pública de agendamentos.",
+    "loading": "Carregando…",
+    "name": "Nome",
+    "namePlaceholder": "Nome da sua empresa",
+    "intervalLabel": "Intervalo da agenda",
+    "intervalMinutes": "{{count}} minutos",
+    "intervalCustom": "Personalizado…",
+    "intervalCustomPlaceholder": "Minutos (entre 5 e 240)",
+    "intervalHint": "Define de quanto em quanto tempo os horários da agenda são gerados.",
+    "remindersLabel": "Lembretes automáticos",
+    "reminderOptions": {
+      "1": "1h antes",
+      "2": "2h antes",
+      "6": "6h antes",
+      "12": "12h antes",
+      "24": "24h antes",
+      "48": "48h antes"
+    },
+    "remindersHint": "Escolha quando enviar lembretes por e-mail antes do agendamento. Selecione um ou mais horários — deixe vazio para desativar.",
+    "publicLink": "Link público",
+    "publicLinkHint": "Compartilhe este link para suas clientes agendarem online.",
+    "saveButton": "Salvar alterações",
+    "saving": "Salvando…"
+  },
+  "errorBoundary": {
+    "title": "Algo deu errado",
+    "description": "Tivemos um problema ao carregar esta tela. Tente novamente.",
+    "backHome": "Voltar ao início"
+  },
+  "installAppCard": {
+    "installedToast": "App instalado com sucesso!",
+    "browserMenuHint": "Use o menu do seu navegador (⋮) e toque em \"Instalar app\" ou \"Adicionar à tela inicial\".",
+    "installedTitle": "App instalado",
+    "title": "Instalar o Belle Nails",
+    "installedDescription": "Você já está usando a versão instalada — acesso rápido pela tela inicial.",
+    "description": "Tenha acesso direto pela tela inicial do celular, com abertura mais rápida e sem precisar do navegador.",
+    "howToInstall": "Como instalar",
+    "installNow": "Instalar agora",
+    "browserFallbackHint": "Use o menu do navegador se o botão não abrir o prompt.",
+    "iosSteps": {
+      "step1": "Toque no ícone de compartilhar no Safari.",
+      "step2": "Role e escolha <strong>Adicionar à Tela de Início</strong>.",
+      "step3": "Confirme em <strong>Adicionar</strong> no canto superior direito."
+    }
+  },
+  "installAppPrompt": {
+    "title": "Instale o Belle Nails",
+    "descriptionDeferred": "Tenha acesso rápido direto da tela inicial, mesmo sem internet.",
+    "descriptionIOS": "Toque em compartilhar e em \"Adicionar à Tela de Início\".",
+    "installNow": "Instalar agora",
+    "dismiss": "Dispensar"
+  },
+  "offlineIndicator": {
+    "offline": "Offline",
+    "online": "Online",
+    "syncingPending_one": "{{count}} pendente",
+    "syncingPending_other": "{{count}} pendentes"
+  },
+  "paymentTestModeBanner": {
+    "message": "Pagamentos no preview estão em modo de teste — nenhum valor real é cobrado."
+  },
+  "relatorio": {
+    "selectMonth": "Selecione o mês",
+    "noCompleted": "Nenhum atendimento concluído neste mês.",
+    "pdf": {
+      "brand": "Belle Nails",
+      "subtitle": "Relatório mensal",
+      "summaryTitle": "Resumo do mês",
+      "revenue": "FATURAMENTO",
+      "appointments": "ATENDIMENTOS",
+      "highlightsTitle": "Destaques",
+      "topService": "SERVIÇO MAIS REALIZADO",
+      "topClient": "CLIENTE QUE MAIS REALIZOU ESSE SERVIÇO",
+      "servicesTitle": "Serviços realizados",
+      "tableHead": {
+        "date": "Data",
+        "time": "Hora",
+        "client": "Cliente",
+        "service": "Serviço",
+        "value": "Valor"
+      },
+      "total": "Total"
+    },
+    "pdfGenerated": "PDF gerado!",
+    "revenue": "Faturamento",
+    "appointments": "Atendimentos",
+    "topServiceLabel": "Serviço mais realizado",
+    "timesInMonth": "{{count}}x no mês",
+    "topClientLabel": "Cliente que mais fez esse serviço",
+    "timesWithService": "{{count}}x · {{service}}",
+    "generatePdf": "Gerar PDF do mês"
+  },
+  "themeToggle": {
+    "toLight": "Mudar para modo claro",
+    "toDark": "Mudar para modo escuro"
+  }
+}

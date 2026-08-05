@@ -1,7 +1,9 @@
 import { Link, Navigate } from "react-router-dom";
+import { useTranslation, Trans } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { Button } from "@/components/ui/button";
+import { LanguageToggle } from "@/components/LanguageToggle";
 import {
   Sparkles,
   CalendarDays,
@@ -22,127 +24,33 @@ import dashboardShot from "@/assets/screenshots/painel.png.asset.json";
 import agendaShot from "@/assets/screenshots/agenda.png.asset.json";
 import clientesShot from "@/assets/screenshots/clientes.png.asset.json";
 
-const plans = [
-  {
-    name: "Starter",
-    price: "R$ 30",
-    period: "/mês",
-    description: "Para profissionais autônomos.",
-    features: [
-      "1 profissional",
-      "Agendamentos ilimitados",
-      "Página pública de agendamento",
-      "Cadastro de clientes e serviços",
-    ],
-    cta: "Começar 30 dias grátis",
-  },
-  {
-    name: "Pro",
-    price: "R$ 49",
-    period: "/mês",
-    description: "Para pequenos estúdios.",
-    features: [
-      "Até 5 profissionais",
-      "Agendamentos ilimitados",
-      "Notificações automáticas por e-mail",
-      "Lembretes 24h antes",
-      "Relatórios e histórico",
-    ],
-    highlighted: true,
-    cta: "Começar 30 dias grátis",
-  },
-  {
-    name: "Business",
-    price: "R$ 99",
-    period: "/mês",
-    description: "Para estúdios em crescimento.",
-    features: [
-      "Profissionais ilimitados",
-      "Agendamentos ilimitados",
-      "Gestão de bloqueios e jornadas",
-      "Suporte prioritário",
-      "Recursos avançados",
-    ],
-    cta: "Começar 30 dias grátis",
-  },
-];
+const PLAN_KEYS = ["starter", "pro", "business"] as const;
+const PLAN_PRICES: Record<(typeof PLAN_KEYS)[number], string> = {
+  starter: "R$ 30",
+  pro: "R$ 49",
+  business: "R$ 99",
+};
 
-const features = [
-  {
-    icon: CalendarDays,
-    title: "Agendamento inteligente",
-    desc: "Sua cliente agenda online em poucos toques e recebe a confirmação por e-mail automaticamente.",
-  },
-  {
-    icon: Users,
-    title: "Gestão de profissionais",
-    desc: "Cada profissional controla a própria agenda e recebe as solicitações em tempo real.",
-  },
-  {
-    icon: ClipboardList,
-    title: "Agenda personalizável",
-    desc: "Defina o intervalo dos horários — 10, 15, 30, 60 minutos ou o tempo que fizer sentido para você.",
-  },
-  {
-    icon: LayoutDashboard,
-    title: "Comunicação automatizada",
-    desc: "E-mails automáticos para a cliente, para a profissional e para a proprietária a cada novo agendamento.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Dados protegidos",
-    desc: "Cada profissional só acessa as próprias clientes, com criptografia e segurança de ponta.",
-  },
-  {
-    icon: Sparkles,
-    title: "Pensado para o seu segmento",
-    desc: "Feito sob medida para manicure, design de cílios e sobrancelhas — sem configurações que você não precisa.",
-  },
-];
+const FEATURE_ICONS = [
+  CalendarDays,
+  Users,
+  ClipboardList,
+  LayoutDashboard,
+  ShieldCheck,
+  Sparkles,
+] as const;
+const FEATURE_KEYS = [
+  "smartScheduling",
+  "professionalManagement",
+  "customizableAgenda",
+  "automatedCommunication",
+  "protectedData",
+  "tailoredForSegment",
+] as const;
 
-const testimonials = [
-  {
-    quote:
-      "Minha agenda ficou impecável. As clientes agendam sozinhas e eu só preciso confirmar.",
-    name: "Ana Beatriz",
-    role: "Nail designer · São Paulo",
-  },
-  {
-    quote:
-      "Reduzi faltas em 70% depois que passei a mandar lembretes automáticos. Vale cada centavo.",
-    name: "Carolina Freitas",
-    role: "Estúdio de cílios · Rio de Janeiro",
-  },
-  {
-    quote:
-      "Simples e bonito. Minhas clientes elogiam sempre a página de agendamento.",
-    name: "Marina Souza",
-    role: "Design de sobrancelhas · Belo Horizonte",
-  },
-];
+const TESTIMONIAL_KEYS = ["ana", "carolina", "marina"] as const;
 
-const faqs = [
-  {
-    q: "Como funciona o teste grátis?",
-    a: "Você tem 30 dias completos para usar o Belle Nails sem custo algum. Não pedimos cartão para começar e você pode cancelar quando quiser durante o período.",
-  },
-  {
-    q: "Preciso instalar algo?",
-    a: "Não. O Belle Nails funciona direto no navegador do seu celular ou computador. Você também pode adicionar à tela inicial como um app.",
-  },
-  {
-    q: "As minhas clientes precisam criar conta?",
-    a: "Não. Elas agendam pela sua página pública informando apenas nome, contato e o serviço desejado.",
-  },
-  {
-    q: "Posso mudar de plano depois?",
-    a: "Sim. Você pode fazer upgrade ou downgrade a qualquer momento — o valor é ajustado proporcionalmente.",
-  },
-  {
-    q: "Como é feita a cobrança?",
-    a: "Os pagamentos são processados pela Paddle.com como Merchant of Record, com todas as garantias legais e reembolso em até 30 dias.",
-  },
-];
+const FAQ_KEYS = ["trial", "install", "clientAccount", "changePlan", "billing"] as const;
 
 const FaqItem = ({ q, a }: { q: string; a: string }) => {
   const [open, setOpen] = useState(false);
@@ -172,11 +80,11 @@ const FaqItem = ({ q, a }: { q: string; a: string }) => {
 
 const Landing = () => {
   const { session, loading } = useAuth();
+  const { t } = useTranslation("landing");
 
   usePageMeta({
-    title: "Belle Nails · A agenda elegante do seu salão",
-    description:
-      "Belle Nails — agenda online e gestão completa para manicures, designers de cílios e sobrancelhas. Página pública de agendamento, notificações automáticas e relatórios.",
+    title: t("meta.home.title"),
+    description: t("meta.home.description"),
     path: "/",
   });
 
@@ -203,16 +111,19 @@ const Landing = () => {
           <span className="font-display text-xl tracking-wide">Belle Nails</span>
         </div>
         <nav className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
-          <a href="#recursos" className="hover:text-foreground transition-smooth">Recursos</a>
-          <a href="#depoimentos" className="hover:text-foreground transition-smooth">Depoimentos</a>
-          <a href="#precos" className="hover:text-foreground transition-smooth">Preços</a>
-          <a href="#faq" className="hover:text-foreground transition-smooth">FAQ</a>
+          <a href="#recursos" className="hover:text-foreground transition-smooth">{t("nav.features")}</a>
+          <a href="#depoimentos" className="hover:text-foreground transition-smooth">{t("nav.testimonials")}</a>
+          <a href="#precos" className="hover:text-foreground transition-smooth">{t("nav.pricing")}</a>
+          <a href="#faq" className="hover:text-foreground transition-smooth">{t("nav.faq")}</a>
         </nav>
-        <Link to="/auth">
-          <Button variant="ghost" className="rounded-full">
-            Entrar
-          </Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          <LanguageToggle variant="full" />
+          <Link to="/auth">
+            <Button variant="ghost" className="rounded-full">
+              {t("nav.login")}
+            </Button>
+          </Link>
+        </div>
       </header>
 
       <main id="main" className="relative">
@@ -223,16 +134,16 @@ const Landing = () => {
             <div className="col-span-12 md:col-span-8 rounded-[2rem] border border-border/60 bg-card/70 backdrop-blur p-8 md:p-12 shadow-soft relative overflow-hidden">
               <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/70 px-3.5 py-1 text-[11px] uppercase tracking-[0.22em] text-muted-foreground mb-6">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                Para profissionais de beleza
+                {t("hero.badge")}
               </div>
               <h1 className="font-display text-5xl sm:text-6xl md:text-7xl leading-[1.02] tracking-tight">
-                A agenda
+                {t("hero.titleLine1")}
                 <br />
-                <em className="italic text-primary font-medium">elegante</em>{" "}
-                do seu salão.
+                <em className="italic text-primary font-medium">{t("hero.titleEmphasis")}</em>{" "}
+                {t("hero.titleLine2")}
               </h1>
               <p className="mt-6 max-w-lg text-base sm:text-lg text-muted-foreground leading-relaxed">
-                Receba clientes, organize horários e acompanhe seu negócio com um app feito sob medida para quem cuida da beleza.
+                {t("hero.description")}
               </p>
               <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-3">
                 <Link to="/auth">
@@ -240,12 +151,12 @@ const Landing = () => {
                     size="lg"
                     className="h-12 px-7 rounded-full bg-gradient-primary shadow-elegant gap-2 hover:scale-[1.02] transition-transform"
                   >
-                    Começar 30 dias grátis <ArrowRight className="h-4 w-4" />
+                    {t("hero.ctaStart")} <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
                 <a href="#recursos">
                   <Button size="lg" variant="ghost" className="h-12 px-6 rounded-full">
-                    Ver recursos
+                    {t("hero.ctaFeatures")}
                   </Button>
                 </a>
               </div>
@@ -260,7 +171,7 @@ const Landing = () => {
                   ))}
                 </div>
                 <span>
-                  <strong className="text-foreground">+120</strong> salões já usam
+                  <Trans t={t} i18nKey="hero.socialProof" components={{ strong: <strong className="text-foreground" /> }} />
                 </span>
                 <span className="hidden sm:flex items-center gap-1">
                   <Star className="h-3.5 w-3.5 fill-accent text-accent" />
@@ -268,7 +179,7 @@ const Landing = () => {
                   <Star className="h-3.5 w-3.5 fill-accent text-accent" />
                   <Star className="h-3.5 w-3.5 fill-accent text-accent" />
                   <Star className="h-3.5 w-3.5 fill-accent text-accent" />
-                  <span className="ml-1">4.9/5</span>
+                  <span className="ml-1">{t("hero.rating")}</span>
                 </span>
               </div>
               {/* petal ornament */}
@@ -280,7 +191,7 @@ const Landing = () => {
               <div className="h-full rounded-[calc(2rem-4px)] bg-card/95 overflow-hidden flex flex-col">
                 <div className="px-5 pt-5 pb-2 flex items-center justify-between">
                   <span className="text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
-                    Painel
+                    {t("hero.panelLabel")}
                   </span>
                   <span className="flex gap-1">
                     <span className="h-1.5 w-1.5 rounded-full bg-primary/60" />
@@ -290,7 +201,7 @@ const Landing = () => {
                 </div>
                 <img
                   src={dashboardShot.url}
-                  alt="Painel do Belle Nails"
+                  alt={t("hero.panelAlt")}
                   loading="lazy"
                   className="w-full flex-1 object-cover object-top"
                 />
@@ -304,7 +215,7 @@ const Landing = () => {
                 24/7
               </div>
               <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                Agendamento aberto o tempo todo, mesmo quando você dorme.
+                {t("hero.openAllTheTime", { defaultValue: "Agendamento aberto o tempo todo, mesmo quando você dorme." })}
               </p>
             </div>
 

@@ -1,1 +1,214 @@
-{}
+{
+  "meta": {
+    "home": {
+      "title": "Belle Nails · The elegant schedule for your salon",
+      "description": "Belle Nails — online scheduling and complete management for manicurists, lash and brow designers. Public booking page, automatic notifications and reports."
+    },
+    "pricing": {
+      "title": "Pricing and plans · Belle Nails",
+      "description": "Belle Nails Starter ($30), Pro ($49) and Business plans. All with a 30-day free trial and payment via Paddle."
+    }
+  },
+  "nav": {
+    "features": "Features",
+    "testimonials": "Testimonials",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "login": "Sign in",
+    "back": "Back"
+  },
+  "hero": {
+    "badge": "For beauty professionals",
+    "titleLine1": "The",
+    "titleEmphasis": "elegant",
+    "titleLine2": "schedule for your salon.",
+    "description": "Welcome clients, organize your schedule and track your business with an app built for those who take care of beauty.",
+    "ctaStart": "Start your 30-day free trial",
+    "ctaFeatures": "See features",
+    "socialProof": "<strong>+120</strong> salons already use it",
+    "rating": "4.9/5",
+    "panelLabel": "Dashboard",
+    "panelAlt": "Belle Nails dashboard",
+    "openAllTheTime": "Booking open around the clock, even while you sleep.",
+    "noShowsReduction": "in no-shows with automatic reminders sent 24h in advance."
+  },
+  "trustedStrip": {
+    "salons": "salons served",
+    "appointments": "monthly appointments",
+    "uptime": "platform uptime",
+    "trial": "free trial"
+  },
+  "heroTestimonial": {
+    "quote": "My clients always praise the booking page — it feels like a real app.",
+    "name": "Marina Souza",
+    "role": "Brow designer · BH"
+  },
+  "features": {
+    "eyebrow": "Features",
+    "titleLine1": "Everything your salon needs,",
+    "titleEmphasis": "nothing that gets in the way",
+    "smartScheduling": {
+      "title": "Smart scheduling",
+      "desc": "Your client books online in just a few taps and automatically receives an email confirmation."
+    },
+    "professionalManagement": {
+      "title": "Professional management",
+      "desc": "Each professional controls their own schedule and receives requests in real time."
+    },
+    "customizableAgenda": {
+      "title": "Customizable calendar",
+      "desc": "Set your time slots — 10, 15, 30, 60 minutes or whatever makes sense for you."
+    },
+    "automatedCommunication": {
+      "title": "Automated communication",
+      "desc": "Automatic emails to the client, the professional and the owner on every new appointment."
+    },
+    "protectedData": {
+      "title": "Protected data",
+      "desc": "Each professional only accesses their own clients, with end-to-end encryption and top security."
+    },
+    "tailoredForSegment": {
+      "title": "Built for your niche",
+      "desc": "Tailored for manicurists, lash and brow designers — without settings you don't need."
+    },
+    "bigCard": {
+      "title": "A calendar that feels like a real app",
+      "desc": "Weekly view, conflicts prevented automatically, time blocks and schedules per professional."
+    },
+    "autoEmails": {
+      "title": "Automatic emails",
+      "desc": "Confirmation, a reminder 24h in advance and internal notes — sent without you lifting a finger."
+    },
+    "protectedDataCard": {
+      "title": "Protected data",
+      "desc": "Each professional only accesses their own clients. End-to-end encryption."
+    }
+  },
+  "screenshots": {
+    "eyebrow": "Take a look inside",
+    "titleLine1": "An interface designed",
+    "titleEmphasis": "down to the smallest detail",
+    "panel": "Dashboard",
+    "agenda": "Calendar",
+    "clients": "Clients"
+  },
+  "testimonials": {
+    "eyebrow": "Testimonials",
+    "titleLine1": "Once you use it,",
+    "titleEmphasis": "you'll love it",
+    "items": {
+      "ana": {
+        "quote": "My schedule is now flawless. Clients book themselves and I just need to confirm.",
+        "name": "Ana Beatriz",
+        "role": "Nail designer · São Paulo"
+      },
+      "carolina": {
+        "quote": "I reduced no-shows by 70% after I started sending automatic reminders. Worth every penny.",
+        "name": "Carolina Freitas",
+        "role": "Lash studio · Rio de Janeiro"
+      },
+      "marina": {
+        "quote": "Simple and beautiful. My clients always compliment the booking page.",
+        "name": "Marina Souza",
+        "role": "Brow designer · Belo Horizonte"
+      }
+    }
+  },
+  "pricing": {
+    "eyebrow": "Plans and pricing",
+    "titleLine1": "Choose the",
+    "titleEmphasis": "ideal",
+    "titleLine2": "plan for you.",
+    "subtitle": "All plans include a <strong>30-day free trial</strong>. No commitment — cancel anytime during the trial.",
+    "popular": "Most popular",
+    "footer": "Payments processed by Paddle.com (Merchant of Record). See our {{refund}}, {{privacy}} and {{terms}}.",
+    "refundPolicy": "Refund Policy",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfUse": "Terms of Use",
+    "plans": {
+      "starter": {
+        "name": "Starter",
+        "description": "For solo professionals.",
+        "descriptionWithTrial": "For solo professionals. 30-day free trial.",
+        "features": {
+          "professionals": "1 professional",
+          "unlimitedAppointments": "Unlimited appointments",
+          "publicPage": "Public booking page",
+          "clientAndServiceRegistration": "Client and service registration"
+        }
+      },
+      "pro": {
+        "name": "Pro",
+        "description": "For small studios.",
+        "descriptionWithTrial": "For small studios. 30-day free trial.",
+        "features": {
+          "professionals": "Up to 5 professionals",
+          "unlimitedAppointments": "Unlimited appointments",
+          "emailNotifications": "Automatic email notifications",
+          "reminders": "Reminders 24h in advance",
+          "reports": "Reports and history"
+        }
+      },
+      "business": {
+        "name": "Business",
+        "description": "For growing studios.",
+        "descriptionWithTrial": "For growing studios. 30-day free trial.",
+        "features": {
+          "professionals": "Unlimited professionals",
+          "unlimitedAppointments": "Unlimited appointments",
+          "blockManagement": "Time-block and schedule management",
+          "prioritySupport": "Priority support",
+          "advancedFeatures": "Advanced features",
+          "advancedFeaturesAccess": "Access to advanced features"
+        }
+      },
+      "cta": "Start your 30-day free trial"
+    }
+  },
+  "faq": {
+    "eyebrow": "Frequently asked questions",
+    "titleLine1": "We've got",
+    "titleEmphasis": "answers",
+    "items": {
+      "trial": {
+        "q": "How does the free trial work?",
+        "a": "You get 30 full days to use Belle Nails at no cost. No card required to start, and you can cancel anytime during the trial."
+      },
+      "install": {
+        "q": "Do I need to install anything?",
+        "a": "No. Belle Nails works directly in your phone or computer's browser. You can also add it to your home screen as an app."
+      },
+      "clientAccount": {
+        "q": "Do my clients need to create an account?",
+        "a": "No. They book through your public page by providing just their name, contact info and desired service."
+      },
+      "changePlan": {
+        "q": "Can I change plans later?",
+        "a": "Yes. You can upgrade or downgrade at any time — the price is adjusted proportionally."
+      },
+      "billing": {
+        "q": "How is billing handled?",
+        "a": "Payments are processed by Paddle.com as Merchant of Record, with all legal guarantees and refunds within 30 days."
+      }
+    }
+  },
+  "finalCta": {
+    "titleLine1": "Ready to delight",
+    "titleEmphasis": "your clients?",
+    "description": "Create your account for free and start organizing your schedule in minutes.",
+    "cta": "Start your 30-day free trial"
+  },
+  "footer": {
+    "pricing": "Pricing",
+    "terms": "Terms of Use",
+    "privacy": "Privacy",
+    "refund": "Refund",
+    "copyright": "© {{year}} Belle Nails · Made with care."
+  },
+  "precosPage": {
+    "title": "Plans and pricing",
+    "subtitle": "All plans include a <strong>30-day free trial</strong>. Cancel anytime during the trial.",
+    "footer": "Payments processed by Paddle.com (Merchant of Record). See our {{refund}} and {{terms}}.",
+    "copyright": "© {{year}} Belle Nails"
+  }
+}

@@ -1,1 +1,91 @@
-{}
+{
+  "layout": {
+    "superAdmin": "Super Admin",
+    "backToApp": "Voltar ao app",
+    "signOut": "Sair",
+    "nav": {
+      "overview": "Visão geral",
+      "companies": "Empresas",
+      "plans": "Planos"
+    }
+  },
+  "dashboard": {
+    "title": "Visão geral",
+    "subtitle": "Métricas da plataforma",
+    "cards": {
+      "companies": "Empresas",
+      "companiesHint": "+{{count}} nos últimos 30 dias",
+      "activeSubscriptions": "Assinaturas ativas",
+      "activeSubscriptionsHint": "{{count}} em trial",
+      "mrr": "MRR estimado",
+      "mrrHint": "Receita recorrente mensal",
+      "appointmentsThisMonth": "Agendamentos no mês",
+      "appointmentsThisMonthHint": "Em todas as empresas"
+    },
+    "welcome": {
+      "title": "Bem-vindo ao painel",
+      "description": "Use as abas acima para gerenciar empresas e planos. Quando os pagamentos estiverem ativos, o MRR e o status das assinaturas serão atualizados automaticamente pelo Stripe."
+    },
+    "trialingNotice": "{{count}} empresa(s) em período de teste no momento."
+  },
+  "companies": {
+    "title": "Empresas",
+    "subtitle": "Todas as empresas cadastradas na plataforma",
+    "empty": "Nenhuma empresa cadastrada ainda.",
+    "planUpdated": "Plano atualizado",
+    "planUpdateError": "Não foi possível atualizar",
+    "table": {
+      "company": "Empresa",
+      "plan": "Plano",
+      "status": "Status",
+      "professionals": "Profissionais",
+      "appointmentsPerMonth": "Agend./mês"
+    },
+    "createdOn": "criada {{date}}",
+    "changePlan": "Mudar plano",
+    "dialog": {
+      "title": "Alterar plano",
+      "description": "A mudança é aplicada imediatamente. Use com cautela — em produção, prefira que a empresa troque o plano pelo Stripe.",
+      "selectPlaceholder": "Selecione o plano",
+      "perMonth": "/mês",
+      "save": "Salvar"
+    }
+  },
+  "plans": {
+    "title": "Planos",
+    "subtitle": "Catálogo de planos da plataforma",
+    "newPlan": "Novo plano",
+    "editPlan": "Editar plano",
+    "limitsHint": "Limites em branco significam \"ilimitado\".",
+    "slugRequired": "Slug e nome são obrigatórios",
+    "saved": "Plano salvo",
+    "deleteConfirm": "Excluir o plano \"{{name}}\"?",
+    "deleted": "Plano excluído",
+    "deleteError": "Não foi possível excluir (talvez existam assinaturas vinculadas).",
+    "unlimited": "Ilimitado",
+    "fields": {
+      "slug": "Slug",
+      "name": "Nome",
+      "description": "Descrição",
+      "price": "Preço (R$)",
+      "currency": "Moeda",
+      "interval": "Intervalo",
+      "maxProfessionals": "Máx. profissionais",
+      "maxAppointmentsPerMonth": "Máx. agend./mês",
+      "maxServices": "Máx. serviços",
+      "order": "Ordem",
+      "active": "Ativo",
+      "unlimitedAria": "Ilimitado"
+    },
+    "save": "Salvar",
+    "active": "Ativo",
+    "inactive": "Inativo",
+    "perInterval": "/{{interval}}",
+    "professionals": "Profissionais: {{value}}",
+    "appointmentsPerMonth": "Agendamentos/mês: {{value}}",
+    "services": "Serviços: {{value}}",
+    "stripePrice": "Stripe price: {{id}}",
+    "edit": "Editar",
+    "deleteAria": "Excluir"
+  }
+}

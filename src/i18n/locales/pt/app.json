@@ -1,1 +1,285 @@
-{}
+{
+  "home": {
+    "title": "Bem-vinda ✨",
+    "monthLabel": "Mês atual",
+    "completedMonth": "Concluídos no mês",
+    "scheduledToday": "Agendados para hoje",
+    "noAppointmentsToday": "Nenhum agendamento para hoje.",
+    "upcoming": "Próximos",
+    "noUpcoming": "Sem agendamentos futuros."
+  },
+  "report": {
+    "subtitle": "Empresa",
+    "title": "Dashboard",
+    "tabs": {
+      "overview": "Visão geral",
+      "report": "Relatório"
+    },
+    "kpis": {
+      "revenue": "Faturamento (mês)",
+      "appointments": "Atendimentos (mês)",
+      "clients": "Clientes cadastradas",
+      "topService": "Serviço top",
+      "vsLastMonth": "{{value}}% vs mês anterior"
+    },
+    "charts": {
+      "revenueTitle": "Faturamento — últimos 6 meses",
+      "topServicesTitle": "Top serviços",
+      "noData": "Sem dados ainda."
+    },
+    "table": {
+      "title": "Atendimentos",
+      "results_one": "{{count}} resultado",
+      "results_other": "{{count}} resultados",
+      "searchPlaceholder": "Buscar cliente, serviço, nota…",
+      "statusPlaceholder": "Status",
+      "allStatuses": "Todos os status",
+      "servicePlaceholder": "Serviço",
+      "allServices": "Todos os serviços",
+      "fromDate": "A partir de",
+      "clearFilters": "Limpar filtros",
+      "noResults": "Nenhum atendimento encontrado com os filtros atuais.",
+      "columns": {
+        "date": "Data",
+        "client": "Cliente",
+        "service": "Serviço",
+        "status": "Status",
+        "value": "Valor"
+      },
+      "showingRecent": "Mostrando os 50 mais recentes de {{count}}."
+    },
+    "status": {
+      "scheduled": "Agendado",
+      "completed": "Concluído",
+      "postponed": "Adiado",
+      "cancelled": "Cancelado",
+      "pendente_confirmacao": "Aguardando"
+    }
+  },
+  "agenda": {
+    "subtitle": "Agendamentos",
+    "title": "Agenda",
+    "allProfessionals": "Todas as profissionais",
+    "emptyDay": {
+      "title": "Dia livre",
+      "description": "Nenhum agendamento para esta data. Toque em + para criar."
+    }
+  },
+  "clients": {
+    "subtitle": "Cadastro",
+    "title": "Clientes",
+    "searchPlaceholder": "Buscar cliente",
+    "empty": "Nenhuma cliente cadastrada.",
+    "appointmentsCount_one": "{{count}} atendimento",
+    "appointmentsCount_other": "{{count}} atendimentos",
+    "removeConfirm": "Remover esta cliente?",
+    "removed": "Removida",
+    "form": {
+      "editTitle": "Editar cliente",
+      "newTitle": "Nova cliente",
+      "name": "Nome",
+      "phone": "Telefone",
+      "notes": "Observações",
+      "save": "Salvar",
+      "nameRequired": "Informe o nome",
+      "saved": "Salvo!"
+    },
+    "detail": {
+      "services": "Serviços",
+      "total": "Total",
+      "last": "Última",
+      "history": "Histórico de serviços",
+      "noCompleted": "Nenhum serviço concluído ainda.",
+      "completedOn": "Concluído em {{date}}"
+    }
+  },
+  "appointments": {
+    "subtitle": "Histórico",
+    "title": "Atendimentos",
+    "totalBilled": "Total faturado",
+    "searchPlaceholder": "Buscar por cliente ou serviço",
+    "empty": {
+      "title": "Sem atendimentos",
+      "description": "Quando você concluir um agendamento, ele aparecerá aqui."
+    }
+  },
+  "services": {
+    "subtitle": "Catálogo",
+    "title": "Serviços",
+    "count_one": "{{count}} serviço cadastrado",
+    "count_other": "{{count}} serviços cadastrados",
+    "new": "Novo serviço",
+    "empty": {
+      "title": "Nenhum serviço cadastrado",
+      "description": "Cadastre os serviços oferecidos para usar nos agendamentos e no site público."
+    },
+    "inactive": "Inativo",
+    "minutes": "{{count}} min",
+    "removeConfirm": "Remover \"{{name}}\" do catálogo?",
+    "form": {
+      "editTitle": "Editar serviço",
+      "newTitle": "Novo serviço",
+      "name": "Nome",
+      "duration": "Duração (min)",
+      "price": "Preço (R$)",
+      "category": "Categoria",
+      "categoryPlaceholder": "Ex: Manicure",
+      "color": "Cor",
+      "clear": "Limpar",
+      "description": "Descrição",
+      "active": "Ativo",
+      "activeHint": "Serviços inativos não aparecem no site público nem em novos agendamentos.",
+      "saving": "Salvando…",
+      "save": "Salvar",
+      "create": "Cadastrar"
+    }
+  },
+  "team": {
+    "subtitle": "Empresa",
+    "title": "Equipe",
+    "count_one": "{{count}} profissional",
+    "count_other": "{{count}} profissionais",
+    "new": "Nova profissional",
+    "empty": {
+      "title": "Nenhuma profissional cadastrada",
+      "description": "Cadastre as profissionais da sua empresa para começar a agendar para cada uma."
+    },
+    "inactive": "Inativa",
+    "pendingInvite": "Convite pendente",
+    "removeConfirm": "Remover {{name}} da equipe?",
+    "editTitle": "Editar {{name}}",
+    "newTitle": "Nova profissional",
+    "tabs": {
+      "data": "Dados",
+      "journey": "Jornada",
+      "services": "Serviços"
+    },
+    "form": {
+      "name": "Nome",
+      "specialties": "Especialidades (separadas por vírgula)",
+      "specialtiesPlaceholder": "Manicure, Pedicure, Alongamento",
+      "bio": "Bio",
+      "active": "Ativa",
+      "activeHint": "Profissionais inativas não recebem novos agendamentos.",
+      "saving": "Salvando…",
+      "save": "Salvar"
+    },
+    "schedule": {
+      "addBlock": "Adicionar bloco de atendimento",
+      "day": "Dia",
+      "start": "Início",
+      "end": "Fim",
+      "endMustBeAfterStart": "Hora final deve ser maior que a inicial",
+      "none": "Nenhuma jornada definida.",
+      "removeAria": "Remover"
+    },
+    "servicesSection": {
+      "empty": "Cadastre serviços personalizados no formulário de atendimento para poder vinculá-los a cada profissional.",
+      "selectFor": "Selecione os serviços oferecidos por {{name}}."
+    },
+    "invite": {
+      "label": "Convidar para acessar o sistema",
+      "description": "A profissional receberá um e-mail para criar sua conta e será vinculada automaticamente à sua empresa.",
+      "placeholder": "email@exemplo.com",
+      "send": "Convidar",
+      "sending": "Enviando…",
+      "emailRequired": "Informe o e-mail",
+      "success": "Convite enviado por e-mail ✨",
+      "error": "Não foi possível enviar o convite"
+    }
+  },
+  "myJourney": {
+    "subtitle": "Minha conta",
+    "title": "Minha jornada",
+    "notFound": {
+      "title": "Perfil profissional não encontrado",
+      "description": "Peça à empresa para vincular o seu cadastro como profissional para configurar a jornada."
+    },
+    "professionalLabel": "Profissional",
+    "intro": "Defina os dias e horários em que você atende. O site público usa esta jornada para mostrar os horários disponíveis aos clientes.",
+    "schedule": {
+      "addBlock": "Adicionar bloco de atendimento",
+      "day": "Dia",
+      "start": "Início",
+      "end": "Fim",
+      "endMustBeAfterStart": "Hora final deve ser maior que a inicial",
+      "added": "Bloco adicionado",
+      "none": "Nenhuma jornada definida ainda.",
+      "removeAria": "Remover"
+    },
+    "blocks": {
+      "title": "Bloquear dias específicos",
+      "description": "Selecione um dia no calendário para desabilitar agendamentos (folga, férias, evento).",
+      "reasonLabel": "Motivo (opcional)",
+      "reasonPlaceholder": "Ex: folga, férias, consulta médica",
+      "blockButton": "Bloquear {{date}}",
+      "blocked": "Dia bloqueado",
+      "none": "Nenhum dia bloqueado.",
+      "unblockAria": "Desbloquear"
+    }
+  },
+  "notifications": {
+    "subtitle": "Configurações",
+    "title": "Histórico de notificações",
+    "empty": {
+      "title": "Nenhuma notificação enviada ainda",
+      "description": "Quando um cliente agendar pelo seu site ou você confirmar / cancelar um atendimento, os e-mails aparecerão aqui."
+    },
+    "sent": "Enviado",
+    "sentAt": "{{date}}",
+    "templates": {
+      "booking_confirmation_customer": "Confirmação de agendamento (cliente)",
+      "booking_new_company": "Novo agendamento (empresa)",
+      "booking_confirmed_customer": "Agendamento confirmado",
+      "booking_cancelled_customer": "Agendamento cancelado",
+      "booking_reminder_customer": "Lembrete 24h"
+    }
+  },
+  "settings": {
+    "subtitle": "Conta",
+    "title": "Configurações",
+    "signOut": "Sair",
+    "areaUpdated": "Área de atuação atualizada",
+    "areaUpdateFailed": "Falha ao atualizar a área",
+    "plan": {
+      "current": "Plano atual",
+      "viewPlans": "Ver planos",
+      "professionals": "Profissionais",
+      "appointmentsMonth": "Agendamentos no mês",
+      "activeServices": "Serviços ativos"
+    },
+    "superAdmin": {
+      "title": "Painel Super Admin",
+      "description": "Gerenciar empresas, planos e métricas da plataforma."
+    },
+    "links": {
+      "team": {
+        "title": "Equipe",
+        "description": "Gerencie as profissionais da sua empresa."
+      },
+      "services": {
+        "title": "Serviços",
+        "description": "Catálogo com duração, preço e cor — usado nos agendamentos e no site público."
+      },
+      "notifications": {
+        "title": "Histórico de notificações",
+        "description": "Veja todos os e-mails enviados aos clientes e à empresa."
+      },
+      "myJourney": {
+        "title": "Minha jornada",
+        "description": "Escolha os dias e horários em que você atende."
+      }
+    },
+    "appearance": {
+      "title": "Aparência",
+      "darkOn": "Tema escuro ativado — ideal à noite.",
+      "lightOn": "Tema claro ativado — luminoso e suave.",
+      "savedPreference": "Sua preferência fica salva."
+    },
+    "area": {
+      "title": "Área de atuação",
+      "description": "Selecione a área em que sua empresa atua. O catálogo de serviços é ajustado automaticamente."
+    },
+    "cloudNote": "Seus dados são salvos automaticamente na nuvem e ficam disponíveis no celular e no navegador."
+  }
+}

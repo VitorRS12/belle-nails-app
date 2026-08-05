@@ -6,6 +6,7 @@ import { AreaSwitcher } from "./AreaSwitcher";
 import { Breadcrumbs } from "./Breadcrumbs";
 import { OfflineIndicator } from "./OfflineIndicator";
 import { InstallAppPrompt } from "./InstallAppPrompt";
+import { LanguageToggle } from "./LanguageToggle";
 import { TrialBanner } from "@/features/billing/components/TrialBanner";
 
 interface Props {

@@ -1,1 +1,204 @@
-{}
+{
+  "layout": {
+    "back": "Back",
+    "lastUpdated": "Last updated: {{date}}",
+    "footer": "© {{year}} Belle Nails"
+  },
+  "termos": {
+    "title": "Terms of Use",
+    "s1": {
+      "heading": "1. Service provider identification",
+      "p1_pre": "This service is operated by ",
+      "p1_name": "Edelson Vitor dos Santos Dutra",
+      "p1_mid": ", an individual registered under CPF no. ",
+      "p1_cpf": "065.235.185-90",
+      "p1_mid2": ", doing business under the name ",
+      "p1_brand": "Belle Nails",
+      "p1_end": " (\"Belle Nails\", \"we\"). By using the platform, you enter into a contract directly with Edelson Vitor dos Santos Dutra (Belle Nails)."
+    },
+    "s2": {
+      "heading": "2. Acceptance",
+      "p1": "By creating an account or continuing to use Belle Nails, you state that you have read, understood, and agreed to these Terms. If you do not agree, please do not use the service."
+    },
+    "s3": {
+      "heading": "3. Service description",
+      "p1": "Belle Nails is a SaaS scheduling and management platform for beauty professionals and studios (manicure, lash, and eyebrow services), including online booking, client records, notifications, and reports."
+    },
+    "s4": {
+      "heading": "4. Account and user responsibilities",
+      "li1": "You must provide truthful information and keep it up to date.",
+      "li2": "You are responsible for keeping your credentials confidential and for all activity on your account.",
+      "li3": "If you contract on behalf of a company, you declare you have the authority to bind it to these Terms."
+    },
+    "s5": {
+      "heading": "5. Acceptable use",
+      "intro": "You agree not to:",
+      "li1": "Use the service for any illegal, fraudulent, or deceptive purpose;",
+      "li2": "Send spam or content that infringes third-party rights or intellectual property;",
+      "li3": "Interfere with the service's security (malware, scanning, unauthorized scraping);",
+      "li4": "Reverse-engineer, resell, or redistribute the service."
+    },
+    "s6": {
+      "heading": "6. Intellectual property",
+      "p1": "All software, brand, documentation, and visual identity of Belle Nails remain the exclusive property of Belle Nails. We grant you a limited, non-exclusive, non-transferable license to use the service within your contracted plan."
+    },
+    "s7": {
+      "heading": "7. User content",
+      "p1": "You retain ownership of the data you enter (clients, appointments, services). You grant us a limited license to host and process that content solely to provide the service."
+    },
+    "s8": {
+      "heading": "8. Payments, subscriptions, and Paddle as Merchant of Record",
+      "p1_pre": "Our order process is conducted by our online reseller ",
+      "p1_paddle": "Paddle.com",
+      "p1_end": ". Paddle.com is the Merchant of Record (MoR) for all our orders. Paddle handles all customer inquiries related to payments and manages refunds.",
+      "p2_pre": "Payment, billing, renewal, cancellation, tax, and refund terms follow the ",
+      "p2_link": "Paddle Buyer Terms",
+      "p2_end": ". Subscriptions renew automatically for the contracted period until canceled."
+    },
+    "s9": {
+      "heading": "9. Availability",
+      "p1": "We strive to keep the service available, but we do not guarantee uninterrupted or error-free operation. We may perform scheduled or emergency maintenance."
+    },
+    "s10": {
+      "heading": "10. Warranties and liability",
+      "p1": "To the maximum extent permitted by law, the service is provided \"as is\", without implied warranties of fitness for a particular purpose. Our aggregate liability is limited to the amount you paid in the 12 months prior to the event giving rise to the claim, excluding indirect damages, lost profits, or data loss."
+    },
+    "s11": {
+      "heading": "11. Suspension and termination",
+      "p1": "We may suspend or terminate access in the event of a breach of these Terms, non-payment, fraud or security risk, or repeated policy violations. You may cancel your subscription at any time through the dashboard or via Paddle."
+    },
+    "s12": {
+      "heading": "12. Governing law and jurisdiction",
+      "p1": "These Terms are governed by the laws of the Federative Republic of Brazil. The consumer's domicile jurisdiction is elected to settle disputes."
+    },
+    "s13": {
+      "heading": "13. Contact",
+      "p1": "Questions about these Terms can be sent to the support channel available within Belle Nails."
+    }
+  },
+  "privacidade": {
+    "title": "Privacy Policy",
+    "s1": {
+      "heading": "1. Who we are",
+      "p1_pre": "This Policy describes how ",
+      "p1_name": "Edelson Vitor dos Santos Dutra",
+      "p1_mid": ", an individual registered under CPF no. ",
+      "p1_cpf": "065.235.185-90",
+      "p1_mid2": ", doing business under the name ",
+      "p1_brand": "Belle Nails",
+      "p1_mid3": " (\"Belle Nails\", \"we\"), processes personal data. For data we collect directly from you (registration, service use), Belle Nails acts as the ",
+      "p1_controller": "data controller",
+      "p1_end": " under the LGPD (Law No. 13,709/2018)."
+    },
+    "s2": {
+      "heading": "2. Data we collect",
+      "li1_label": "Account:",
+      "li1_text": " name, email, phone number, login credentials.",
+      "li2_label": "Business data:",
+      "li2_text": " company name, professionals, services, schedules.",
+      "li3_label": "End-client data",
+      "li3_text": " entered by you (name, phone number, email, booking history).",
+      "li4_label": "Usage and telemetry:",
+      "li4_text": " pages visited, actions taken, device identifiers, IP address, error logs.",
+      "li5_label": "Communications:",
+      "li5_text": " messages sent to support."
+    },
+    "s3": {
+      "heading": "3. Purposes and legal bases",
+      "li1_pre": "Account creation and maintenance — ",
+      "li1_em": "contract performance",
+      "li1_end": ".",
+      "li2_pre": "Providing scheduling, notifications, and reporting services — ",
+      "li2_em": "contract performance",
+      "li2_end": ".",
+      "li3_pre": "Security, fraud prevention, and product improvement — ",
+      "li3_em": "legitimate interest",
+      "li3_end": ".",
+      "li4_pre": "Customer support — ",
+      "li4_em1": "contract performance",
+      "li4_mid": " / ",
+      "li4_em2": "legitimate interest",
+      "li4_end": ".",
+      "li5_pre": "Marketing communications — ",
+      "li5_em": "consent",
+      "li5_end": ", with opt-out option.",
+      "li6_pre": "Compliance with tax and legal obligations — ",
+      "li6_em": "legal obligation",
+      "li6_end": "."
+    },
+    "s4": {
+      "heading": "4. Sharing",
+      "intro": "We share data only with the following categories of recipients:",
+      "li1_label": "Infrastructure providers",
+      "li1_text": " (hosting, database, transactional email);",
+      "li2_label": "Paddle.com",
+      "li2_text": ", our Merchant of Record, for payment processing, subscription management, billing, and tax compliance;",
+      "li3_label": "Analytics and support providers",
+      "li3_text": " who help us operate the service;",
+      "li4_label": "Professional advisors",
+      "li4_text": " (legal, accounting), when necessary;",
+      "li5_label": "Public authorities",
+      "li5_text": ", when required by law or court order."
+    },
+    "s5": {
+      "heading": "5. Retention",
+      "p1": "We keep data for as long as your account is active and for the period necessary to fulfill the purposes described, comply with legal obligations, and exercise rights in any proceedings. After that period, data is deleted or anonymized."
+    },
+    "s6": {
+      "heading": "6. Security",
+      "p1": "We adopt appropriate technical and organizational measures to protect data, including encryption in transit (HTTPS), role-based access controls, organization-level segregation, and audit logging for sensitive operations."
+    },
+    "s7": {
+      "heading": "7. Your rights (LGPD)",
+      "intro": "You may request, at any time:",
+      "li1": "Confirmation and access to your data;",
+      "li2": "Correction of incomplete or outdated data;",
+      "li3": "Anonymization, blocking, or deletion of unnecessary data;",
+      "li4": "Portability;",
+      "li5": "Withdrawal of consent;",
+      "li6": "Information about data sharing performed.",
+      "p1": "To exercise your rights, use the support channel within Belle Nails. We will respond within the timeframe set by applicable law."
+    },
+    "s8": {
+      "heading": "8. Cookies",
+      "p1": "We use essential cookies for authentication and service operation, and analytics cookies to understand platform usage. You can manage cookies in your browser settings."
+    },
+    "s9": {
+      "heading": "9. Changes",
+      "p1": "We may update this Policy periodically. Material changes will be communicated through the app itself or by email."
+    },
+    "s10": {
+      "heading": "10. Contact",
+      "p1": "Privacy questions can be sent through the support channel within Belle Nails."
+    }
+  },
+  "reembolso": {
+    "title": "Refund Policy",
+    "s1": {
+      "heading": "30-day guarantee",
+      "p1_pre": "",
+      "p1_brand": "Belle Nails",
+      "p1_mid": " offers a ",
+      "p1_days": "30-day",
+      "p1_end": " satisfaction guarantee. If you are not satisfied with your subscription, you may request a full refund within 30 days of the charge date."
+    },
+    "s2": {
+      "heading": "How to request",
+      "p1_pre": "Refunds are processed by our payment provider, ",
+      "p1_paddle": "Paddle",
+      "p1_end": ", which acts as the Merchant of Record (MoR) for our orders.",
+      "li1_pre": "Go to ",
+      "li1_link": "paddle.net",
+      "li1_end": " and enter the email used for the purchase to find your invoice and open a request; or",
+      "li2": "Contact our support within the app and we will help with the process."
+    },
+    "s3": {
+      "heading": "Processing time",
+      "p1": "Once approved, the refund is usually processed within a few business days, depending on the payment method used."
+    },
+    "s4": {
+      "heading": "Cancellation",
+      "p1": "You may cancel your subscription at any time. Cancellation stops upcoming renewals; the period already paid for remains active until the end of the cycle, except where the refund described above applies."
+    }
+  }
+}

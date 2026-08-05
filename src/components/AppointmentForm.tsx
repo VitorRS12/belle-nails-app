@@ -14,6 +14,7 @@ import { type Appointment, type Material, type ServiceItem, SERVICE_CATALOG_BY_A
 import { Plus, X, Star } from "lucide-react";
 import { toast } from "sonner";
 import { useTrialStatus } from "@/features/billing/hooks/useTrialStatus";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   trigger?: React.ReactNode;
@@ -32,6 +33,7 @@ function initialServices(initial?: Appointment): ServiceItem[] {
 }
 
 export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Props) {
+  const { t } = useTranslation("common");
   const clients = useClients();
   const { isReadOnly } = useTrialStatus();
   const { profile } = useProfile();
@@ -104,7 +106,7 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
   const addCustom = async () => {
     const n = customName.trim();
     if (!n) {
-      toast.error("Informe o nome do serviço");
+      toast.error(t("appointmentForm.errors.customServiceName"));
       return;
     }
     const price = Number(customPrice.replace(",", ".")) || 0;
@@ -114,7 +116,7 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
     setServices((cur) => [...cur, { name: saved?.name ?? n, price: saved?.price ?? price }]);
     setCustomName("");
     setCustomPrice("");
-    if (saved) toast.success("Serviço salvo na sua lista ✨");
+    if (saved) toast.success(t("appointmentForm.customServiceSaved"));
   };
 
   const updateService = (idx: number, patch: Partial<ServiceItem>) => {
@@ -134,7 +136,7 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
 
   const submit = () => {
     if (isReadOnly) {
-      return toast.error("Seu teste expirou. Assine um plano para continuar criando agendamentos.");
+      return toast.error(t("appointmentForm.readOnlyError"));
     }
     let finalClientId = clientId;
     let finalClientName = clients.find((c) => c.id === clientId)?.name ?? "";
@@ -146,11 +148,11 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
       finalClientName = c.name;
     }
 
-    if (!finalClientId) return toast.error("Selecione ou cadastre uma cliente");
-    if (services.length === 0) return toast.error("Adicione ao menos um serviço");
+    if (!finalClientId) return toast.error(t("appointmentForm.errors.selectOrCreateClient"));
+    if (services.length === 0) return toast.error(t("appointmentForm.errors.addService"));
 
     const cleanServices = services.map((s) => ({
-      name: s.name.trim() || "Serviço",
+      name: s.name.trim() || t("appointmentForm.services"),
       price: Number(s.price) || 0,
     }));
     const totalPrice = cleanServices.reduce((s, x) => s + x.price, 0);
@@ -172,7 +174,7 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
       professionalId: professionalId || undefined,
     };
     appointmentsStore.save(appt);
-    toast.success(initial ? "Atualizado!" : "Salvo com carinho ✨");
+    toast.success(initial ? t("appointmentForm.saved.updated") : t("appointmentForm.saved.created"));
     setOpen(false);
     onSaved?.();
   };
@@ -189,16 +191,16 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto rounded-3xl">
         <DialogHeader>
           <DialogTitle className="font-display text-2xl">
-            {initial ? "Editar atendimento" : "Novo atendimento"}
+            {initial ? t("appointmentForm.title.edit") : t("appointmentForm.title.new")}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 pt-2">
           <div className="space-y-2">
-            <Label>Cliente</Label>
+            <Label>{t("appointmentForm.client")}</Label>
             {clients.length > 0 ? (
               <Select value={clientId} onValueChange={setClientId}>
-                <SelectTrigger><SelectValue placeholder="Selecione uma cliente" /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={t("appointmentForm.selectClient")} /></SelectTrigger>
                 <SelectContent>
                   {clients.map((c) => (
                     <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
@@ -208,7 +210,7 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
             ) : null}
             {!clientId && (
               <Input
-                placeholder={clients.length ? "ou cadastrar nova" : "Nome da cliente"}
+                placeholder={clients.length ? t("appointmentForm.newClientPlaceholder") : t("appointmentForm.newClientNameOnlyPlaceholder")}
                 value={newClientName}
                 onChange={(e) => setNewClientName(e.target.value)}
               />
@@ -217,21 +219,21 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label>Data</Label>
+              <Label>{t("appointmentForm.date")}</Label>
               <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label>Hora</Label>
+              <Label>{t("appointmentForm.time")}</Label>
               <Input type="time" value={time} onChange={(e) => setTime(e.target.value)} />
             </div>
           </div>
 
           {activeProfessionals.length > 1 && (
             <div className="space-y-2">
-              <Label>Profissional</Label>
+              <Label>{t("appointmentForm.professional")}</Label>
               <Select value={professionalId} onValueChange={setProfessionalId}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione uma profissional" />
+                  <SelectValue placeholder={t("appointmentForm.selectProfessional")} />
                 </SelectTrigger>
                 <SelectContent>
                   {activeProfessionals.map((p) => (
@@ -245,14 +247,14 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
           )}
 
           <div className="space-y-3">
-            <Label>Serviços</Label>
+            <Label>{t("appointmentForm.services")}</Label>
 
             <Select value={pickerValue} onValueChange={addFromCatalog}>
-              <SelectTrigger><SelectValue placeholder="Adicionar serviço da lista" /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder={t("appointmentForm.addFromList")} /></SelectTrigger>
               <SelectContent>
                 {customCatalog.length > 0 && (
                   <SelectGroup>
-                    <SelectLabel>⭐ Meus serviços</SelectLabel>
+                    <SelectLabel>{t("appointmentForm.myServices")}</SelectLabel>
                     {customCatalog.map((s) => (
                       <SelectItem key={`custom::${s.id}`} value={`custom::${s.id}`}>
                         {s.name} · R$ {s.price.toFixed(2).replace(".", ",")}
@@ -281,11 +283,11 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
             <div className="rounded-2xl border border-dashed border-border bg-accent-soft/30 p-3 space-y-2">
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Star className="h-3 w-3" />
-                Criar serviço personalizado (fica salvo na sua lista)
+                {t("appointmentForm.customServiceHint")}
               </div>
               <div className="flex gap-2">
                 <Input
-                  placeholder="Nome do serviço"
+                  placeholder={t("appointmentForm.customServiceNamePlaceholder")}
                   value={customName}
                   onChange={(e) => setCustomName(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustom())}
@@ -293,7 +295,7 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
                 <Input
                   className="w-24"
                   inputMode="decimal"
-                  placeholder="R$ 0,00"
+                  placeholder={t("appointmentForm.customServicePricePlaceholder")}
                   value={customPrice}
                   onChange={(e) => setCustomPrice(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustom())}
@@ -316,7 +318,7 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
                 </Select>
               )}
               <Button type="button" variant="secondary" onClick={addCustom} className="w-full h-9">
-                <Plus className="h-4 w-4 mr-1" /> Adicionar e salvar
+                <Plus className="h-4 w-4 mr-1" /> {t("appointmentForm.addAndSave")}
               </Button>
             </div>
 
@@ -349,7 +351,7 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
                 ))}
 
                 <div className="flex items-center justify-between rounded-2xl bg-gradient-soft p-3">
-                  <span className="text-xs uppercase tracking-wider text-muted-foreground">Total</span>
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground">{t("appointmentForm.total")}</span>
                   <span className="font-display text-xl text-primary">
                     R$ {total.toFixed(2).replace(".", ",")}
                   </span>
@@ -359,17 +361,17 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
           </div>
 
           <div className="space-y-2">
-            <Label>Materiais utilizados</Label>
+            <Label>{t("appointmentForm.materials")}</Label>
             <div className="flex gap-2">
               <Input
-                placeholder="Nome"
+                placeholder={t("appointmentForm.materialNamePlaceholder")}
                 value={matName}
                 onChange={(e) => setMatName(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addMaterial())}
               />
               <Input
                 className="w-24"
-                placeholder="Qtd"
+                placeholder={t("appointmentForm.materialQtyPlaceholder")}
                 value={matQty}
                 onChange={(e) => setMatQty(e.target.value)}
               />
@@ -384,7 +386,7 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
                     key={i}
                     className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1 text-xs text-foreground"
                   >
-                    {m.name}{m.quantity ? ` · ${m.quantity}` : ""}
+                    {m.quantity ? t("appointmentForm.materialQuantity", { name: m.name, quantity: m.quantity }) : m.name}
                     <button onClick={() => setMaterials((mm) => mm.filter((_, idx) => idx !== i))}>
                       <X className="h-3 w-3" />
                     </button>
@@ -395,9 +397,9 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
           </div>
 
           <div className="space-y-2">
-            <Label>Observações</Label>
+            <Label>{t("appointmentForm.notes")}</Label>
             <Textarea
-              placeholder="Detalhes, preferências..."
+              placeholder={t("appointmentForm.notesPlaceholder")}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
@@ -406,20 +408,20 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
 
           {initial?.status === "completed" || initial?.status === "cancelled" ? (
             <div className="space-y-2">
-              <Label>Status</Label>
+              <Label>{t("appointmentForm.status")}</Label>
               <Select value={status} onValueChange={(v) => setStatus(v as Appointment["status"])}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="scheduled">Agendado</SelectItem>
-                  <SelectItem value="completed">Concluído</SelectItem>
-                  <SelectItem value="cancelled">Cancelado</SelectItem>
+                  <SelectItem value="scheduled">{t("appointmentForm.statusOptions.scheduled")}</SelectItem>
+                  <SelectItem value="completed">{t("appointmentForm.statusOptions.completed")}</SelectItem>
+                  <SelectItem value="cancelled">{t("appointmentForm.statusOptions.cancelled")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           ) : null}
 
           <Button onClick={submit} className="w-full bg-gradient-primary shadow-elegant h-11 text-base">
-            Salvar
+            {t("appointmentForm.submit")}
           </Button>
         </div>
       </DialogContent>

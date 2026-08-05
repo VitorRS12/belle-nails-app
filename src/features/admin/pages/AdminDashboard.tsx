@@ -2,42 +2,44 @@ import { AdminLayout } from "@/features/admin/components/AdminLayout";
 import { useAdminMetrics } from "@/features/admin/hooks/useAdminMetrics";
 import { Building2, CreditCard, CalendarCheck, TrendingUp, Sparkles, Hourglass } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslation } from "react-i18next";
 
 const formatBRL = (cents: number) =>
   (cents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 const AdminDashboard = () => {
+  const { t } = useTranslation("admin");
   const { data, isLoading } = useAdminMetrics();
 
   const cards = [
     {
-      label: "Empresas",
+      label: t("dashboard.cards.companies"),
       value: data?.totalCompanies ?? 0,
       icon: Building2,
-      hint: `+${data?.newCompanies30d ?? 0} nos últimos 30 dias`,
+      hint: t("dashboard.cards.companiesHint", { count: data?.newCompanies30d ?? 0 }),
     },
     {
-      label: "Assinaturas ativas",
+      label: t("dashboard.cards.activeSubscriptions"),
       value: data?.activeSubscriptions ?? 0,
       icon: CreditCard,
-      hint: `${data?.trialingSubscriptions ?? 0} em trial`,
+      hint: t("dashboard.cards.activeSubscriptionsHint", { count: data?.trialingSubscriptions ?? 0 }),
     },
     {
-      label: "MRR estimado",
+      label: t("dashboard.cards.mrr"),
       value: formatBRL(data?.mrrCents ?? 0),
       icon: TrendingUp,
-      hint: "Receita recorrente mensal",
+      hint: t("dashboard.cards.mrrHint"),
     },
     {
-      label: "Agendamentos no mês",
+      label: t("dashboard.cards.appointmentsThisMonth"),
       value: data?.appointmentsThisMonth ?? 0,
       icon: CalendarCheck,
-      hint: "Em todas as empresas",
+      hint: t("dashboard.cards.appointmentsThisMonthHint"),
     },
   ];
 
   return (
-    <AdminLayout title="Visão geral" subtitle="Métricas da plataforma">
+    <AdminLayout title={t("dashboard.title")} subtitle={t("dashboard.subtitle")}>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {cards.map((c) => {
           const Icon = c.icon;
@@ -67,11 +69,9 @@ const AdminDashboard = () => {
             <Sparkles className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="font-display text-lg">Bem-vindo ao painel</h3>
+            <h3 className="font-display text-lg">{t("dashboard.welcome.title")}</h3>
             <p className="text-sm text-muted-foreground">
-              Use as abas acima para gerenciar empresas e planos. Quando os pagamentos
-              estiverem ativos, o MRR e o status das assinaturas serão atualizados
-              automaticamente pelo Stripe.
+              {t("dashboard.welcome.description")}
             </p>
           </div>
         </div>
@@ -80,7 +80,7 @@ const AdminDashboard = () => {
       {data?.trialingSubscriptions ? (
         <div className="mt-3 rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 text-sm flex items-center gap-3">
           <Hourglass className="h-4 w-4 text-amber-600" />
-          {data.trialingSubscriptions} empresa(s) em período de teste no momento.
+          {t("dashboard.trialingNotice", { count: data.trialingSubscriptions })}
         </div>
       ) : null}
     </AdminLayout>

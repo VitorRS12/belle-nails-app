@@ -1,7 +1,8 @@
 import { Appointment } from "@/lib/types";
 import { Clock, Pencil, Trash2, CheckCircle2, XCircle, CalendarClock } from "lucide-react";
 import { format, parseISO } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { ptBR, enUS } from "date-fns/locale";
+import { useTranslation } from "react-i18next";
 import { appointmentsStore } from "@/lib/storage";
 import { notifyAppointmentStatus } from "@/lib/notifyAppointment";
 import { AppointmentForm } from "./AppointmentForm";
@@ -20,13 +21,6 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
-const statusLabel: Record<Appointment["status"], string> = {
-  scheduled: "Agendado",
-  completed: "Concluído",
-  cancelled: "Cancelado",
-  pendente_confirmacao: "Aguardando confirmação",
-};
-
 const statusStyles: Record<Appointment["status"], string> = {
   scheduled: "bg-accent-soft text-accent-foreground",
   completed: "bg-primary/10 text-primary",
@@ -43,6 +37,8 @@ export function AppointmentCard({
   showDate?: boolean;
   showStatusActions?: boolean;
 }) {
+  const { t, i18n } = useTranslation("common");
+  const dateLocale = i18n.resolvedLanguage === "en" ? enUS : ptBR;
   const [rescheduleOpen, setRescheduleOpen] = useState(false);
   const [completeOpen, setCompleteOpen] = useState(false);
   const [newDate, setNewDate] = useState(appt.date);
@@ -51,16 +47,16 @@ export function AppointmentCard({
   const [extraReason, setExtraReason] = useState("");
 
   const remove = () => {
-    if (!confirm("Remover este atendimento?")) return;
+    if (!confirm(t("appointmentCard.confirmRemove"))) return;
     appointmentsStore.remove(appt.id);
-    toast.success("Removido");
+    toast.success(t("appointmentCard.removed"));
   };
 
   const cancel = () => {
-    if (!confirm("Cancelar este serviço?")) return;
+    if (!confirm(t("appointmentCard.confirmCancel"))) return;
     appointmentsStore.save({ ...appt, status: "cancelled" });
     void notifyAppointmentStatus(appt.id, "cancelled");
-    toast.success("Atendimento cancelado");
+    toast.success(t("appointmentCard.cancelled"));
   };
 
   const confirmComplete = () => {
@@ -73,7 +69,7 @@ export function AppointmentCard({
       extraReason: extra > 0 ? (extraReason.trim() || undefined) : undefined,
       price: appt.price + extra,
     });
-    toast.success("Marcado como concluído ✨");
+    toast.success(t("appointmentCard.completed"));
     setCompleteOpen(false);
     setExtraValue("");
     setExtraReason("");
@@ -81,7 +77,7 @@ export function AppointmentCard({
 
   const reschedule = () => {
     appointmentsStore.save({ ...appt, date: newDate, time: newTime, status: "scheduled" });
-    toast.success("Reagendado!");
+    toast.success(t("appointmentCard.rescheduled"));
     setRescheduleOpen(false);
   };
 
@@ -91,7 +87,7 @@ export function AppointmentCard({
   const confirmBooking = () => {
     appointmentsStore.save({ ...appt, status: "scheduled" });
     void notifyAppointmentStatus(appt.id, "confirmed");
-    toast.success("Agendamento confirmado");
+    toast.success(t("appointmentCard.confirmed"));
   };
 
   return (
@@ -101,11 +97,11 @@ export function AppointmentCard({
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 mb-1 flex-wrap">
               <span className={cn("text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full", statusStyles[appt.status])}>
-                {statusLabel[appt.status]}
+                {t(`appointmentCard.status.${appt.status}`)}
               </span>
               <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
                 <Clock className="h-3 w-3" />
-                {showDate && format(parseISO(appt.date), "dd MMM", { locale: ptBR }) + " · "}
+                {showDate && format(parseISO(appt.date), "dd MMM", { locale: dateLocale }) + " · "}
                 {appt.time}
               </span>
             </div>
@@ -113,7 +109,7 @@ export function AppointmentCard({
             <p className="text-sm text-muted-foreground truncate">{appt.service}</p>
             {appt.extraValue ? (
               <p className="text-[11px] text-primary mt-1">
-                +R$ {appt.extraValue.toFixed(2).replace(".", ",")}
+                {t("appointmentCard.extraPrefix", { value: appt.extraValue.toFixed(2).replace(".", ",") })}
                 {appt.extraReason ? ` · ${appt.extraReason}` : ""}
               </p>
             ) : null}
@@ -121,7 +117,7 @@ export function AppointmentCard({
               <div className="mt-2 flex flex-wrap gap-1">
                 {appt.materials.map((m, i) => (
                   <span key={i} className="text-[10px] rounded-full bg-secondary px-2 py-0.5 text-secondary-foreground">
-                    {m.name}{m.quantity ? ` · ${m.quantity}` : ""}
+                    {m.quantity ? t("appointmentCard.materialQuantity", { name: m.name, quantity: m.quantity }) : m.name}
                   </span>
                 ))}
               </div>
@@ -158,7 +154,7 @@ export function AppointmentCard({
                 onClick={confirmBooking}
                 className="bg-gradient-primary shadow-soft h-9 text-xs"
               >
-                <CheckCircle2 className="h-4 w-4 mr-1" /> Confirmar
+                <CheckCircle2 className="h-4 w-4 mr-1" /> {t("appointmentCard.confirm")}
               </Button>
             ) : (
               <Button
@@ -166,7 +162,7 @@ export function AppointmentCard({
                 onClick={() => setCompleteOpen(true)}
                 className="bg-gradient-primary shadow-soft h-9 text-xs"
               >
-                <CheckCircle2 className="h-4 w-4 mr-1" /> Concluir
+                <CheckCircle2 className="h-4 w-4 mr-1" /> {t("appointmentCard.complete")}
               </Button>
             )}
             <Button
@@ -175,7 +171,7 @@ export function AppointmentCard({
               onClick={() => setRescheduleOpen(true)}
               className="h-9 text-xs"
             >
-              <CalendarClock className="h-4 w-4 mr-1" /> Adiar
+              <CalendarClock className="h-4 w-4 mr-1" /> {t("appointmentCard.postpone")}
             </Button>
             <Button
               size="sm"
@@ -183,7 +179,7 @@ export function AppointmentCard({
               onClick={cancel}
               className="h-9 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/30"
             >
-              <XCircle className="h-4 w-4 mr-1" /> Cancelar
+              <XCircle className="h-4 w-4 mr-1" /> {t("appointmentCard.cancel")}
             </Button>
           </div>
         )}
@@ -192,21 +188,21 @@ export function AppointmentCard({
       <Dialog open={rescheduleOpen} onOpenChange={setRescheduleOpen}>
         <DialogContent className="max-w-sm rounded-3xl">
           <DialogHeader>
-            <DialogTitle className="font-display text-2xl">Adiar / Reagendar</DialogTitle>
-            <DialogDescription>Escolha a nova data e horário.</DialogDescription>
+            <DialogTitle className="font-display text-2xl">{t("appointmentCard.reschedule.title")}</DialogTitle>
+            <DialogDescription>{t("appointmentCard.reschedule.description")}</DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-3 pt-2">
             <div className="space-y-2">
-              <Label>Data</Label>
+              <Label>{t("appointmentCard.reschedule.date")}</Label>
               <Input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label>Hora</Label>
+              <Label>{t("appointmentCard.reschedule.time")}</Label>
               <Input type="time" value={newTime} onChange={(e) => setNewTime(e.target.value)} />
             </div>
           </div>
           <Button onClick={reschedule} className="w-full bg-gradient-primary h-11 shadow-elegant mt-2">
-            Confirmar novo horário
+            {t("appointmentCard.reschedule.confirmButton")}
           </Button>
         </DialogContent>
       </Dialog>
@@ -214,26 +210,26 @@ export function AppointmentCard({
       <Dialog open={completeOpen} onOpenChange={setCompleteOpen}>
         <DialogContent className="max-w-sm rounded-3xl">
           <DialogHeader>
-            <DialogTitle className="font-display text-2xl">Concluir atendimento</DialogTitle>
+            <DialogTitle className="font-display text-2xl">{t("appointmentCard.complete_dialog.title")}</DialogTitle>
             <DialogDescription>
               {appt.service} · R$ {appt.price.toFixed(2).replace(".", ",")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 pt-2">
             <div className="space-y-2">
-              <Label>Valor extra (opcional)</Label>
+              <Label>{t("appointmentCard.complete_dialog.extraValue")}</Label>
               <Input
                 inputMode="decimal"
-                placeholder="0,00"
+                placeholder={t("appointmentCard.complete_dialog.extraValuePlaceholder")}
                 value={extraValue}
                 onChange={(e) => setExtraValue(e.target.value.replace(",", "."))}
               />
             </div>
             {Number(extraValue) > 0 && (
               <div className="space-y-2 animate-scale-in">
-                <Label>Motivo do valor extra</Label>
+                <Label>{t("appointmentCard.complete_dialog.extraReason")}</Label>
                 <Textarea
-                  placeholder="Ex: decoração especial, alongamento adicional…"
+                  placeholder={t("appointmentCard.complete_dialog.extraReasonPlaceholder")}
                   rows={2}
                   value={extraReason}
                   onChange={(e) => setExtraReason(e.target.value)}
@@ -241,13 +237,13 @@ export function AppointmentCard({
               </div>
             )}
             <div className="rounded-2xl bg-gradient-soft p-3 text-center">
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Total final</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("appointmentCard.complete_dialog.totalLabel")}</p>
               <p className="font-display text-2xl text-primary">
                 R$ {(appt.price + (Number(extraValue) || 0)).toFixed(2).replace(".", ",")}
               </p>
             </div>
             <Button onClick={confirmComplete} className="w-full bg-gradient-primary h-11 shadow-elegant">
-              <CheckCircle2 className="h-5 w-5 mr-2" /> Confirmar conclusão
+              <CheckCircle2 className="h-5 w-5 mr-2" /> {t("appointmentCard.complete_dialog.confirmButton")}
             </Button>
           </div>
         </DialogContent>

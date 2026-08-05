@@ -1,6 +1,7 @@
 import { Component, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
+import i18n from "@/i18n";
 
 interface State {
   hasError: boolean;
@@ -32,9 +33,9 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
               <AlertTriangle className="h-7 w-7" />
             </div>
             <div className="space-y-1">
-              <h1 className="font-display text-2xl">Algo deu errado</h1>
+              <h1 className="font-display text-2xl">{i18n.t("common:errorBoundary.title")}</h1>
               <p className="text-sm text-muted-foreground">
-                Tivemos um problema ao carregar esta tela. Tente novamente.
+                {i18n.t("common:errorBoundary.description")}
               </p>
             </div>
             {this.state.error?.message && (
@@ -43,7 +44,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
               </p>
             )}
             <Button onClick={this.reset} className="w-full bg-gradient-primary shadow-elegant">
-              Voltar ao início
+              {i18n.t("common:errorBoundary.backHome")}
             </Button>
           </div>
         </div>

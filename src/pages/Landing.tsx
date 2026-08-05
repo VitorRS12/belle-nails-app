@@ -278,12 +278,12 @@ const Landing = () => {
         <section id="recursos" className="max-w-6xl mx-auto px-6 pb-20">
           <div className="text-center mb-14">
             <p className="text-[11px] uppercase tracking-[0.28em] text-accent-foreground/80 mb-3">
-              Recursos
+              {t("features.eyebrow")}
             </p>
             <h2 className="font-display text-4xl sm:text-5xl tracking-tight">
-              Tudo o que seu salão precisa,
+              {t("features.titleLine1")}
               <br />
-              <em className="italic text-primary">nada que atrapalhe</em>.
+              <em className="italic text-primary">{t("features.titleEmphasis")}</em>.
             </h2>
           </div>
 
@@ -294,15 +294,15 @@ const Landing = () => {
                 <CalendarDays className="h-5 w-5 text-primary-foreground" />
               </div>
               <h3 className="font-display text-2xl md:text-3xl mb-2">
-                Agenda que parece um app de verdade
+                {t("features.bigCard.title")}
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed max-w-md">
-                Visualização semanal, conflitos evitados automaticamente, bloqueios de horário e jornadas por profissional.
+                {t("features.bigCard.desc")}
               </p>
               <div className="mt-6 rounded-2xl overflow-hidden border border-border/50 shadow-soft">
                 <img
                   src={agendaShot.url}
-                  alt="Agenda semanal"
+                  alt={t("screenshots.agenda")}
                   loading="lazy"
                   className="w-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
                 />
@@ -314,38 +314,41 @@ const Landing = () => {
               <article className="rounded-[2rem] border border-border/60 bg-gradient-gold shadow-gold p-8">
                 <Mail className="h-5 w-5 text-foreground/80 mb-4" />
                 <h3 className="font-display text-2xl mb-1.5 text-foreground">
-                  E-mails automáticos
+                  {t("features.autoEmails.title")}
                 </h3>
                 <p className="text-sm text-foreground/75 leading-relaxed">
-                  Confirmação, lembrete 24h antes e recados internos — enviados sem você mexer um dedo.
+                  {t("features.autoEmails.desc")}
                 </p>
               </article>
               <article className="rounded-[2rem] border border-border/60 bg-card/70 backdrop-blur p-8 shadow-soft">
                 <ShieldCheck className="h-5 w-5 text-primary mb-4" />
                 <h3 className="font-display text-2xl mb-1.5">
-                  Dados protegidos
+                  {t("features.protectedDataCard.title")}
                 </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Cada profissional só acessa as próprias clientes. Criptografia de ponta a ponta.
+                  {t("features.protectedDataCard.desc")}
                 </p>
               </article>
             </div>
 
             {/* Bottom row of smaller cards */}
-            {features.slice(1, 4).map(({ icon: Icon, title, desc }) => (
-              <article
-                key={title}
-                className="col-span-12 md:col-span-4 rounded-[2rem] border border-border/60 bg-card/70 backdrop-blur p-7 shadow-soft hover:shadow-elegant transition-smooth"
-              >
-                <div className="h-10 w-10 rounded-xl bg-accent-soft flex items-center justify-center mb-4">
-                  <Icon className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="font-display text-xl mb-1.5">{title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {desc}
-                </p>
-              </article>
-            ))}
+            {FEATURE_KEYS.slice(1, 4).map((key, idx) => {
+              const Icon = FEATURE_ICONS[idx + 1];
+              return (
+                <article
+                  key={key}
+                  className="col-span-12 md:col-span-4 rounded-[2rem] border border-border/60 bg-card/70 backdrop-blur p-7 shadow-soft hover:shadow-elegant transition-smooth"
+                >
+                  <div className="h-10 w-10 rounded-xl bg-accent-soft flex items-center justify-center mb-4">
+                    <Icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="font-display text-xl mb-1.5">{t(`features.${key}.title`)}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {t(`features.${key}.desc`)}
+                  </p>
+                </article>
+              );
+            })}
           </div>
         </section>
 
@@ -353,25 +356,25 @@ const Landing = () => {
         <section className="max-w-6xl mx-auto px-6 pb-24">
           <div className="text-center mb-12">
             <p className="text-[11px] uppercase tracking-[0.28em] text-accent-foreground/80 mb-3">
-              Veja por dentro
+              {t("screenshots.eyebrow")}
             </p>
             <h2 className="font-display text-4xl sm:text-5xl tracking-tight">
-              Uma interface pensada
+              {t("screenshots.titleLine1")}
               <br />
-              <em className="italic text-primary">nos mínimos detalhes</em>.
+              <em className="italic text-primary">{t("screenshots.titleEmphasis")}</em>.
             </h2>
           </div>
           <div className="grid sm:grid-cols-3 gap-5">
             {[
-              { src: dashboardShot.url, label: "Painel", alt: "Painel" },
-              { src: agendaShot.url, label: "Agenda", alt: "Agenda" },
-              { src: clientesShot.url, label: "Clientes", alt: "Clientes" },
-            ].map(({ src, alt, label }) => (
+              { src: dashboardShot.url, label: t("screenshots.panel") },
+              { src: agendaShot.url, label: t("screenshots.agenda") },
+              { src: clientesShot.url, label: t("screenshots.clients") },
+            ].map(({ src, label }) => (
               <div key={label} className="group">
                 <div className="rounded-3xl border border-border/60 bg-card/60 backdrop-blur overflow-hidden shadow-soft hover:shadow-elegant transition-smooth">
                   <img
                     src={src}
-                    alt={alt}
+                    alt={label}
                     loading="lazy"
                     className="w-full h-auto object-contain group-hover:scale-[1.03] transition-transform duration-500"
                   />
@@ -388,17 +391,17 @@ const Landing = () => {
         <section id="depoimentos" className="max-w-6xl mx-auto px-6 pb-24">
           <div className="text-center mb-12">
             <p className="text-[11px] uppercase tracking-[0.28em] text-accent-foreground/80 mb-3">
-              Depoimentos
+              {t("testimonials.eyebrow")}
             </p>
             <h2 className="font-display text-4xl sm:text-5xl tracking-tight">
-              Quem usa,
-              <em className="italic text-primary"> ama</em>.
+              {t("testimonials.titleLine1")}
+              <em className="italic text-primary"> {t("testimonials.titleEmphasis")}</em>.
             </h2>
           </div>
           <div className="grid md:grid-cols-3 gap-5">
-            {testimonials.map((t) => (
+            {TESTIMONIAL_KEYS.map((key) => (
               <div
-                key={t.name}
+                key={key}
                 className="rounded-[2rem] border border-border/60 bg-card/70 backdrop-blur p-7 shadow-soft"
               >
                 <div className="flex gap-0.5 mb-4">
@@ -407,13 +410,13 @@ const Landing = () => {
                   ))}
                 </div>
                 <p className="font-display text-lg italic leading-snug text-foreground">
-                  “{t.quote}”
+                  “{t(`testimonials.items.${key}.quote`)}”
                 </p>
                 <div className="mt-6 flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-gradient-primary" />
                   <div>
-                    <div className="text-sm font-medium">{t.name}</div>
-                    <div className="text-xs text-muted-foreground">{t.role}</div>
+                    <div className="text-sm font-medium">{t(`testimonials.items.${key}.name`)}</div>
+                    <div className="text-xs text-muted-foreground">{t(`testimonials.items.${key}.role`)}</div>
                   </div>
                 </div>
               </div>
@@ -425,83 +428,89 @@ const Landing = () => {
         <section id="precos" className="max-w-6xl mx-auto px-6 pb-24">
           <div className="text-center mb-14">
             <p className="text-[11px] uppercase tracking-[0.28em] text-accent-foreground/80 mb-3">
-              Planos e preços
+              {t("pricing.eyebrow")}
             </p>
             <h2 className="font-display text-4xl sm:text-5xl tracking-tight">
-              Escolha o plano <em className="italic text-primary">ideal</em>{" "}
-              para você.
+              {t("pricing.titleLine1")} <em className="italic text-primary">{t("pricing.titleEmphasis")}</em>{" "}
+              {t("pricing.titleLine2")}
             </h2>
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
-              Todos os planos incluem{" "}
-              <strong className="text-foreground">30 dias de teste grátis</strong>. Sem compromisso — cancele quando quiser durante o período.
+              <Trans t={t} i18nKey="pricing.subtitle" components={{ strong: <strong className="text-foreground" /> }} />
             </p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
-            {plans.map((p) => (
-              <div
-                key={p.name}
-                className={`rounded-[2rem] border p-8 flex flex-col backdrop-blur transition-smooth ${
-                  p.highlighted
-                    ? "border-primary/60 bg-card shadow-elegant md:scale-[1.04] relative"
-                    : "border-border/60 bg-card/70 hover:shadow-soft"
-                }`}
-              >
-                {p.highlighted && (
-                  <span className="self-start mb-4 text-[11px] uppercase tracking-[0.18em] font-semibold px-3 py-1 rounded-full bg-gradient-gold text-foreground/80 shadow-gold">
-                    Mais popular
-                  </span>
-                )}
-                <h3 className="font-display text-3xl">{p.name}</h3>
-                <p className="text-sm text-muted-foreground mt-1.5">
-                  {p.description}
-                </p>
-                <div className="mt-6 flex items-baseline gap-1.5">
-                  <span className="font-display text-5xl tracking-tight">
-                    {p.price}
-                  </span>
-                  <span className="text-muted-foreground">{p.period}</span>
-                </div>
-                <ul className="mt-7 space-y-3 flex-1">
-                  {p.features.map((f) => (
-                    <li
-                      key={f}
-                      className="flex items-start gap-2.5 text-sm text-foreground/85"
+            {PLAN_KEYS.map((key) => {
+              const highlighted = key === "pro";
+              const featureKeys = Object.keys(
+                t(`pricing.plans.${key}.features`, { returnObjects: true }) as Record<string, string>,
+              );
+              return (
+                <div
+                  key={key}
+                  className={`rounded-[2rem] border p-8 flex flex-col backdrop-blur transition-smooth ${
+                    highlighted
+                      ? "border-primary/60 bg-card shadow-elegant md:scale-[1.04] relative"
+                      : "border-border/60 bg-card/70 hover:shadow-soft"
+                  }`}
+                >
+                  {highlighted && (
+                    <span className="self-start mb-4 text-[11px] uppercase tracking-[0.18em] font-semibold px-3 py-1 rounded-full bg-gradient-gold text-foreground/80 shadow-gold">
+                      {t("pricing.popular")}
+                    </span>
+                  )}
+                  <h3 className="font-display text-3xl">{t(`pricing.plans.${key}.name`)}</h3>
+                  <p className="text-sm text-muted-foreground mt-1.5">
+                    {t(`pricing.plans.${key}.description`)}
+                  </p>
+                  <div className="mt-6 flex items-baseline gap-1.5">
+                    <span className="font-display text-5xl tracking-tight">
+                      {PLAN_PRICES[key]}
+                    </span>
+                    <span className="text-muted-foreground">/mês</span>
+                  </div>
+                  <ul className="mt-7 space-y-3 flex-1">
+                    {featureKeys.map((fk) => (
+                      <li
+                        key={fk}
+                        className="flex items-start gap-2.5 text-sm text-foreground/85"
+                      >
+                        <Check className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+                        <span>{t(`pricing.plans.${key}.features.${fk}`)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link to="/auth" className="mt-8 block">
+                    <Button
+                      size="lg"
+                      className={`w-full h-12 rounded-full ${
+                        highlighted ? "bg-gradient-primary shadow-elegant" : ""
+                      }`}
+                      variant={highlighted ? "default" : "outline"}
                     >
-                      <Check className="h-4 w-4 mt-0.5 text-primary shrink-0" />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link to="/auth" className="mt-8 block">
-                  <Button
-                    size="lg"
-                    className={`w-full h-12 rounded-full ${
-                      p.highlighted ? "bg-gradient-primary shadow-elegant" : ""
-                    }`}
-                    variant={p.highlighted ? "default" : "outline"}
-                  >
-                    {p.cta}
-                  </Button>
-                </Link>
-              </div>
-            ))}
+                      {t("pricing.plans.cta")}
+                    </Button>
+                  </Link>
+                </div>
+              );
+            })}
           </div>
 
           <p className="text-center text-xs text-muted-foreground mt-10">
-            Pagamentos processados pela Paddle.com (Merchant of Record). Veja nossa{" "}
-            <Link to="/reembolso" className="underline hover:text-foreground">
-              Política de Reembolso
-            </Link>
-            ,{" "}
-            <Link to="/privacidade" className="underline hover:text-foreground">
-              Privacidade
-            </Link>{" "}
-            e{" "}
-            <Link to="/termos" className="underline hover:text-foreground">
-              Termos de Uso
-            </Link>
-            .
+            <Trans
+              t={t}
+              i18nKey="pricing.footer"
+              components={{
+                refund: <Link to="/reembolso" className="underline hover:text-foreground" />,
+                privacy: <Link to="/privacidade" className="underline hover:text-foreground" />,
+                terms: <Link to="/termos" className="underline hover:text-foreground" />,
+              }}
+              values={{
+                refund: t("pricing.refundPolicy"),
+                privacy: t("pricing.privacyPolicy"),
+                terms: t("pricing.termsOfUse"),
+              }}
+            />
           </p>
         </section>
 
@@ -509,15 +518,15 @@ const Landing = () => {
         <section id="faq" className="max-w-3xl mx-auto px-6 pb-24">
           <div className="text-center mb-12">
             <p className="text-[11px] uppercase tracking-[0.28em] text-accent-foreground/80 mb-3">
-              Perguntas frequentes
+              {t("faq.eyebrow")}
             </p>
             <h2 className="font-display text-4xl sm:text-5xl tracking-tight">
-              A gente <em className="italic text-primary">responde</em>.
+              {t("faq.titleLine1")} <em className="italic text-primary">{t("faq.titleEmphasis")}</em>.
             </h2>
           </div>
           <div className="space-y-3">
-            {faqs.map((f) => (
-              <FaqItem key={f.q} q={f.q} a={f.a} />
+            {FAQ_KEYS.map((key) => (
+              <FaqItem key={key} q={t(`faq.items.${key}.q`)} a={t(`faq.items.${key}.a`)} />
             ))}
           </div>
         </section>
@@ -528,11 +537,11 @@ const Landing = () => {
             <Sparkles className="absolute top-8 left-8 h-10 w-10 text-primary-foreground/20" />
             <Sparkles className="absolute bottom-8 right-8 h-14 w-14 text-primary-foreground/20" />
             <h3 className="font-display text-4xl sm:text-5xl tracking-tight text-primary-foreground">
-              Pronta para encantar{" "}
-              <em className="italic">suas clientes?</em>
+              {t("finalCta.titleLine1")}{" "}
+              <em className="italic">{t("finalCta.titleEmphasis")}</em>
             </h3>
             <p className="mt-4 text-primary-foreground/85 max-w-md mx-auto">
-              Crie sua conta gratuitamente e comece a organizar sua agenda em minutos.
+              {t("finalCta.description")}
             </p>
             <Link to="/auth" className="inline-block mt-8">
               <Button
@@ -540,7 +549,7 @@ const Landing = () => {
                 variant="secondary"
                 className="h-12 px-8 rounded-full gap-2 hover:scale-[1.03] transition-transform"
               >
-                Começar 30 dias grátis <ArrowRight className="h-4 w-4" />
+                {t("finalCta.cta")} <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
           </div>
@@ -555,12 +564,12 @@ const Landing = () => {
           <span className="font-display text-base tracking-wide text-foreground">Belle Nails</span>
         </div>
         <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-          <Link to="/precos" className="hover:text-foreground transition-smooth">Preços</Link>
-          <Link to="/termos" className="hover:text-foreground transition-smooth">Termos de Uso</Link>
-          <Link to="/privacidade" className="hover:text-foreground transition-smooth">Privacidade</Link>
-          <Link to="/reembolso" className="hover:text-foreground transition-smooth">Reembolso</Link>
+          <Link to="/precos" className="hover:text-foreground transition-smooth">{t("footer.pricing")}</Link>
+          <Link to="/termos" className="hover:text-foreground transition-smooth">{t("footer.terms")}</Link>
+          <Link to="/privacidade" className="hover:text-foreground transition-smooth">{t("footer.privacy")}</Link>
+          <Link to="/reembolso" className="hover:text-foreground transition-smooth">{t("footer.refund")}</Link>
         </nav>
-        <div>© {new Date().getFullYear()} Belle Nails · Feito com carinho.</div>
+        <div>{t("footer.copyright", { year: new Date().getFullYear() })}</div>
       </footer>
     </div>
   );

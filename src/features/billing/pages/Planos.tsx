@@ -10,14 +10,13 @@ import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { Check, Infinity as InfinityIcon, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const formatPrice = (cents: number, currency: string) =>
   (cents / 100).toLocaleString("pt-BR", { style: "currency", currency });
 
-const limitText = (n: number | null, suffix: string) =>
-  n === null || n === undefined ? `${suffix} ilimitados` : `Até ${n} ${suffix}`;
-
 const Planos = () => {
+  const { t } = useTranslation("billing");
   const { company } = useCompany();
   const { user } = useAuth();
   const { data: plans, isLoading } = usePlans({ onlyActive: true });
@@ -27,13 +26,18 @@ const Planos = () => {
 
   const currentPlanId = current?.plan?.plan_id;
 
+  const limitText = (n: number | null, suffix: string) =>
+    n === null || n === undefined
+      ? t("planos.unlimitedSuffix", { suffix })
+      : t("planos.upToSuffix", { n, suffix });
+
   const handleSubscribe = async (
     planId: string,
     priceId: string | null,
   ) => {
     if (!company) return;
     if (!priceId) {
-      toast.error("Este plano ainda não está disponível para assinatura.");
+      toast.error(t("planos.unavailable"));
       return;
     }
     setLoadingId(planId);
@@ -43,7 +47,7 @@ const Planos = () => {
         body: { companyId: company.id },
       });
       if (error || !data?.sessionId) {
-        toast.error("Não foi possível iniciar o checkout. Tente novamente.");
+        toast.error(t("planos.checkoutStartError"));
         return;
       }
       await openCheckout({
@@ -52,7 +56,7 @@ const Planos = () => {
         customData: { sessionId: data.sessionId },
       });
     } catch (e) {
-      toast.error("Não foi possível abrir o checkout. Tente novamente.");
+      toast.error(t("planos.checkoutOpenError"));
       console.error(e);
     } finally {
       setLoadingId(null);
@@ -60,7 +64,7 @@ const Planos = () => {
   };
 
   return (
-    <AppLayout title="Planos" subtitle="Escolha o plano ideal para o seu salão">
+    <AppLayout title={t("planos.title")} subtitle={t("planos.subtitle")}>
       <PaymentTestModeBanner />
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -87,7 +91,7 @@ const Planos = () => {
                     <h3 className="font-display text-xl">{p.name}</h3>
                     {isCurrent && (
                       <span className="text-[10px] uppercase tracking-wider rounded-full bg-primary text-primary-foreground px-2 py-0.5">
-                        Atual
+                        {t("planos.current")}
                       </span>
                     )}
                   </div>
@@ -99,25 +103,25 @@ const Planos = () => {
                 <p className="font-display text-3xl">
                   {formatPrice(p.price_cents, p.currency)}
                   <span className="text-xs text-muted-foreground font-normal">
-                    /{p.interval === "month" ? "mês" : "ano"}
+                    {p.interval === "month" ? t("planos.perMonth") : t("planos.perYear")}
                   </span>
                 </p>
 
                 <ul className="text-sm space-y-1.5 flex-1">
-                  <Feature text={limitText(p.max_professionals, "profissionais")} />
-                  <Feature text={limitText(p.max_appointments_per_month, "agendamentos/mês")} />
-                  <Feature text={limitText(p.max_services, "serviços")} />
+                  <Feature text={limitText(p.max_professionals, t("planos.professionals"))} />
+                  <Feature text={limitText(p.max_appointments_per_month, t("planos.appointmentsPerMonth"))} />
+                  <Feature text={limitText(p.max_services, t("planos.services"))} />
                   {(p.features as Record<string, boolean>)?.public_booking && (
-                    <Feature text="Página pública de agendamento" />
+                    <Feature text={t("planos.publicBookingPage")} />
                   )}
                   {(p.features as Record<string, boolean>)?.email_notifications && (
-                    <Feature text="Notificações por e-mail" />
+                    <Feature text={t("planos.emailNotifications")} />
                   )}
                   {(p.features as Record<string, boolean>)?.reports && (
-                    <Feature text="Relatórios avançados" />
+                    <Feature text={t("planos.advancedReports")} />
                   )}
                   {(p.features as Record<string, boolean>)?.branding_removal && (
-                    <Feature text="Sem marca Lovable" />
+                    <Feature text={t("planos.noLovableBranding")} />
                   )}
                 </ul>
 
@@ -132,12 +136,12 @@ const Planos = () => {
                   variant={isCurrent ? "outline" : "default"}
                 >
                   {isCurrent ? (
-                    "Plano atual"
+                    t("planos.currentPlan")
                   ) : loadingId === p.id ? (
-                    "Abrindo checkout…"
+                    t("planos.openingCheckout")
                   ) : (
                     <>
-                      <Sparkles className="h-4 w-4 mr-1" /> Assinar
+                      <Sparkles className="h-4 w-4 mr-1" /> {t("planos.subscribe")}
                     </>
                   )}
                 </Button>
@@ -151,7 +155,7 @@ const Planos = () => {
 };
 
 function Feature({ text }: { text: string }) {
-  const unlimited = text.toLowerCase().includes("ilimitad");
+  const unlimited = text.toLowerCase().includes("ilimitad") || text.toLowerCase().includes("unlimited");
   return (
     <li className="flex items-center gap-2">
       {unlimited ? (

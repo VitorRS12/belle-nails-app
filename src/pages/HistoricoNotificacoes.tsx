@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AppLayout } from "@/components/AppLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { format, parseISO } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { ptBR, enUS } from "date-fns/locale";
 import { Bell, Mail, AlertCircle, CheckCircle2 } from "lucide-react";
 import { ListSkeleton } from "@/components/ListSkeleton";
 import { EmptyState } from "@/components/EmptyState";
+import i18n from "@/i18n";
 
 type LogRow = {
   id: string;
@@ -19,15 +21,16 @@ type LogRow = {
   created_at: string;
 };
 
-const TEMPLATE_LABEL: Record<string, string> = {
-  booking_confirmation_customer: "Confirmação de agendamento (cliente)",
-  booking_new_company: "Novo agendamento (empresa)",
-  booking_confirmed_customer: "Agendamento confirmado",
-  booking_cancelled_customer: "Agendamento cancelado",
-  booking_reminder_customer: "Lembrete 24h",
-};
-
 const HistoricoNotificacoes = () => {
+  const { t } = useTranslation("app");
+  const dateLocale = i18n.resolvedLanguage === "en" ? enUS : ptBR;
+  const TEMPLATE_LABEL: Record<string, string> = {
+    booking_confirmation_customer: t("notifications.templates.booking_confirmation_customer"),
+    booking_new_company: t("notifications.templates.booking_new_company"),
+    booking_confirmed_customer: t("notifications.templates.booking_confirmed_customer"),
+    booking_cancelled_customer: t("notifications.templates.booking_cancelled_customer"),
+    booking_reminder_customer: t("notifications.templates.booking_reminder_customer"),
+  };
   const { user } = useAuth();
   const [rows, setRows] = useState<LogRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,14 +67,14 @@ const HistoricoNotificacoes = () => {
   }, [user]);
 
   return (
-    <AppLayout subtitle="Configurações" title="Histórico de notificações">
+    <AppLayout subtitle={t("notifications.subtitle")} title={t("notifications.title")}>
       {loading ? (
         <ListSkeleton rows={6} />
       ) : rows.length === 0 ? (
         <EmptyState
           icon={<Bell className="h-5 w-5" />}
-          title="Nenhuma notificação enviada ainda"
-          description="Quando um cliente agendar pelo seu site ou você confirmar / cancelar um atendimento, os e-mails aparecerão aqui."
+          title={t("notifications.empty.title")}
+          description={t("notifications.empty.description")}
         />
       ) : (
         <ul className="space-y-2">
@@ -108,7 +111,7 @@ const HistoricoNotificacoes = () => {
                             : "bg-destructive/10 text-destructive"
                         }`}
                       >
-                        {ok ? "Enviado" : r.status}
+                        {ok ? t("notifications.sent") : r.status}
                       </span>
                     </div>
                     <p className="text-xs text-muted-foreground inline-flex items-center gap-1 mt-1 truncate">
@@ -121,7 +124,7 @@ const HistoricoNotificacoes = () => {
                       <p className="text-[11px] text-destructive mt-1 line-clamp-2">{r.error}</p>
                     )}
                     <p className="text-[10px] text-muted-foreground mt-1">
-                      {format(parseISO(r.created_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+                      {format(parseISO(r.created_at), "dd/MM/yyyy 'às' HH:mm", { locale: dateLocale })}
                     </p>
                   </div>
                 </div>

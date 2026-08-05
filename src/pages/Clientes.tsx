@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AppLayout } from "@/components/AppLayout";
 import { useAppointments, useClients } from "@/hooks/useStore";
 import { clientsStore, uid } from "@/lib/storage";
@@ -11,16 +12,18 @@ import { Plus, Search, Trash2, Phone, Sparkles, Pencil, CalendarDays } from "luc
 import { toast } from "sonner";
 import type { Client, Appointment } from "@/lib/types";
 import { format, parseISO } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { ptBR, enUS } from "date-fns/locale";
+import i18n from "@/i18n";
 
 function ClientForm({ initial, trigger }: { initial?: Client; trigger?: React.ReactNode }) {
+  const { t } = useTranslation("app");
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(initial?.name ?? "");
   const [phone, setPhone] = useState(initial?.phone ?? "");
   const [notes, setNotes] = useState(initial?.notes ?? "");
 
   const save = () => {
-    if (!name.trim()) return toast.error("Informe o nome");
+    if (!name.trim()) return toast.error(t("clients.form.nameRequired"));
     clientsStore.save({
       id: initial?.id ?? uid(),
       name: name.trim(),
@@ -28,7 +31,7 @@ function ClientForm({ initial, trigger }: { initial?: Client; trigger?: React.Re
       notes: notes.trim() || undefined,
       createdAt: initial?.createdAt ?? new Date().toISOString(),
     });
-    toast.success("Salvo!");
+    toast.success(t("clients.form.saved"));
     setOpen(false);
     if (!initial) {
       setName(""); setPhone(""); setNotes("");
@@ -47,14 +50,14 @@ function ClientForm({ initial, trigger }: { initial?: Client; trigger?: React.Re
       <DialogContent className="max-w-md rounded-3xl">
         <DialogHeader>
           <DialogTitle className="font-display text-2xl">
-            {initial ? "Editar cliente" : "Nova cliente"}
+            {initial ? t("clients.form.editTitle") : t("clients.form.newTitle")}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-3 pt-2">
-          <div className="space-y-2"><Label>Nome</Label><Input value={name} onChange={(e) => setName(e.target.value)} /></div>
-          <div className="space-y-2"><Label>Telefone</Label><Input value={phone} onChange={(e) => setPhone(e.target.value)} /></div>
-          <div className="space-y-2"><Label>Observações</Label><Textarea rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} /></div>
-          <Button onClick={save} className="w-full bg-gradient-primary h-11 shadow-elegant">Salvar</Button>
+          <div className="space-y-2"><Label>{t("clients.form.name")}</Label><Input value={name} onChange={(e) => setName(e.target.value)} /></div>
+          <div className="space-y-2"><Label>{t("clients.form.phone")}</Label><Input value={phone} onChange={(e) => setPhone(e.target.value)} /></div>
+          <div className="space-y-2"><Label>{t("clients.form.notes")}</Label><Textarea rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} /></div>
+          <Button onClick={save} className="w-full bg-gradient-primary h-11 shadow-elegant">{t("clients.form.save")}</Button>
         </div>
       </DialogContent>
     </Dialog>
@@ -72,6 +75,8 @@ function ClientDetail({
   open: boolean;
   onOpenChange: (o: boolean) => void;
 }) {
+  const { t } = useTranslation("app");
+  const dateLocale = i18n.resolvedLanguage === "en" ? enUS : ptBR;
   const completed = appts.filter((a) => a.status === "completed");
   const total = completed.reduce((s, a) => s + a.price, 0);
   const sortedCompleted = [...completed].sort((a, b) => {
@@ -101,15 +106,15 @@ function ClientDetail({
 
         <div className="grid grid-cols-3 gap-2 pt-2">
           <div className="rounded-2xl bg-gradient-soft p-3 text-center">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Serviços</p>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("clients.detail.services")}</p>
             <p className="font-display text-xl text-primary">{completed.length}</p>
           </div>
           <div className="rounded-2xl bg-gradient-soft p-3 text-center">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Total</p>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("clients.detail.total")}</p>
             <p className="font-display text-xl text-primary">R$ {total.toFixed(2).replace(".", ",")}</p>
           </div>
           <div className="rounded-2xl bg-gradient-soft p-3 text-center">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Última</p>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("clients.detail.last")}</p>
             <p className="font-display text-sm text-primary leading-tight pt-1">
               {lastDate ? format(lastDate, "dd/MM/yy") : "—"}
             </p>
@@ -122,11 +127,11 @@ function ClientDetail({
 
         <div className="space-y-2 pt-1">
           <h3 className="font-display text-lg flex items-center gap-2">
-            <CalendarDays className="h-4 w-4 text-accent" /> Histórico de serviços
+            <CalendarDays className="h-4 w-4 text-accent" /> {t("clients.detail.history")}
           </h3>
           {sortedCompleted.length === 0 ? (
             <p className="text-sm text-muted-foreground rounded-2xl bg-card/60 border border-dashed border-border p-4 text-center">
-              Nenhum serviço concluído ainda.
+              {t("clients.detail.noCompleted")}
             </p>
           ) : (
             <div className="space-y-2">
@@ -138,7 +143,9 @@ function ClientDetail({
                       <div className="min-w-0">
                         <p className="font-medium text-sm truncate">{a.service}</p>
                         <p className="text-xs text-muted-foreground">
-                          Concluído em {format(completedDate, "dd 'de' MMM yyyy", { locale: ptBR })}
+                          {t("clients.detail.completedOn", {
+                            date: format(completedDate, "dd 'de' MMM yyyy", { locale: dateLocale }),
+                          })}
                         </p>
                         {a.extraValue ? (
                           <p className="text-[11px] text-primary mt-0.5">
@@ -163,6 +170,7 @@ function ClientDetail({
 }
 
 const Clientes = () => {
+  const { t } = useTranslation("app");
   const clients = useClients();
   const appts = useAppointments();
   const [q, setQ] = useState("");
@@ -180,21 +188,21 @@ const Clientes = () => {
   }, [clients, appts, q]);
 
   const remove = (id: string) => {
-    if (!confirm("Remover esta cliente?")) return;
+    if (!confirm(t("clients.removeConfirm"))) return;
     clientsStore.remove(id);
-    toast.success("Removida");
+    toast.success(t("clients.removed"));
   };
 
   const detailClient = clients.find((c) => c.id === detailId);
   const detailAppts = detailId ? appts.filter((a) => a.clientId === detailId) : [];
 
   return (
-    <AppLayout subtitle="Cadastro" title="Clientes" action={<ClientForm />}>
+    <AppLayout subtitle={t("clients.subtitle")} title={t("clients.title")} action={<ClientForm />}>
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
           className="pl-9 rounded-full"
-          placeholder="Buscar cliente"
+          placeholder={t("clients.searchPlaceholder")}
           value={q}
           onChange={(e) => setQ(e.target.value)}
         />
@@ -202,7 +210,7 @@ const Clientes = () => {
 
       {list.length === 0 ? (
         <div className="rounded-2xl bg-card/60 border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-          Nenhuma cliente cadastrada.
+          {t("clients.empty")}
         </div>
       ) : (
         <div className="space-y-3">
@@ -225,7 +233,8 @@ const Clientes = () => {
                       </p>
                     )}
                     <p className="text-xs text-muted-foreground inline-flex items-center gap-1 mt-0.5">
-                      <Sparkles className="h-3 w-3" /> {c.count} atendimento{c.count !== 1 ? "s" : ""} · R$ {c.total.toFixed(2).replace(".", ",")}
+                      <Sparkles className="h-3 w-3" />{" "}
+                      {t("clients.appointmentsCount", { count: c.count })} · R$ {c.total.toFixed(2).replace(".", ",")}
                     </p>
                   </div>
                 </div>

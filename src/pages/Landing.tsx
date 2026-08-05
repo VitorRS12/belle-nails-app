@@ -215,7 +215,7 @@ const Landing = () => {
                 24/7
               </div>
               <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                {t("hero.openAllTheTime", { defaultValue: "Agendamento aberto o tempo todo, mesmo quando você dorme." })}
+                {t("hero.openAllTheTime")}
               </p>
             </div>
 
@@ -226,7 +226,7 @@ const Landing = () => {
                 −70%
               </div>
               <p className="mt-1 text-xs text-foreground/70 leading-relaxed">
-                de faltas com lembretes automáticos 24h antes.
+                {t("hero.noShowsReduction")}
               </p>
             </div>
 
@@ -239,14 +239,14 @@ const Landing = () => {
                   ))}
                 </div>
                 <p className="font-display text-xl md:text-2xl italic leading-snug text-foreground">
-                  “Minhas clientes elogiam sempre a página de agendamento — parece um app de verdade.”
+                  “{t("heroTestimonial.quote")}”
                 </p>
               </div>
               <div className="mt-6 flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-gradient-primary" />
                 <div>
-                  <div className="text-sm font-medium">Marina Souza</div>
-                  <div className="text-xs text-muted-foreground">Design de sobrancelhas · BH</div>
+                  <div className="text-sm font-medium">{t("heroTestimonial.name")}</div>
+                  <div className="text-xs text-muted-foreground">{t("heroTestimonial.role")}</div>
                 </div>
               </div>
             </div>
@@ -257,10 +257,10 @@ const Landing = () => {
         <section className="max-w-6xl mx-auto px-6 pb-16">
           <div className="rounded-[2rem] border border-border/60 bg-card/60 backdrop-blur px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
-              { k: "+120", v: "salões atendidos" },
-              { k: "+18k", v: "agendamentos mensais" },
-              { k: "99,9%", v: "uptime da plataforma" },
-              { k: "30 dias", v: "de teste grátis" },
+              { k: "+120", v: t("trustedStrip.salons") },
+              { k: "+18k", v: t("trustedStrip.appointments") },
+              { k: "99,9%", v: t("trustedStrip.uptime") },
+              { k: "30 dias", v: t("trustedStrip.trial") },
             ].map((s) => (
               <div key={s.v}>
                 <div className="font-display text-3xl md:text-4xl text-primary tracking-tight">

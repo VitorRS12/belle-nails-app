@@ -48,6 +48,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface FormState {
   name: string;
@@ -80,6 +81,7 @@ function fromForm(f: FormState) {
 }
 
 const Equipe = () => {
+  const { t } = useTranslation("app");
   const { company } = useCompany();
   const { professionals, loading, create, update, remove } = useProfessionals();
   const { isCompanyAdmin } = useUserRoles();
@@ -110,20 +112,19 @@ const Equipe = () => {
   };
 
   const handleDelete = async (p: Professional) => {
-    if (!confirm(`Remover ${p.name} da equipe?`)) return;
+    if (!confirm(t("team.removeConfirm", { name: p.name }))) return;
     const ok = await remove(p.id);
     if (ok) setOpen(false);
   };
 
   return (
-    <AppLayout subtitle="Empresa" title="Equipe">
+    <AppLayout subtitle={t("team.subtitle")} title={t("team.title")}>
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Users className="h-4 w-4" />
             <span>
-              {professionals.length}{" "}
-              {professionals.length === 1 ? "profissional" : "profissionais"}
+              {t("team.count", { count: professionals.length })}
             </span>
           </div>
           {isCompanyAdmin && (
@@ -131,7 +132,7 @@ const Equipe = () => {
               onClick={openCreate}
               className="rounded-xl bg-gradient-primary shadow-soft"
             >
-              <Plus className="h-4 w-4 mr-1" /> Nova profissional
+              <Plus className="h-4 w-4 mr-1" /> {t("team.new")}
             </Button>
           )}
         </div>
@@ -141,8 +142,8 @@ const Equipe = () => {
         ) : professionals.length === 0 ? (
           <EmptyState
             icon={<Users className="h-5 w-5" />}
-            title="Nenhuma profissional cadastrada"
-            description="Cadastre as profissionais da sua empresa para começar a agendar para cada uma."
+            title={t("team.empty.title")}
+            description={t("team.empty.description")}
           />
         ) : (
           <ul className="grid gap-3">
@@ -173,10 +174,10 @@ const Equipe = () => {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-display text-lg truncate">{p.name}</h3>
-                      {!p.active && <Badge variant="secondary">Inativa</Badge>}
+                      {!p.active && <Badge variant="secondary">{t("team.inactive")}</Badge>}
                       {!p.user_id && p.email && (
                         <Badge variant="outline" className="gap-1">
-                          <Mail className="h-3 w-3" /> Convite pendente
+                          <Mail className="h-3 w-3" /> {t("team.pendingInvite")}
                         </Badge>
                       )}
                     </div>
@@ -203,16 +204,16 @@ const Equipe = () => {
         <SheetContent side="right" className="w-full sm:max-w-lg overflow-y-auto">
           <SheetHeader>
             <SheetTitle>
-              {editing ? `Editar ${editing.name}` : "Nova profissional"}
+              {editing ? t("team.editTitle", { name: editing.name }) : t("team.newTitle")}
             </SheetTitle>
           </SheetHeader>
 
           {editing ? (
             <Tabs defaultValue="dados" className="mt-4">
               <TabsList className="grid grid-cols-3 w-full">
-                <TabsTrigger value="dados">Dados</TabsTrigger>
-                <TabsTrigger value="jornada">Jornada</TabsTrigger>
-                <TabsTrigger value="servicos">Serviços</TabsTrigger>
+                <TabsTrigger value="dados">{t("team.tabs.data")}</TabsTrigger>
+                <TabsTrigger value="jornada">{t("team.tabs.journey")}</TabsTrigger>
+                <TabsTrigger value="servicos">{t("team.tabs.services")}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="dados" className="space-y-4 mt-4">
@@ -273,10 +274,11 @@ function ProfessionalDetailsForm({
   onSave: () => void;
   onDelete?: () => void;
 }) {
+  const { t } = useTranslation("app");
   return (
     <div className="space-y-4">
       <div className="space-y-1.5">
-        <Label htmlFor="name">Nome</Label>
+        <Label htmlFor="name">{t("team.form.name")}</Label>
         <Input
           id="name"
           value={form.name}
@@ -284,16 +286,16 @@ function ProfessionalDetailsForm({
         />
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="specialties">Especialidades (separadas por vírgula)</Label>
+        <Label htmlFor="specialties">{t("team.form.specialties")}</Label>
         <Input
           id="specialties"
-          placeholder="Manicure, Pedicure, Alongamento"
+          placeholder={t("team.form.specialtiesPlaceholder")}
           value={form.specialties}
           onChange={(e) => setForm({ ...form, specialties: e.target.value })}
         />
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="bio">Bio</Label>
+        <Label htmlFor="bio">{t("team.form.bio")}</Label>
         <Textarea
           id="bio"
           rows={3}
@@ -303,9 +305,9 @@ function ProfessionalDetailsForm({
       </div>
       <div className="flex items-center justify-between rounded-xl border border-border/60 p-3">
         <div>
-          <p className="text-sm font-medium">Ativa</p>
+          <p className="text-sm font-medium">{t("team.form.active")}</p>
           <p className="text-xs text-muted-foreground">
-            Profissionais inativas não recebem novos agendamentos.
+            {t("team.form.activeHint")}
           </p>
         </div>
         <Switch
@@ -315,7 +317,7 @@ function ProfessionalDetailsForm({
       </div>
       <div className="flex items-center gap-2">
         <Button onClick={onSave} disabled={saving} className="bg-gradient-primary flex-1">
-          {saving ? "Salvando…" : "Salvar"}
+          {saving ? t("team.form.saving") : t("team.form.save")}
         </Button>
         {onDelete && (
           <Button variant="outline" onClick={onDelete} className="text-destructive">
@@ -334,6 +336,7 @@ function SchedulesSection({
   professional: Professional;
   companyId?: string;
 }) {
+  const { t } = useTranslation("app");
   const { schedules, loading, add, remove } = useProfessionalSchedules(professional.id);
   const [weekday, setWeekday] = useState("1");
   const [start, setStart] = useState("09:00");
@@ -343,7 +346,7 @@ function SchedulesSection({
   const handleAdd = async () => {
     if (!companyId) return;
     if (end <= start) {
-      toast.error("Hora final deve ser maior que a inicial");
+      toast.error(t("team.schedule.endMustBeAfterStart"));
       return;
     }
     setSaving(true);
@@ -355,11 +358,11 @@ function SchedulesSection({
     <div className="space-y-4">
       <div className="rounded-2xl border border-dashed border-border bg-accent-soft/30 p-3 space-y-2">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Clock className="h-3 w-3" /> Adicionar bloco de atendimento
+          <Clock className="h-3 w-3" /> {t("team.schedule.addBlock")}
         </div>
         <div className="grid grid-cols-[1fr_auto_auto_auto] gap-2 items-end">
           <div className="space-y-1">
-            <Label className="text-xs">Dia</Label>
+            <Label className="text-xs">{t("team.schedule.day")}</Label>
             <Select value={weekday} onValueChange={setWeekday}>
               <SelectTrigger className="h-9">
                 <SelectValue />
@@ -374,7 +377,7 @@ function SchedulesSection({
             </Select>
           </div>
           <div className="space-y-1">
-            <Label className="text-xs">Início</Label>
+            <Label className="text-xs">{t("team.schedule.start")}</Label>
             <Input
               type="time"
               value={start}
@@ -383,7 +386,7 @@ function SchedulesSection({
             />
           </div>
           <div className="space-y-1">
-            <Label className="text-xs">Fim</Label>
+            <Label className="text-xs">{t("team.schedule.end")}</Label>
             <Input
               type="time"
               value={end}
@@ -401,7 +404,7 @@ function SchedulesSection({
         <ListSkeleton rows={2} />
       ) : schedules.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-4">
-          Nenhuma jornada definida.
+          {t("team.schedule.none")}
         </p>
       ) : (
         <ul className="space-y-2">
@@ -422,7 +425,7 @@ function SchedulesSection({
                 size="icon"
                 variant="ghost"
                 onClick={() => remove(s.id)}
-                aria-label="Remover"
+                aria-label={t("team.schedule.removeAria")}
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -441,6 +444,7 @@ function ServicesSection({
   professional: Professional;
   companyId?: string;
 }) {
+  const { t } = useTranslation("app");
   const { services } = useCustomServices();
   const { linkedServiceIds, toggle } = useProfessionalServices(professional.id);
 
@@ -448,7 +452,7 @@ function ServicesSection({
     return (
       <EmptyState
         icon={<Sparkles className="h-5 w-5" />}
-        description="Cadastre serviços personalizados no formulário de atendimento para poder vinculá-los a cada profissional."
+        description={t("team.servicesSection.empty")}
       />
     );
   }
@@ -456,7 +460,7 @@ function ServicesSection({
   return (
     <div className="space-y-2">
       <p className="text-xs text-muted-foreground">
-        Selecione os serviços oferecidos por {professional.name}.
+        {t("team.servicesSection.selectFor", { name: professional.name })}
       </p>
       <ul className="space-y-2">
         {services.map((s) => {
@@ -485,6 +489,7 @@ function ServicesSection({
 }
 
 function InviteSection({ professional }: { professional: Professional }) {
+  const { t } = useTranslation("app");
   const [email, setEmail] = useState(professional.email ?? "");
   const [sending, setSending] = useState(false);
 
@@ -495,7 +500,7 @@ function InviteSection({ professional }: { professional: Professional }) {
   const send = async () => {
     const clean = email.trim().toLowerCase();
     if (!clean) {
-      toast.error("Informe o e-mail");
+      toast.error(t("team.invite.emailRequired"));
       return;
     }
     setSending(true);
@@ -507,11 +512,11 @@ function InviteSection({ professional }: { professional: Professional }) {
       toast.error(
         (data as { error?: string })?.error ??
           error?.message ??
-          "Não foi possível enviar o convite"
+          t("team.invite.error")
       );
       return;
     }
-    toast.success("Convite enviado por e-mail ✨");
+    toast.success(t("team.invite.success"));
   };
 
   return (
@@ -519,22 +524,21 @@ function InviteSection({ professional }: { professional: Professional }) {
       <Separator />
       <div className="space-y-2">
         <Label className="flex items-center gap-2">
-          <Mail className="h-4 w-4" /> Convidar para acessar o sistema
+          <Mail className="h-4 w-4" /> {t("team.invite.label")}
         </Label>
         <p className="text-xs text-muted-foreground">
-          A profissional receberá um e-mail para criar sua conta e será vinculada
-          automaticamente à sua empresa.
+          {t("team.invite.description")}
         </p>
         <div className="flex gap-2">
           <Input
             type="email"
-            placeholder="email@exemplo.com"
+            placeholder={t("team.invite.placeholder")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <Button onClick={send} disabled={sending} className="bg-gradient-primary">
             <Send className="h-4 w-4 mr-1" />
-            {sending ? "Enviando…" : "Convidar"}
+            {sending ? t("team.invite.sending") : t("team.invite.send")}
           </Button>
         </div>
       </div>

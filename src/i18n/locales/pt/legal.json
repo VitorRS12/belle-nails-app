@@ -1,0 +1,204 @@
+{
+  "layout": {
+    "back": "Voltar",
+    "lastUpdated": "Última atualização: {{date}}",
+    "footer": "© {{year}} Belle Nails"
+  },
+  "termos": {
+    "title": "Termos de Uso",
+    "s1": {
+      "heading": "1. Identificação do prestador",
+      "p1_pre": "Este serviço é operado por ",
+      "p1_name": "Edelson Vitor dos Santos Dutra",
+      "p1_mid": ", pessoa física inscrita no CPF sob o nº ",
+      "p1_cpf": "065.235.185-90",
+      "p1_mid2": ", que atua comercialmente sob o nome ",
+      "p1_brand": "Belle Nails",
+      "p1_end": " (\"Belle Nails\", \"nós\"). Ao utilizar a plataforma, você celebra um contrato diretamente com Edelson Vitor dos Santos Dutra (Belle Nails)."
+    },
+    "s2": {
+      "heading": "2. Aceitação",
+      "p1": "Ao criar uma conta ou continuar utilizando a Belle Nails, você declara ter lido, compreendido e concordado com estes Termos. Se não concorda, por favor não utilize o serviço."
+    },
+    "s3": {
+      "heading": "3. Descrição do serviço",
+      "p1": "A Belle Nails é uma plataforma SaaS de agendamento e gestão para profissionais e estúdios de estética (manicure, cílios, sobrancelhas), incluindo agenda online, cadastro de clientes, notificações e relatórios."
+    },
+    "s4": {
+      "heading": "4. Conta e responsabilidades do usuário",
+      "li1": "Você deve fornecer informações verdadeiras e mantê-las atualizadas.",
+      "li2": "Você é responsável por manter a confidencialidade das credenciais e por toda atividade na sua conta.",
+      "li3": "Se contrata em nome de uma empresa, declara ter autoridade para vinculá-la a estes Termos."
+    },
+    "s5": {
+      "heading": "5. Uso aceitável",
+      "intro": "Você concorda em não:",
+      "li1": "Utilizar o serviço para qualquer finalidade ilegal, fraudulenta ou enganosa;",
+      "li2": "Enviar spam, conteúdo que viole direitos de terceiros ou propriedade intelectual;",
+      "li3": "Interferir na segurança do serviço (malware, varreduras, scraping não autorizado);",
+      "li4": "Realizar engenharia reversa, revender ou redistribuir o serviço."
+    },
+    "s6": {
+      "heading": "6. Propriedade intelectual",
+      "p1": "Todo o software, marca, documentação e identidade visual da Belle Nails permanecem de propriedade exclusiva da Belle Nails. Concedemos a você uma licença limitada, não exclusiva e intransferível para utilizar o serviço dentro do plano contratado."
+    },
+    "s7": {
+      "heading": "7. Conteúdo do usuário",
+      "p1": "Você mantém a titularidade dos dados que insere (clientes, agendamentos, serviços). Você nos concede uma licença limitada para hospedar e processar esse conteúdo exclusivamente para prestar o serviço."
+    },
+    "s8": {
+      "heading": "8. Pagamentos, assinaturas e Paddle como Merchant of Record",
+      "p1_pre": "Nosso processo de pedidos é conduzido pelo nosso revendedor online ",
+      "p1_paddle": "Paddle.com",
+      "p1_end": ". A Paddle.com é a Merchant of Record (MoR) de todos os nossos pedidos. A Paddle realiza o atendimento de todas as consultas de clientes relacionadas a pagamentos e cuida das devoluções.",
+      "p2_pre": "Os termos de pagamento, cobrança, renovação, cancelamento, impostos e reembolsos seguem os ",
+      "p2_link": "Termos do Comprador da Paddle",
+      "p2_end": ". As assinaturas renovam-se automaticamente pelo período contratado até cancelamento."
+    },
+    "s9": {
+      "heading": "9. Disponibilidade",
+      "p1": "Nos esforçamos para manter o serviço disponível, mas não garantimos operação ininterrupta ou livre de erros. Podemos realizar manutenções programadas ou de emergência."
+    },
+    "s10": {
+      "heading": "10. Garantias e responsabilidade",
+      "p1": "Na máxima extensão permitida por lei, o serviço é fornecido \"como está\", sem garantias implícitas de adequação a um propósito específico. Nossa responsabilidade agregada está limitada ao valor pago por você nos 12 meses anteriores ao evento que originou a reclamação, excluindo danos indiretos, lucros cessantes ou perda de dados."
+    },
+    "s11": {
+      "heading": "11. Suspensão e rescisão",
+      "p1": "Podemos suspender ou encerrar o acesso em caso de violação destes Termos, inadimplência, risco de fraude ou segurança, ou violações repetidas das nossas políticas. Você pode cancelar sua assinatura a qualquer momento pelo painel ou pela Paddle."
+    },
+    "s12": {
+      "heading": "12. Lei aplicável e foro",
+      "p1": "Estes Termos são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro do domicílio do consumidor para dirimir controvérsias."
+    },
+    "s13": {
+      "heading": "13. Contato",
+      "p1": "Dúvidas sobre estes Termos podem ser enviadas para o canal de suporte disponibilizado dentro da Belle Nails."
+    }
+  },
+  "privacidade": {
+    "title": "Política de Privacidade",
+    "s1": {
+      "heading": "1. Quem somos",
+      "p1_pre": "Esta Política descreve como ",
+      "p1_name": "Edelson Vitor dos Santos Dutra",
+      "p1_mid": ", pessoa física inscrita no CPF sob o nº ",
+      "p1_cpf": "065.235.185-90",
+      "p1_mid2": ", atuando comercialmente sob o nome ",
+      "p1_brand": "Belle Nails",
+      "p1_mid3": " (\"Belle Nails\", \"nós\"), trata dados pessoais. Para os dados que coletamos diretamente de você (cadastro, uso do serviço), a Belle Nails atua como ",
+      "p1_controller": "controladora",
+      "p1_end": " dos dados pessoais, nos termos da LGPD (Lei nº 13.709/2018)."
+    },
+    "s2": {
+      "heading": "2. Dados que coletamos",
+      "li1_label": "Conta:",
+      "li1_text": " nome, e-mail, telefone, credenciais de login.",
+      "li2_label": "Dados do negócio:",
+      "li2_text": " nome da empresa, profissionais, serviços, horários.",
+      "li3_label": "Dados de clientes finais",
+      "li3_text": " inseridos por você (nome, telefone, e-mail, histórico de agendamentos).",
+      "li4_label": "Uso e telemetria:",
+      "li4_text": " páginas acessadas, ações realizadas, identificadores de dispositivo, endereço IP, logs de erro.",
+      "li5_label": "Comunicações:",
+      "li5_text": " mensagens enviadas ao suporte."
+    },
+    "s3": {
+      "heading": "3. Finalidades e bases legais",
+      "li1_pre": "Criação e manutenção da conta — ",
+      "li1_em": "execução de contrato",
+      "li1_end": ".",
+      "li2_pre": "Prestação do serviço de agenda, notificações e relatórios — ",
+      "li2_em": "execução de contrato",
+      "li2_end": ".",
+      "li3_pre": "Segurança, prevenção a fraudes e melhoria do produto — ",
+      "li3_em": "legítimo interesse",
+      "li3_end": ".",
+      "li4_pre": "Atendimento ao cliente — ",
+      "li4_em1": "execução de contrato",
+      "li4_mid": " / ",
+      "li4_em2": "legítimo interesse",
+      "li4_end": ".",
+      "li5_pre": "Comunicações de marketing — ",
+      "li5_em": "consentimento",
+      "li5_end": ", com opção de descadastro.",
+      "li6_pre": "Cumprimento de obrigações fiscais e legais — ",
+      "li6_em": "obrigação legal",
+      "li6_end": "."
+    },
+    "s4": {
+      "heading": "4. Compartilhamento",
+      "intro": "Compartilhamos dados apenas com as seguintes categorias de destinatários:",
+      "li1_label": "Provedores de infraestrutura",
+      "li1_text": " (hospedagem, banco de dados, e-mail transacional);",
+      "li2_label": "Paddle.com",
+      "li2_text": ", nosso Merchant of Record, para processamento de pagamentos, gestão de assinatura, faturamento e cumprimento de obrigações tributárias;",
+      "li3_label": "Provedores de análise e suporte",
+      "li3_text": " que nos auxiliam a operar o serviço;",
+      "li4_label": "Consultores profissionais",
+      "li4_text": " (jurídico, contábil), quando necessário;",
+      "li5_label": "Autoridades públicas",
+      "li5_text": ", quando exigido por lei ou ordem judicial."
+    },
+    "s5": {
+      "heading": "5. Retenção",
+      "p1": "Mantemos os dados enquanto sua conta estiver ativa e pelo período necessário para cumprir as finalidades descritas, atender obrigações legais e exercer direitos em eventuais processos. Após esse prazo, os dados são excluídos ou anonimizados."
+    },
+    "s6": {
+      "heading": "6. Segurança",
+      "p1": "Adotamos medidas técnicas e organizacionais apropriadas para proteger os dados, incluindo criptografia em trânsito (HTTPS), controles de acesso baseados em função, segregação por organização e registro de auditoria em operações sensíveis."
+    },
+    "s7": {
+      "heading": "7. Seus direitos (LGPD)",
+      "intro": "Você pode, a qualquer momento, solicitar:",
+      "li1": "Confirmação e acesso aos seus dados;",
+      "li2": "Correção de dados incompletos ou desatualizados;",
+      "li3": "Anonimização, bloqueio ou eliminação de dados desnecessários;",
+      "li4": "Portabilidade;",
+      "li5": "Revogação do consentimento;",
+      "li6": "Informação sobre compartilhamentos realizados.",
+      "p1": "Para exercer seus direitos, utilize o canal de suporte dentro da Belle Nails. Responderemos no prazo previsto pela legislação aplicável."
+    },
+    "s8": {
+      "heading": "8. Cookies",
+      "p1": "Utilizamos cookies essenciais para autenticação e funcionamento do serviço, e cookies analíticos para entender o uso da plataforma. Você pode gerenciar cookies nas configurações do seu navegador."
+    },
+    "s9": {
+      "heading": "9. Alterações",
+      "p1": "Podemos atualizar esta Política periodicamente. Mudanças relevantes serão comunicadas pelo próprio aplicativo ou por e-mail."
+    },
+    "s10": {
+      "heading": "10. Contato",
+      "p1": "Dúvidas sobre privacidade podem ser enviadas pelo canal de suporte dentro da Belle Nails."
+    }
+  },
+  "reembolso": {
+    "title": "Política de Reembolso",
+    "s1": {
+      "heading": "Garantia de 30 dias",
+      "p1_pre": "A ",
+      "p1_brand": "Belle Nails",
+      "p1_mid": " oferece uma garantia de satisfação de ",
+      "p1_days": "30 dias",
+      "p1_end": ". Se você não estiver satisfeita com sua assinatura, pode solicitar reembolso integral em até 30 dias contados a partir da data da cobrança."
+    },
+    "s2": {
+      "heading": "Como solicitar",
+      "p1_pre": "Os reembolsos são processados pelo nosso provedor de pagamento, ",
+      "p1_paddle": "Paddle",
+      "p1_end": ", que atua como Merchant of Record (MoR) dos nossos pedidos.",
+      "li1_pre": "Acesse ",
+      "li1_link": "paddle.net",
+      "li1_end": " e informe o e-mail utilizado na compra para localizar a fatura e abrir a solicitação; ou",
+      "li2": "Entre em contato com o nosso suporte dentro do aplicativo e ajudaremos no processo."
+    },
+    "s3": {
+      "heading": "Prazo de processamento",
+      "p1": "Após a aprovação, o estorno costuma ser realizado em alguns dias úteis, dependendo do meio de pagamento utilizado."
+    },
+    "s4": {
+      "heading": "Cancelamento",
+      "p1": "Você pode cancelar sua assinatura a qualquer momento. O cancelamento interrompe as próximas renovações; o período já pago permanece ativo até o fim do ciclo, salvo quando aplicável o reembolso descrito acima."
+    }
+  }
+}

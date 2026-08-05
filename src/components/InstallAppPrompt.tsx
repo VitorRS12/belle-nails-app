@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Download, Share, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const DISMISS_KEY = "bn:install-dismissed";
 
@@ -29,6 +30,7 @@ function isIOS() {
  * - iOS Safari: shows manual instructions (Share → Add to Home Screen)
  */
 export function InstallAppPrompt() {
+  const { t } = useTranslation("common");
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [showIOS, setShowIOS] = useState(false);
   const [dismissed, setDismissed] = useState(() =>
@@ -84,26 +86,25 @@ export function InstallAppPrompt() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-display text-sm text-foreground">
-                Instale o Belle Nails
+                {t("installAppPrompt.title")}
               </p>
               <p className="text-xs text-muted-foreground mt-0.5">
                 {deferred
-                  ? "Tenha acesso rápido direto da tela inicial, mesmo sem internet."
+                  ? t("installAppPrompt.descriptionDeferred")
                   : (
                     <>
-                      Toque em <Share className="inline h-3.5 w-3.5 mx-0.5" /> e em
-                      "Adicionar à Tela de Início".
+                      <Share className="inline h-3.5 w-3.5 mx-0.5" /> {t("installAppPrompt.descriptionIOS")}
                     </>
                   )}
               </p>
               {deferred && (
                 <Button size="sm" className="mt-2 h-8" onClick={install}>
-                  Instalar agora
+                  {t("installAppPrompt.installNow")}
                 </Button>
               )}
             </div>
             <button
-              aria-label="Dispensar"
+              aria-label={t("installAppPrompt.dismiss")}
               onClick={dismiss}
               className="text-muted-foreground hover:text-foreground p-1 -mr-1"
             >

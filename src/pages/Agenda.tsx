@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AppLayout } from "@/components/AppLayout";
 import { AppointmentCard } from "@/components/AppointmentCard";
 import { AppointmentForm } from "@/components/AppointmentForm";
@@ -14,12 +15,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { format, parseISO, isSameDay } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { ptBR, enUS } from "date-fns/locale";
 import { CalendarDays } from "lucide-react";
+import i18n from "@/i18n";
 
 const ALL = "__all__";
 
 const Agenda = () => {
+  const { t } = useTranslation("app");
+  const dateLocale = i18n.resolvedLanguage === "en" ? enUS : ptBR;
   const appts = useAppointments();
   const { professionals } = useProfessionals();
   const activeProfessionals = useMemo(
@@ -56,7 +60,7 @@ const Agenda = () => {
     id ? professionals.find((p) => p.id === id)?.name : undefined;
 
   return (
-    <AppLayout subtitle="Agendamentos" title="Agenda" action={<AppointmentForm />}>
+    <AppLayout subtitle={t("agenda.subtitle")} title={t("agenda.title")} action={<AppointmentForm />}>
       {activeProfessionals.length > 1 && (
         <div className="mb-3">
           <Select value={profFilter} onValueChange={setProfFilter}>
@@ -64,7 +68,7 @@ const Agenda = () => {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={ALL}>Todas as profissionais</SelectItem>
+              <SelectItem value={ALL}>{t("agenda.allProfessionals")}</SelectItem>
               {activeProfessionals.map((p) => (
                 <SelectItem key={p.id} value={p.id}>
                   {p.name}
@@ -80,7 +84,7 @@ const Agenda = () => {
           mode="single"
           selected={selected}
           onSelect={(d) => d && setSelected(d)}
-          locale={ptBR}
+          locale={dateLocale}
           modifiers={{ booked: datesWithAppts }}
           modifiersClassNames={{
             booked:
@@ -95,13 +99,13 @@ const Agenda = () => {
 
       <section className="space-y-2">
         <h2 className="font-display text-lg text-foreground/80 capitalize">
-          {format(selected, "EEEE, dd 'de' MMMM", { locale: ptBR })}
+          {format(selected, "EEEE, dd 'de' MMMM", { locale: dateLocale })}
         </h2>
         {dayAppts.length === 0 ? (
           <EmptyState
             icon={<CalendarDays className="h-5 w-5" />}
-            title="Dia livre"
-            description="Nenhum agendamento para esta data. Toque em + para criar."
+            title={t("agenda.emptyDay.title")}
+            description={t("agenda.emptyDay.description")}
           />
         ) : (
           <div className="space-y-3">

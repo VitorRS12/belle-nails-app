@@ -3,6 +3,7 @@ import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 import { useSyncStatus } from "@/hooks/useSyncStatus";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 /**
  * Compact status chip shown in the app header.
@@ -11,14 +12,15 @@ import { AnimatePresence, motion } from "framer-motion";
  * - Online + clean → muted chip "Online"
  */
 export function OfflineIndicator({ className }: { className?: string }) {
+  const { t } = useTranslation("common");
   const { online } = useNetworkStatus();
   const { pending } = useSyncStatus();
 
   const label = !online
-    ? "Offline"
+    ? t("offlineIndicator.offline")
     : pending > 0
-      ? `${pending} pendente${pending > 1 ? "s" : ""}`
-      : "Online";
+      ? t("offlineIndicator.syncingPending", { count: pending })
+      : t("offlineIndicator.online");
 
   const Icon = !online ? CloudOff : pending > 0 ? RefreshCw : Cloud;
 

@@ -12,6 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Sparkles, WifiOff } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { LanguageToggle } from "@/components/LanguageToggle";
 
 const GoogleIcon = () => (
   <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden>
@@ -31,6 +33,7 @@ const AppleIcon = () => (
 const NATIVE_GOOGLE_REDIRECT_URI = "app.lovable.bellenails://oauth-callback";
 
 const Auth = () => {
+  const { t } = useTranslation("auth");
   const { session, loading } = useAuth();
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
@@ -40,16 +43,16 @@ const Auth = () => {
 
   // If already signed in, go home
   useEffect(() => {
-    document.title = "Entrar · Belle Nails";
-  }, []);
+    document.title = t("meta.title");
+  }, [t]);
 
   if (!loading && session) return <Navigate to="/inicio" replace />;
   if (!loading && !session && isGuestMode()) return <Navigate to="/inicio" replace />;
 
   const continueOffline = () => {
     enableGuestMode();
-    toast.success("Modo offline ativado", {
-      description: "Seus dados ficam salvos neste dispositivo.",
+    toast.success(t("offline.toastTitle"), {
+      description: t("offline.toastDescription"),
     });
     navigate("/inicio", { replace: true });
   };
@@ -61,12 +64,12 @@ const Auth = () => {
     setBusy(false);
     if (error) {
       console.error("signIn failed:", error);
-      toast.error("E-mail ou senha incorretos.");
+      toast.error(t("errors.invalidCredentials"));
     }
   };
 
   const signUpEmail = async () => {
-    if (!email || !password) return toast.error("Preencha e-mail e senha");
+    if (!email || !password) return toast.error(t("errors.fillEmailPassword"));
     setBusy(true);
     const { error } = await supabase.auth.signUp({
       email, password,
@@ -78,9 +81,9 @@ const Auth = () => {
     setBusy(false);
     if (error) {
       console.error("signUp failed:", error);
-      toast.error("Não foi possível criar a conta. Verifique os dados e tente novamente.");
+      toast.error(t("errors.signUpFailed"));
     } else {
-      toast.success("Conta criada! Você já pode entrar.");
+      toast.success(t("success.signUp"));
     }
   };
 
@@ -100,7 +103,7 @@ const Auth = () => {
 
         if (error || !data?.url) {
           setBusy(false);
-          toast.error("Erro ao entrar com Google");
+          toast.error(t("errors.googleSignIn"));
           return;
         }
 
@@ -118,7 +121,7 @@ const Auth = () => {
 
       if (result.error) {
         setBusy(false);
-        toast.error("Erro ao entrar com Google");
+        toast.error(t("errors.googleSignIn"));
         return;
       }
 
@@ -126,7 +129,7 @@ const Auth = () => {
     } catch (error) {
       console.error("google sign in failed:", error);
       setBusy(false);
-      toast.error("Erro ao entrar com Google");
+      toast.error(t("errors.googleSignIn"));
     }
   };
 
@@ -138,27 +141,31 @@ const Auth = () => {
       });
       if (result.error) {
         setBusy(false);
-        toast.error("Erro ao entrar com Apple");
+        toast.error(t("errors.appleSignIn"));
         return;
       }
       if (!result.redirected) setBusy(false);
     } catch (error) {
       console.error("apple sign in failed:", error);
       setBusy(false);
-      toast.error("Erro ao entrar com Apple");
+      toast.error(t("errors.appleSignIn"));
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-5">
       <div className="w-full max-w-sm space-y-6 animate-fade-in">
+        <div className="flex justify-end">
+          <LanguageToggle variant="full" />
+        </div>
+
         <header className="text-center space-y-2">
           <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-primary shadow-elegant">
             <Sparkles className="h-7 w-7 text-primary-foreground" />
           </div>
-          <h1 className="font-display text-3xl">Belle Nails</h1>
+          <h1 className="font-display text-3xl">{t("header.title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Sua agenda, seus dados — em qualquer lugar.
+            {t("header.subtitle")}
           </p>
         </header>
 
@@ -169,7 +176,7 @@ const Auth = () => {
             variant="outline"
             className="w-full h-11 rounded-xl gap-2"
           >
-            <GoogleIcon /> Continuar com Google
+            <GoogleIcon /> {t("buttons.continueWithGoogle")}
           </Button>
 
           <Button
@@ -178,49 +185,49 @@ const Auth = () => {
             variant="outline"
             className="w-full h-11 rounded-xl gap-2"
           >
-            <AppleIcon /> Continuar com Apple
+            <AppleIcon /> {t("buttons.continueWithApple")}
           </Button>
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border/60" /></div>
-            <div className="relative flex justify-center text-[10px] uppercase tracking-widest"><span className="bg-card px-2 text-muted-foreground">ou</span></div>
+            <div className="relative flex justify-center text-[10px] uppercase tracking-widest"><span className="bg-card px-2 text-muted-foreground">{t("buttons.or")}</span></div>
           </div>
 
           <Tabs defaultValue="signin">
             <TabsList className="grid grid-cols-2 w-full">
-              <TabsTrigger value="signin">Entrar</TabsTrigger>
-              <TabsTrigger value="signup">Cadastrar</TabsTrigger>
+              <TabsTrigger value="signin">{t("buttons.signIn")}</TabsTrigger>
+              <TabsTrigger value="signup">{t("buttons.signUp")}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="signin" className="space-y-3 pt-3">
               <div className="space-y-2">
-                <Label>E-mail</Label>
+                <Label>{t("fields.email")}</Label>
                 <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label>Senha</Label>
+                <Label>{t("fields.password")}</Label>
                 <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
               <Button onClick={signInEmail} disabled={busy} className="w-full h-11 bg-gradient-primary shadow-elegant">
-                Entrar
+                {t("buttons.signIn")}
               </Button>
             </TabsContent>
 
             <TabsContent value="signup" className="space-y-3 pt-3">
               <div className="space-y-2">
-                <Label>Seu nome</Label>
+                <Label>{t("fields.name")}</Label>
                 <Input value={name} onChange={(e) => setName(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label>E-mail</Label>
+                <Label>{t("fields.email")}</Label>
                 <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label>Senha</Label>
+                <Label>{t("fields.password")}</Label>
                 <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
               <Button onClick={signUpEmail} disabled={busy} className="w-full h-11 bg-gradient-primary shadow-elegant">
-                Criar conta
+                {t("buttons.createAccount")}
               </Button>
             </TabsContent>
           </Tabs>
@@ -231,11 +238,11 @@ const Auth = () => {
           onClick={continueOffline}
           className="w-full h-11 rounded-xl gap-2 text-muted-foreground hover:text-foreground"
         >
-          <WifiOff className="h-4 w-4" /> Usar offline neste dispositivo
+          <WifiOff className="h-4 w-4" /> {t("buttons.useOffline")}
         </Button>
 
         <p className="text-center text-[11px] text-muted-foreground">
-          Seus dados ficam protegidos. Cada profissional só vê os próprios clientes.
+          {t("footer.privacy")}
         </p>
       </div>
     </div>

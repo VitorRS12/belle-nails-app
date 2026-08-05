@@ -1,0 +1,76 @@
+{
+  "meta": {
+    "onlineBooking": "Book online"
+  },
+  "notFound": {
+    "title": "Company not found",
+    "description": "Check the link and try again."
+  },
+  "steps": {
+    "service": {
+      "title": "Choose the service",
+      "empty": "This company hasn't set up any services for online booking yet.",
+      "duration": "{{minutes}} min"
+    },
+    "professional": {
+      "title": "Choose the professional",
+      "empty": "No professional available for this service."
+    },
+    "date": {
+      "title": "Choose the date"
+    },
+    "time": {
+      "title": "Time",
+      "titleWithDate": "{{date}}",
+      "empty": "No time slots available on this date. Choose another one."
+    },
+    "contact": {
+      "title": "Your details",
+      "summary": "{{date}} · {{time}} · {{duration}} min · R$ {{price}}",
+      "nameLabel": "Full name",
+      "phoneLabel": "Phone (WhatsApp)",
+      "phonePlaceholder": "(00) 00000-0000",
+      "emailLabel": "Email",
+      "emailInvalid": "Enter a valid email to receive the confirmation.",
+      "emailHelp": "We'll use your email to send the booking confirmation.",
+      "notesLabel": "Notes (optional)",
+      "submit": "Confirm booking"
+    },
+    "done": {
+      "title": "All set!",
+      "heading": "Booking sent",
+      "message": "Your request was sent to <company>{{company}}</company>. You'll receive a confirmation as soon as <professional>{{professional}}</professional> approves the time slot.",
+      "at": "at {{time}}"
+    }
+  },
+  "actions": {
+    "back": "Back"
+  },
+  "toasts": {
+    "slotsLoadError": "Could not load time slots",
+    "nameRequired": "Enter your name",
+    "emailInvalid": "Enter a valid email to confirm the booking"
+  },
+  "cancel": {
+    "title": "Cancel booking",
+    "invalidLink": "Invalid link.",
+    "loading": "Loading…",
+    "loadError": "Could not load the booking.",
+    "genericError": "Error",
+    "alreadyCancelled": "This booking was already cancelled.",
+    "cancelledSuccess": "Booking cancelled successfully.",
+    "cancelledToast": "Booking cancelled.",
+    "cancelError": "Could not cancel the booking.",
+    "emailNotice": "A confirmation email was sent to you and to the professional.",
+    "back": "Back",
+    "confirmQuestion": "Confirm cancellation of the booking below?",
+    "client": "Client:",
+    "company": "Company:",
+    "service": "Service:",
+    "when": "When:",
+    "at": "at",
+    "confirmButton": "Cancel booking",
+    "pageTitle": "Cancel booking — Belle Nails",
+    "pageDescription": "Cancel your booking with one click."
+  }
+}

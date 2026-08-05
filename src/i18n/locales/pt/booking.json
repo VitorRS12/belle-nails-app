@@ -1,0 +1,76 @@
+{
+  "meta": {
+    "onlineBooking": "Agendar online"
+  },
+  "notFound": {
+    "title": "Empresa não encontrada",
+    "description": "Verifique o link e tente novamente."
+  },
+  "steps": {
+    "service": {
+      "title": "Escolha o serviço",
+      "empty": "Esta empresa ainda não cadastrou serviços para agendamento online.",
+      "duration": "{{minutes}} min"
+    },
+    "professional": {
+      "title": "Escolha a profissional",
+      "empty": "Nenhuma profissional disponível para este serviço."
+    },
+    "date": {
+      "title": "Escolha a data"
+    },
+    "time": {
+      "title": "Horário",
+      "titleWithDate": "{{date}}",
+      "empty": "Nenhum horário disponível nesta data. Escolha outra."
+    },
+    "contact": {
+      "title": "Seus dados",
+      "summary": "{{date}} · {{time}} · {{duration}} min · R$ {{price}}",
+      "nameLabel": "Nome completo",
+      "phoneLabel": "Telefone (WhatsApp)",
+      "phonePlaceholder": "(00) 00000-0000",
+      "emailLabel": "E-mail",
+      "emailInvalid": "Informe um e-mail válido para receber a confirmação.",
+      "emailHelp": "Usaremos seu e-mail para enviar a confirmação do agendamento.",
+      "notesLabel": "Observações (opcional)",
+      "submit": "Confirmar agendamento"
+    },
+    "done": {
+      "title": "Tudo certo!",
+      "heading": "Agendamento enviado",
+      "message": "Seu pedido foi enviado para <company>{{company}}</company>. Você receberá uma confirmação assim que <professional>{{professional}}</professional> aprovar o horário.",
+      "at": "às {{time}}"
+    }
+  },
+  "actions": {
+    "back": "Voltar"
+  },
+  "toasts": {
+    "slotsLoadError": "Não foi possível carregar horários",
+    "nameRequired": "Informe seu nome",
+    "emailInvalid": "Informe um e-mail válido para confirmar o agendamento"
+  },
+  "cancel": {
+    "title": "Cancelar agendamento",
+    "invalidLink": "Link inválido.",
+    "loading": "Carregando…",
+    "loadError": "Não foi possível carregar o agendamento.",
+    "genericError": "Erro",
+    "alreadyCancelled": "Este agendamento já estava cancelado.",
+    "cancelledSuccess": "Agendamento cancelado com sucesso.",
+    "cancelledToast": "Agendamento cancelado.",
+    "cancelError": "Não foi possível cancelar.",
+    "emailNotice": "Um e-mail de confirmação foi enviado para você e para a profissional.",
+    "back": "Voltar",
+    "confirmQuestion": "Confirma o cancelamento do agendamento abaixo?",
+    "client": "Cliente:",
+    "company": "Empresa:",
+    "service": "Serviço:",
+    "when": "Quando:",
+    "at": "às",
+    "confirmButton": "Cancelar agendamento",
+    "pageTitle": "Cancelar agendamento — Belle Nails",
+    "pageDescription": "Cancele seu agendamento com um clique."
+  }
+}

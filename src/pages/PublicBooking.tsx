@@ -10,8 +10,10 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { ListSkeleton } from "@/components/ListSkeleton";
 import { toast } from "sonner";
-import { ptBR } from "date-fns/locale";
+import { ptBR, enUS } from "date-fns/locale";
 import { format } from "date-fns";
+import { useTranslation, Trans } from "react-i18next";
+import { LanguageToggle } from "@/components/LanguageToggle";
 import {
   ArrowLeft,
   CheckCircle2,
@@ -65,6 +67,8 @@ interface CompanyResponse {
 }
 
 export default function PublicBooking() {
+  const { t, i18n } = useTranslation("booking");
+  const dateLocale = i18n.resolvedLanguage?.startsWith("en") ? enUS : ptBR;
   const { slug } = useParams<{ slug: string }>();
   const [data, setData] = useState<CompanyResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -139,7 +143,7 @@ export default function PublicBooking() {
     });
     setLoadingSlots(false);
     if (error || !res || (res as { error?: string }).error) {
-      toast.error("Não foi possível carregar horários");
+      toast.error(t("toasts.slotsLoadError"));
       setSlots([]);
       return;
     }
@@ -156,11 +160,11 @@ export default function PublicBooking() {
   const submit = async () => {
     if (!data || !slug || !serviceId || !professionalId || !date || !time) return;
     if (!customerName.trim()) {
-      toast.error("Informe seu nome");
+      toast.error(t("toasts.nameRequired"));
       return;
     }
     if (!emailValid) {
-      toast.error("Informe um e-mail válido para confirmar o agendamento");
+      toast.error(t("toasts.emailInvalid"));
       return;
     }
     setSubmitting(true);
@@ -202,9 +206,9 @@ export default function PublicBooking() {
     return (
       <Shell>
         <div className="text-center py-20">
-          <h1 className="font-display text-2xl mb-2">Empresa não encontrada</h1>
+          <h1 className="font-display text-2xl mb-2">{t("notFound.title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Verifique o link e tente novamente.
+            {t("notFound.description")}
           </p>
         </div>
       </Shell>
@@ -213,9 +217,12 @@ export default function PublicBooking() {
 
   return (
     <Shell>
-      <header className="text-center space-y-1 mb-6">
+      <header className="relative text-center space-y-1 mb-6">
+        <div className="absolute right-0 top-0">
+          <LanguageToggle />
+        </div>
         <p className="text-[10px] uppercase tracking-[0.2em] text-accent font-semibold">
-          Agendar online
+          {t("meta.onlineBooking")}
         </p>
         <h1 className="font-display text-3xl text-foreground">{data.company.name}</h1>
       </header>
@@ -232,10 +239,10 @@ export default function PublicBooking() {
           className="mt-6"
         >
           {step === "service" && (
-            <Section title="Escolha o serviço">
+            <Section title={t("steps.service.title")}>
               {data.services.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-6">
-                  Esta empresa ainda não cadastrou serviços para agendamento online.
+                  {t("steps.service.empty")}
                 </p>
               ) : (
                 <ul className="grid gap-3">
@@ -263,7 +270,7 @@ export default function PublicBooking() {
                           </div>
                           <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
                             <span className="inline-flex items-center gap-1">
-                              <Clock className="h-3 w-3" /> {s.duration_minutes} min
+                              <Clock className="h-3 w-3" /> {t("steps.service.duration", { minutes: s.duration_minutes })}
                             </span>
                             <span className="font-medium text-primary">
                               R$ {s.price.toFixed(2).replace(".", ",")}
@@ -285,12 +292,12 @@ export default function PublicBooking() {
 
           {step === "professional" && (
             <Section
-              title="Escolha a profissional"
+              title={t("steps.professional.title")}
               onBack={() => setStep("service")}
             >
               {availableProfessionals.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-6">
-                  Nenhuma profissional disponível para este serviço.
+                  {t("steps.professional.empty")}
                 </p>
               ) : (
                 <ul className="grid gap-3">
@@ -341,7 +348,7 @@ export default function PublicBooking() {
           )}
 
           {step === "date" && (
-            <Section title="Escolha a data" onBack={() => setStep("professional")}>
+            <Section title={t("steps.date.title")} onBack={() => setStep("professional")}>
               <div className="rounded-2xl bg-card border border-border/60 p-2 sm:p-4 shadow-soft flex justify-center">
                 <Calendar
                   mode="single"
@@ -352,7 +359,7 @@ export default function PublicBooking() {
                     setTime("");
                     setStep("time");
                   }}
-                  locale={ptBR}
+                  locale={dateLocale}
                   fromDate={new Date()}
                   className="rounded-md"
                 />
@@ -362,7 +369,7 @@ export default function PublicBooking() {
 
           {step === "time" && (
             <Section
-              title={date ? format(date, "EEEE, dd 'de' MMMM", { locale: ptBR }) : "Horário"}
+              title={date ? format(date, "EEEE, dd 'de' MMMM", { locale: dateLocale }) : t("steps.time.title")}
               onBack={() => setStep("date")}
             >
               {loadingSlots ? (
@@ -371,7 +378,7 @@ export default function PublicBooking() {
                 </div>
               ) : !slots || slots.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-6">
-                  Nenhum horário disponível nesta data. Escolha outra.
+                  {t("steps.time.empty")}
                 </p>
               ) : (
                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
@@ -394,17 +401,21 @@ export default function PublicBooking() {
           )}
 
           {step === "contact" && service && (
-            <Section title="Seus dados" onBack={() => setStep("time")}>
+            <Section title={t("steps.contact.title")} onBack={() => setStep("time")}>
               <div className="rounded-2xl bg-gradient-soft p-3 mb-4 text-sm">
                 <p className="font-medium">{service.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {date && format(date, "dd/MM/yyyy", { locale: ptBR })} · {time} ·{" "}
-                  {service.duration_minutes} min · R$ {service.price.toFixed(2).replace(".", ",")}
+                  {t("steps.contact.summary", {
+                    date: date ? format(date, "dd/MM/yyyy", { locale: dateLocale }) : "",
+                    time,
+                    duration: service.duration_minutes,
+                    price: service.price.toFixed(2).replace(".", ","),
+                  })}
                 </p>
               </div>
               <div className="space-y-3">
                 <div className="space-y-1.5">
-                  <Label htmlFor="c-name">Nome completo</Label>
+                  <Label htmlFor="c-name">{t("steps.contact.nameLabel")}</Label>
                   <Input
                     id="c-name"
                     value={customerName}
@@ -415,12 +426,12 @@ export default function PublicBooking() {
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="c-phone" className="flex items-center gap-1.5">
-                    <Phone className="h-3.5 w-3.5" /> Telefone (WhatsApp)
+                    <Phone className="h-3.5 w-3.5" /> {t("steps.contact.phoneLabel")}
                   </Label>
                   <Input
                     id="c-phone"
                     type="tel"
-                    placeholder="(00) 00000-0000"
+                    placeholder={t("steps.contact.phonePlaceholder")}
                     value={customerPhone}
                     onChange={(e) => setCustomerPhone(e.target.value)}
                     maxLength={30}
@@ -428,7 +439,7 @@ export default function PublicBooking() {
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="c-email" className="flex items-center gap-1.5">
-                    <Mail className="h-3.5 w-3.5" /> E-mail <span className="text-destructive">*</span>
+                    <Mail className="h-3.5 w-3.5" /> {t("steps.contact.emailLabel")} <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="c-email"
@@ -442,17 +453,17 @@ export default function PublicBooking() {
                   />
                   {customerEmail.length > 0 && !emailValid && (
                     <p className="text-[11px] text-destructive">
-                      Informe um e-mail válido para receber a confirmação.
+                      {t("steps.contact.emailInvalid")}
                     </p>
                   )}
                   {customerEmail.length === 0 && (
                     <p className="text-[11px] text-muted-foreground">
-                      Usaremos seu e-mail para enviar a confirmação do agendamento.
+                      {t("steps.contact.emailHelp")}
                     </p>
                   )}
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="c-notes">Observações (opcional)</Label>
+                  <Label htmlFor="c-notes">{t("steps.contact.notesLabel")}</Label>
                   <Textarea
                     id="c-notes"
                     rows={2}
@@ -469,7 +480,7 @@ export default function PublicBooking() {
                   {submitting ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    "Confirmar agendamento"
+                    t("steps.contact.submit")
                   )}
                 </Button>
               </div>
@@ -477,16 +488,19 @@ export default function PublicBooking() {
           )}
 
           {step === "done" && confirmation && (
-            <Section title="Tudo certo!">
+            <Section title={t("steps.done.title")}>
               <div className="text-center py-6 space-y-3">
                 <div className="mx-auto h-16 w-16 rounded-full bg-gradient-primary text-primary-foreground inline-flex items-center justify-center">
                   <CheckCircle2 className="h-8 w-8" />
                 </div>
-                <h2 className="font-display text-2xl">Agendamento enviado</h2>
+                <h2 className="font-display text-2xl">{t("steps.done.heading")}</h2>
                 <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                  Seu pedido foi enviado para <strong>{confirmation.company}</strong>. Você
-                  receberá uma confirmação assim que <strong>{confirmation.professional}</strong>{" "}
-                  aprovar o horário.
+                  <Trans
+                    i18nKey="steps.done.message"
+                    t={t}
+                    values={{ company: confirmation.company, professional: confirmation.professional }}
+                    components={{ company: <strong />, professional: <strong /> }}
+                  />
                 </p>
                 <div className="rounded-2xl bg-gradient-soft p-3 inline-block text-left text-sm">
                   <p>
@@ -495,7 +509,7 @@ export default function PublicBooking() {
                   </p>
                   <p>
                     <CalendarDays className="h-3.5 w-3.5 inline mr-1.5 text-primary" />
-                    {date && format(date, "dd/MM/yyyy", { locale: ptBR })} às {time}
+                    {date && format(date, "dd/MM/yyyy", { locale: dateLocale })} {t("steps.done.at", { time })}
                   </p>
                 </div>
               </div>
@@ -524,6 +538,7 @@ function Section({
   onBack?: () => void;
   children: React.ReactNode;
 }) {
+  const { t } = useTranslation("booking");
   return (
     <section className="space-y-3">
       <div className="flex items-center gap-2">
@@ -533,7 +548,7 @@ function Section({
             variant="ghost"
             size="icon"
             onClick={onBack}
-            aria-label="Voltar"
+            aria-label={t("actions.back")}
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>

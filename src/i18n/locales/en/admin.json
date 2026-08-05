@@ -1,0 +1,91 @@
+{
+  "layout": {
+    "superAdmin": "Super Admin",
+    "backToApp": "Back to app",
+    "signOut": "Sign out",
+    "nav": {
+      "overview": "Overview",
+      "companies": "Companies",
+      "plans": "Plans"
+    }
+  },
+  "dashboard": {
+    "title": "Overview",
+    "subtitle": "Platform metrics",
+    "cards": {
+      "companies": "Companies",
+      "companiesHint": "+{{count}} in the last 30 days",
+      "activeSubscriptions": "Active subscriptions",
+      "activeSubscriptionsHint": "{{count}} in trial",
+      "mrr": "Estimated MRR",
+      "mrrHint": "Monthly recurring revenue",
+      "appointmentsThisMonth": "Appointments this month",
+      "appointmentsThisMonthHint": "Across all companies"
+    },
+    "welcome": {
+      "title": "Welcome to the dashboard",
+      "description": "Use the tabs above to manage companies and plans. Once payments are active, MRR and subscription status will be updated automatically by Stripe."
+    },
+    "trialingNotice": "{{count}} compan(y/ies) currently in trial period."
+  },
+  "companies": {
+    "title": "Companies",
+    "subtitle": "All companies registered on the platform",
+    "empty": "No companies registered yet.",
+    "planUpdated": "Plan updated",
+    "planUpdateError": "Could not update",
+    "table": {
+      "company": "Company",
+      "plan": "Plan",
+      "status": "Status",
+      "professionals": "Professionals",
+      "appointmentsPerMonth": "Appts/month"
+    },
+    "createdOn": "created {{date}}",
+    "changePlan": "Change plan",
+    "dialog": {
+      "title": "Change plan",
+      "description": "The change is applied immediately. Use with caution — in production, prefer that the company changes plans through Stripe.",
+      "selectPlaceholder": "Select the plan",
+      "perMonth": "/month",
+      "save": "Save"
+    }
+  },
+  "plans": {
+    "title": "Plans",
+    "subtitle": "Platform plan catalog",
+    "newPlan": "New plan",
+    "editPlan": "Edit plan",
+    "limitsHint": "Blank limits mean \"unlimited\".",
+    "slugRequired": "Slug and name are required",
+    "saved": "Plan saved",
+    "deleteConfirm": "Delete plan \"{{name}}\"?",
+    "deleted": "Plan deleted",
+    "deleteError": "Could not delete (there may be linked subscriptions).",
+    "unlimited": "Unlimited",
+    "fields": {
+      "slug": "Slug",
+      "name": "Name",
+      "description": "Description",
+      "price": "Price (R$)",
+      "currency": "Currency",
+      "interval": "Interval",
+      "maxProfessionals": "Max. professionals",
+      "maxAppointmentsPerMonth": "Max. appts/month",
+      "maxServices": "Max. services",
+      "order": "Order",
+      "active": "Active",
+      "unlimitedAria": "Unlimited"
+    },
+    "save": "Save",
+    "active": "Active",
+    "inactive": "Inactive",
+    "perInterval": "/{{interval}}",
+    "professionals": "Professionals: {{value}}",
+    "appointmentsPerMonth": "Appointments/month: {{value}}",
+    "services": "Services: {{value}}",
+    "stripePrice": "Stripe price: {{id}}",
+    "edit": "Edit",
+    "deleteAria": "Delete"
+  }
+}

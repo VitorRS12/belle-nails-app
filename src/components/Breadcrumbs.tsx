@@ -1,24 +1,26 @@
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ChevronRight, Home } from "lucide-react";
 
-const LABELS: Record<string, string> = {
-  inicio: "Início",
-  dashboard: "Dashboard",
-  agenda: "Agenda",
-  clientes: "Clientes",
-  atendimentos: "Histórico",
-  configuracoes: "Configurações",
-  relatorio: "Relatório",
-};
+const LABEL_KEYS = [
+  "inicio",
+  "dashboard",
+  "agenda",
+  "clientes",
+  "atendimentos",
+  "configuracoes",
+  "relatorio",
+];
 
 export function Breadcrumbs() {
+  const { t } = useTranslation("common");
   const { pathname } = useLocation();
   const parts = pathname.split("/").filter(Boolean);
   if (parts.length === 0) return null;
 
   return (
     <nav
-      aria-label="breadcrumb"
+      aria-label={t("breadcrumbs.ariaLabel")}
       className="flex items-center gap-1.5 text-xs text-muted-foreground"
     >
       <Link
@@ -30,7 +32,7 @@ export function Breadcrumbs() {
       {parts.map((part, idx) => {
         const href = "/" + parts.slice(0, idx + 1).join("/");
         const isLast = idx === parts.length - 1;
-        const label = LABELS[part] ?? part;
+        const label = LABEL_KEYS.includes(part) ? t(`breadcrumbs.labels.${part}`) : part;
         return (
           <span key={href} className="flex items-center gap-1.5">
             <ChevronRight className="h-3 w-3 opacity-50" />

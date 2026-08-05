@@ -3,12 +3,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { LayoutDashboard, Building2, CreditCard, LogOut, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
-
-const NAV = [
-  { to: "/admin", label: "Visão geral", icon: LayoutDashboard, end: true },
-  { to: "/admin/empresas", label: "Empresas", icon: Building2 },
-  { to: "/admin/planos", label: "Planos", icon: CreditCard },
-];
+import { useTranslation } from "react-i18next";
 
 export function AdminLayout({
   title,
@@ -19,8 +14,15 @@ export function AdminLayout({
   subtitle?: string;
   children: ReactNode;
 }) {
+  const { t } = useTranslation("admin");
   const { signOut } = useAuth();
   const location = useLocation();
+
+  const NAV = [
+    { to: "/admin", label: t("layout.nav.overview"), icon: LayoutDashboard, end: true },
+    { to: "/admin/empresas", label: t("layout.nav.companies"), icon: Building2 },
+    { to: "/admin/planos", label: t("layout.nav.plans"), icon: CreditCard },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -31,13 +33,13 @@ export function AdminLayout({
             <Link
               to="/inicio"
               className="h-8 w-8 rounded-full bg-secondary inline-flex items-center justify-center hover:bg-accent-soft transition-smooth"
-              aria-label="Voltar ao app"
+              aria-label={t("layout.backToApp")}
             >
               <ArrowLeft className="h-4 w-4" />
             </Link>
             <div className="min-w-0">
               <p className="text-[10px] uppercase tracking-wider text-muted-foreground leading-none">
-                Super Admin
+                {t("layout.superAdmin")}
               </p>
               <p className="font-display text-base leading-tight truncate">{title}</p>
             </div>
@@ -46,7 +48,7 @@ export function AdminLayout({
             onClick={() => signOut()}
             className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-smooth"
           >
-            <LogOut className="h-4 w-4" /> Sair
+            <LogOut className="h-4 w-4" /> {t("layout.signOut")}
           </button>
         </div>
 

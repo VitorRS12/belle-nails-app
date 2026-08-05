@@ -6,6 +6,8 @@ import { Loader2, CheckCircle2, XCircle, CalendarX } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { useTranslation } from "react-i18next";
+import { LanguageToggle } from "@/components/LanguageToggle";
 
 type Preview = {
   company: string;
@@ -17,7 +19,8 @@ type Preview = {
 };
 
 export default function CancelarAgendamento() {
-  usePageMeta({ title: "Cancelar agendamento — Belle Nails", description: "Cancele seu agendamento com um clique." });
+  const { t, i18n } = useTranslation("booking");
+  usePageMeta({ title: t("cancel.pageTitle"), description: t("cancel.pageDescription") });
   const [params] = useSearchParams();
   const token = params.get("token") ?? "";
 
@@ -30,7 +33,7 @@ export default function CancelarAgendamento() {
   useEffect(() => {
     (async () => {
       if (!token) {
-        setError("Link inválido.");
+        setError(t("cancel.invalidLink"));
         setLoading(false);
         return;
       }
@@ -48,10 +51,10 @@ export default function CancelarAgendamento() {
           const url = `${(supabase as unknown as { supabaseUrl: string }).supabaseUrl}/functions/v1/public-cancel-booking?token=${encodeURIComponent(token)}`;
           const res = await fetch(url);
           const json = await res.json();
-          if (!res.ok) throw new Error(json.error ?? "Erro");
+          if (!res.ok) throw new Error(json.error ?? t("cancel.genericError"));
           setPreview(json);
         } catch (e) {
-          setError((e as Error).message || "Não foi possível carregar o agendamento.");
+          setError((e as Error).message || t("cancel.loadError"));
         }
       } finally {
         setLoading(false);
@@ -69,11 +72,11 @@ export default function CancelarAgendamento() {
         body: JSON.stringify({ token }),
       });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "Erro");
+      if (!res.ok) throw new Error(json.error ?? t("cancel.genericError"));
       setDone(true);
-      toast.success("Agendamento cancelado.");
+      toast.success(t("cancel.cancelledToast"));
     } catch (e) {
-      toast.error((e as Error).message || "Não foi possível cancelar.");
+      toast.error((e as Error).message || t("cancel.cancelError"));
     } finally {
       setSubmitting(false);
     }
@@ -83,14 +86,17 @@ export default function CancelarAgendamento() {
     <main className="min-h-screen flex items-center justify-center p-6 bg-muted/30">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <CalendarX className="h-5 w-5" /> Cancelar agendamento
+          <CardTitle className="flex items-center justify-between gap-2">
+            <span className="flex items-center gap-2">
+              <CalendarX className="h-5 w-5" /> {t("cancel.title")}
+            </span>
+            <LanguageToggle />
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {loading ? (
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" /> Carregando…
+              <Loader2 className="h-4 w-4 animate-spin" /> {t("cancel.loading")}
             </div>
           ) : error ? (
             <div className="flex items-start gap-2 text-destructive">
@@ -102,32 +108,32 @@ export default function CancelarAgendamento() {
                 <CheckCircle2 className="h-5 w-5" />
                 <p className="font-medium">
                   {preview?.alreadyCancelled && !done
-                    ? "Este agendamento já estava cancelado."
-                    : "Agendamento cancelado com sucesso."}
+                    ? t("cancel.alreadyCancelled")
+                    : t("cancel.cancelledSuccess")}
                 </p>
               </div>
               <p className="text-sm text-muted-foreground">
-                Um e-mail de confirmação foi enviado para você e para a profissional.
+                {t("cancel.emailNotice")}
               </p>
               <Button asChild variant="outline" className="w-full">
-                <Link to="/">Voltar</Link>
+                <Link to="/">{t("cancel.back")}</Link>
               </Button>
             </div>
           ) : preview ? (
             <div className="space-y-4">
-              <p>Confirma o cancelamento do agendamento abaixo?</p>
+              <p>{t("cancel.confirmQuestion")}</p>
               <div className="rounded-lg border p-3 text-sm space-y-1">
-                <div><span className="text-muted-foreground">Cliente:</span> <strong>{preview.clientName}</strong></div>
-                <div><span className="text-muted-foreground">Empresa:</span> <strong>{preview.company}</strong></div>
-                <div><span className="text-muted-foreground">Serviço:</span> <strong>{preview.service}</strong></div>
-                <div><span className="text-muted-foreground">Quando:</span> <strong>{new Date(preview.date + "T00:00:00").toLocaleDateString("pt-BR")} às {preview.time}</strong></div>
+                <div><span className="text-muted-foreground">{t("cancel.client")}</span> <strong>{preview.clientName}</strong></div>
+                <div><span className="text-muted-foreground">{t("cancel.company")}</span> <strong>{preview.company}</strong></div>
+                <div><span className="text-muted-foreground">{t("cancel.service")}</span> <strong>{preview.service}</strong></div>
+                <div><span className="text-muted-foreground">{t("cancel.when")}</span> <strong>{new Date(preview.date + "T00:00:00").toLocaleDateString(i18n.resolvedLanguage?.startsWith("en") ? "en-US" : "pt-BR")} {t("cancel.at")} {preview.time}</strong></div>
               </div>
               <div className="flex gap-2">
                 <Button variant="outline" asChild className="flex-1">
-                  <Link to="/">Voltar</Link>
+                  <Link to="/">{t("cancel.back")}</Link>
                 </Button>
                 <Button variant="destructive" className="flex-1" disabled={submitting} onClick={confirmCancel}>
-                  {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Cancelar agendamento"}
+                  {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : t("cancel.confirmButton")}
                 </Button>
               </div>
             </div>

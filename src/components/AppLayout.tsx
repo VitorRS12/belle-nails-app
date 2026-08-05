@@ -6,6 +6,7 @@ import { AreaSwitcher } from "./AreaSwitcher";
 import { Breadcrumbs } from "./Breadcrumbs";
 import { OfflineIndicator } from "./OfflineIndicator";
 import { InstallAppPrompt } from "./InstallAppPrompt";
+import { LanguageToggle } from "./LanguageToggle";
 import { TrialBanner } from "@/features/billing/components/TrialBanner";
 
 interface Props {
@@ -35,7 +36,9 @@ export function AppLayout({ title, subtitle, action, children, wide }: Props) {
             </div>
             <div className="ml-auto flex items-center gap-3">
               <OfflineIndicator />
+              <LanguageToggle />
               <AreaSwitcher />
+
               {action}
             </div>
           </header>
@@ -56,7 +59,9 @@ export function AppLayout({ title, subtitle, action, children, wide }: Props) {
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
                 <OfflineIndicator />
+                <LanguageToggle />
                 {action}
+
               </div>
             </header>
             <div className="md:hidden px-5 pb-2 overflow-x-auto">

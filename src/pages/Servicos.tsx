@@ -17,6 +17,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { useServices, type Service, type ServiceInput } from "@/hooks/useServices";
 import { Plus, Pencil, Trash2, Sparkles, Clock } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 interface FormState {
   name: string;
@@ -63,6 +64,7 @@ function fromForm(f: FormState): ServiceInput {
 }
 
 const Servicos = () => {
+  const { t } = useTranslation("app");
   const { services, loading, create, update, remove } = useServices();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Service | null>(null);
@@ -93,20 +95,20 @@ const Servicos = () => {
 
   const handleDelete = async () => {
     if (!editing) return;
-    if (!confirm(`Remover "${editing.name}" do catálogo?`)) return;
+    if (!confirm(t("services.removeConfirm", { name: editing.name }))) return;
     const ok = await remove(editing.id);
     if (ok) setOpen(false);
   };
 
   return (
-    <AppLayout subtitle="Catálogo" title="Serviços">
+    <AppLayout subtitle={t("services.subtitle")} title={t("services.title")}>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            {services.length} {services.length === 1 ? "serviço" : "serviços"} cadastrados
+            {t("services.count", { count: services.length })}
           </p>
           <Button onClick={openCreate} className="rounded-xl bg-gradient-primary shadow-soft">
-            <Plus className="h-4 w-4 mr-1" /> Novo serviço
+            <Plus className="h-4 w-4 mr-1" /> {t("services.new")}
           </Button>
         </div>
 
@@ -115,8 +117,8 @@ const Servicos = () => {
         ) : services.length === 0 ? (
           <EmptyState
             icon={<Sparkles className="h-5 w-5" />}
-            title="Nenhum serviço cadastrado"
-            description="Cadastre os serviços oferecidos para usar nos agendamentos e no site público."
+            title={t("services.empty.title")}
+            description={t("services.empty.description")}
           />
         ) : (
           <ul className="grid gap-3">
@@ -139,12 +141,12 @@ const Servicos = () => {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-display text-lg truncate">{s.name}</h3>
-                      {!s.active && <Badge variant="secondary">Inativo</Badge>}
+                      {!s.active && <Badge variant="secondary">{t("services.inactive")}</Badge>}
                       {s.category && <Badge variant="outline">{s.category}</Badge>}
                     </div>
                     <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
                       <span className="inline-flex items-center gap-1">
-                        <Clock className="h-3 w-3" /> {s.duration_minutes} min
+                        <Clock className="h-3 w-3" /> {t("services.minutes", { count: s.duration_minutes })}
                       </span>
                       <span className="font-medium text-primary">
                         R$ {s.price.toFixed(2).replace(".", ",")}
@@ -167,11 +169,11 @@ const Servicos = () => {
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>{editing ? "Editar serviço" : "Novo serviço"}</SheetTitle>
+            <SheetTitle>{editing ? t("services.form.editTitle") : t("services.form.newTitle")}</SheetTitle>
           </SheetHeader>
           <form onSubmit={handleSubmit} className="mt-4 space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="s-name">Nome</Label>
+              <Label htmlFor="s-name">{t("services.form.name")}</Label>
               <Input
                 id="s-name"
                 value={form.name}
@@ -182,7 +184,7 @@ const Servicos = () => {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label htmlFor="s-dur">Duração (min)</Label>
+                <Label htmlFor="s-dur">{t("services.form.duration")}</Label>
                 <Input
                   id="s-dur"
                   type="number"
@@ -194,7 +196,7 @@ const Servicos = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="s-price">Preço (R$)</Label>
+                <Label htmlFor="s-price">{t("services.form.price")}</Label>
                 <Input
                   id="s-price"
                   inputMode="decimal"
@@ -205,17 +207,17 @@ const Servicos = () => {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label htmlFor="s-cat">Categoria</Label>
+                <Label htmlFor="s-cat">{t("services.form.category")}</Label>
                 <Input
                   id="s-cat"
-                  placeholder="Ex: Manicure"
+                  placeholder={t("services.form.categoryPlaceholder")}
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
                   maxLength={60}
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="s-color">Cor</Label>
+                <Label htmlFor="s-color">{t("services.form.color")}</Label>
                 <div className="flex items-center gap-2">
                   <Input
                     id="s-color"
@@ -231,14 +233,14 @@ const Servicos = () => {
                       size="sm"
                       onClick={() => setForm({ ...form, color: "" })}
                     >
-                      Limpar
+                      {t("services.form.clear")}
                     </Button>
                   )}
                 </div>
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="s-desc">Descrição</Label>
+              <Label htmlFor="s-desc">{t("services.form.description")}</Label>
               <Textarea
                 id="s-desc"
                 rows={3}
@@ -249,9 +251,9 @@ const Servicos = () => {
             </div>
             <div className="flex items-center justify-between rounded-xl border border-border/60 p-3">
               <div>
-                <p className="text-sm font-medium">Ativo</p>
+                <p className="text-sm font-medium">{t("services.form.active")}</p>
                 <p className="text-xs text-muted-foreground">
-                  Serviços inativos não aparecem no site público nem em novos agendamentos.
+                  {t("services.form.activeHint")}
                 </p>
               </div>
               <Switch
@@ -261,7 +263,7 @@ const Servicos = () => {
             </div>
             <div className="flex items-center gap-2 pt-2">
               <Button type="submit" disabled={saving} className="bg-gradient-primary flex-1">
-                {saving ? "Salvando…" : editing ? "Salvar" : "Cadastrar"}
+                {saving ? t("services.form.saving") : editing ? t("services.form.save") : t("services.form.create")}
               </Button>
               {editing && (
                 <Button

@@ -1,0 +1,285 @@
+{
+  "home": {
+    "title": "Welcome ✨",
+    "monthLabel": "This month",
+    "completedMonth": "Completed this month",
+    "scheduledToday": "Scheduled for today",
+    "noAppointmentsToday": "No appointments for today.",
+    "upcoming": "Upcoming",
+    "noUpcoming": "No upcoming appointments."
+  },
+  "report": {
+    "subtitle": "Company",
+    "title": "Dashboard",
+    "tabs": {
+      "overview": "Overview",
+      "report": "Report"
+    },
+    "kpis": {
+      "revenue": "Revenue (month)",
+      "appointments": "Appointments (month)",
+      "clients": "Registered clients",
+      "topService": "Top service",
+      "vsLastMonth": "{{value}}% vs last month"
+    },
+    "charts": {
+      "revenueTitle": "Revenue — last 6 months",
+      "topServicesTitle": "Top services",
+      "noData": "No data yet."
+    },
+    "table": {
+      "title": "Appointments",
+      "results_one": "{{count}} result",
+      "results_other": "{{count}} results",
+      "searchPlaceholder": "Search client, service, note…",
+      "statusPlaceholder": "Status",
+      "allStatuses": "All statuses",
+      "servicePlaceholder": "Service",
+      "allServices": "All services",
+      "fromDate": "From",
+      "clearFilters": "Clear filters",
+      "noResults": "No appointments found with the current filters.",
+      "columns": {
+        "date": "Date",
+        "client": "Client",
+        "service": "Service",
+        "status": "Status",
+        "value": "Value"
+      },
+      "showingRecent": "Showing the 50 most recent of {{count}}."
+    },
+    "status": {
+      "scheduled": "Scheduled",
+      "completed": "Completed",
+      "postponed": "Postponed",
+      "cancelled": "Cancelled",
+      "pendente_confirmacao": "Awaiting"
+    }
+  },
+  "agenda": {
+    "subtitle": "Appointments",
+    "title": "Agenda",
+    "allProfessionals": "All professionals",
+    "emptyDay": {
+      "title": "Free day",
+      "description": "No appointments for this date. Tap + to create one."
+    }
+  },
+  "clients": {
+    "subtitle": "Registry",
+    "title": "Clients",
+    "searchPlaceholder": "Search client",
+    "empty": "No clients registered.",
+    "appointmentsCount_one": "{{count}} appointment",
+    "appointmentsCount_other": "{{count}} appointments",
+    "removeConfirm": "Remove this client?",
+    "removed": "Removed",
+    "form": {
+      "editTitle": "Edit client",
+      "newTitle": "New client",
+      "name": "Name",
+      "phone": "Phone",
+      "notes": "Notes",
+      "save": "Save",
+      "nameRequired": "Enter the name",
+      "saved": "Saved!"
+    },
+    "detail": {
+      "services": "Services",
+      "total": "Total",
+      "last": "Last",
+      "history": "Service history",
+      "noCompleted": "No completed services yet.",
+      "completedOn": "Completed on {{date}}"
+    }
+  },
+  "appointments": {
+    "subtitle": "History",
+    "title": "Appointments",
+    "totalBilled": "Total billed",
+    "searchPlaceholder": "Search by client or service",
+    "empty": {
+      "title": "No appointments",
+      "description": "When you complete an appointment, it will appear here."
+    }
+  },
+  "services": {
+    "subtitle": "Catalog",
+    "title": "Services",
+    "count_one": "{{count}} service registered",
+    "count_other": "{{count}} services registered",
+    "new": "New service",
+    "empty": {
+      "title": "No services registered",
+      "description": "Register the services you offer to use them in appointments and on the public site."
+    },
+    "inactive": "Inactive",
+    "minutes": "{{count}} min",
+    "removeConfirm": "Remove \"{{name}}\" from the catalog?",
+    "form": {
+      "editTitle": "Edit service",
+      "newTitle": "New service",
+      "name": "Name",
+      "duration": "Duration (min)",
+      "price": "Price ($)",
+      "category": "Category",
+      "categoryPlaceholder": "E.g.: Manicure",
+      "color": "Color",
+      "clear": "Clear",
+      "description": "Description",
+      "active": "Active",
+      "activeHint": "Inactive services don't appear on the public site or in new appointments.",
+      "saving": "Saving…",
+      "save": "Save",
+      "create": "Create"
+    }
+  },
+  "team": {
+    "subtitle": "Company",
+    "title": "Team",
+    "count_one": "{{count}} professional",
+    "count_other": "{{count}} professionals",
+    "new": "New professional",
+    "empty": {
+      "title": "No professionals registered",
+      "description": "Register your company's professionals to start scheduling for each of them."
+    },
+    "inactive": "Inactive",
+    "pendingInvite": "Pending invite",
+    "removeConfirm": "Remove {{name}} from the team?",
+    "editTitle": "Edit {{name}}",
+    "newTitle": "New professional",
+    "tabs": {
+      "data": "Details",
+      "journey": "Schedule",
+      "services": "Services"
+    },
+    "form": {
+      "name": "Name",
+      "specialties": "Specialties (comma separated)",
+      "specialtiesPlaceholder": "Manicure, Pedicure, Extensions",
+      "bio": "Bio",
+      "active": "Active",
+      "activeHint": "Inactive professionals don't receive new appointments.",
+      "saving": "Saving…",
+      "save": "Save"
+    },
+    "schedule": {
+      "addBlock": "Add availability block",
+      "day": "Day",
+      "start": "Start",
+      "end": "End",
+      "endMustBeAfterStart": "End time must be after start time",
+      "none": "No schedule defined.",
+      "removeAria": "Remove"
+    },
+    "servicesSection": {
+      "empty": "Register custom services in the appointment form to be able to link them to each professional.",
+      "selectFor": "Select the services offered by {{name}}."
+    },
+    "invite": {
+      "label": "Invite to access the system",
+      "description": "The professional will receive an email to create their account and will be automatically linked to your company.",
+      "placeholder": "email@example.com",
+      "send": "Invite",
+      "sending": "Sending…",
+      "emailRequired": "Enter the email",
+      "success": "Invitation sent by email ✨",
+      "error": "Could not send the invitation"
+    }
+  },
+  "myJourney": {
+    "subtitle": "My account",
+    "title": "My schedule",
+    "notFound": {
+      "title": "Professional profile not found",
+      "description": "Ask the company to link your account as a professional to set up your schedule."
+    },
+    "professionalLabel": "Professional",
+    "intro": "Set the days and times you work. The public site uses this schedule to show clients the available times.",
+    "schedule": {
+      "addBlock": "Add availability block",
+      "day": "Day",
+      "start": "Start",
+      "end": "End",
+      "endMustBeAfterStart": "End time must be after start time",
+      "added": "Block added",
+      "none": "No schedule defined yet.",
+      "removeAria": "Remove"
+    },
+    "blocks": {
+      "title": "Block specific days",
+      "description": "Select a day on the calendar to disable appointments (day off, vacation, event).",
+      "reasonLabel": "Reason (optional)",
+      "reasonPlaceholder": "E.g.: day off, vacation, doctor's appointment",
+      "blockButton": "Block {{date}}",
+      "blocked": "Day blocked",
+      "none": "No blocked days.",
+      "unblockAria": "Unblock"
+    }
+  },
+  "notifications": {
+    "subtitle": "Settings",
+    "title": "Notification history",
+    "empty": {
+      "title": "No notifications sent yet",
+      "description": "When a client books through your site or you confirm/cancel an appointment, the emails will appear here."
+    },
+    "sent": "Sent",
+    "sentAt": "{{date}}",
+    "templates": {
+      "booking_confirmation_customer": "Booking confirmation (client)",
+      "booking_new_company": "New booking (company)",
+      "booking_confirmed_customer": "Booking confirmed",
+      "booking_cancelled_customer": "Booking cancelled",
+      "booking_reminder_customer": "24h reminder"
+    }
+  },
+  "settings": {
+    "subtitle": "Account",
+    "title": "Settings",
+    "signOut": "Sign out",
+    "areaUpdated": "Business area updated",
+    "areaUpdateFailed": "Failed to update the area",
+    "plan": {
+      "current": "Current plan",
+      "viewPlans": "View plans",
+      "professionals": "Professionals",
+      "appointmentsMonth": "Appointments this month",
+      "activeServices": "Active services"
+    },
+    "superAdmin": {
+      "title": "Super Admin Panel",
+      "description": "Manage companies, plans, and platform metrics."
+    },
+    "links": {
+      "team": {
+        "title": "Team",
+        "description": "Manage your company's professionals."
+      },
+      "services": {
+        "title": "Services",
+        "description": "Catalog with duration, price and color — used in appointments and on the public site."
+      },
+      "notifications": {
+        "title": "Notification history",
+        "description": "See all emails sent to clients and the company."
+      },
+      "myJourney": {
+        "title": "My schedule",
+        "description": "Choose the days and times you work."
+      }
+    },
+    "appearance": {
+      "title": "Appearance",
+      "darkOn": "Dark theme enabled — ideal at night.",
+      "lightOn": "Light theme enabled — bright and smooth.",
+      "savedPreference": "Your preference is saved."
+    },
+    "area": {
+      "title": "Business area",
+      "description": "Select the area your company works in. The service catalog is adjusted automatically."
+    },
+    "cloudNote": "Your data is automatically saved in the cloud and available on mobile and browser."
+  }
+}

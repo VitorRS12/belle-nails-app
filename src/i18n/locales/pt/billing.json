@@ -1,0 +1,43 @@
+{
+  "planos": {
+    "unlimitedSuffix": "{{suffix}} ilimitados",
+    "upToSuffix": "Até {{n}} {{suffix}}",
+    "title": "Planos",
+    "subtitle": "Escolha o plano ideal para o seu salão",
+    "unavailable": "Este plano ainda não está disponível para assinatura.",
+    "checkoutStartError": "Não foi possível iniciar o checkout. Tente novamente.",
+    "checkoutOpenError": "Não foi possível abrir o checkout. Tente novamente.",
+    "current": "Atual",
+    "perMonth": "/mês",
+    "perYear": "/ano",
+    "professionals": "profissionais",
+    "appointmentsPerMonth": "agendamentos/mês",
+    "services": "serviços",
+    "publicBookingPage": "Página pública de agendamento",
+    "emailNotifications": "Notificações por e-mail",
+    "advancedReports": "Relatórios avançados",
+    "noLovableBranding": "Sem marca Lovable",
+    "currentPlan": "Plano atual",
+    "openingCheckout": "Abrindo checkout…",
+    "subscribe": "Assinar"
+  },
+  "success": {
+    "title": "Pagamento confirmado!",
+    "description": "Sua assinatura está sendo ativada. Pode levar alguns segundos para o novo plano aparecer no seu painel.",
+    "backToDashboard": "Voltar ao painel"
+  },
+  "canceled": {
+    "title": "Pagamento cancelado",
+    "description": "Nenhuma cobrança foi feita. Você pode tentar novamente quando quiser.",
+    "back": "Voltar",
+    "viewPlans": "Ver planos"
+  },
+  "trialBanner": {
+    "expired": "Seu período de teste terminou. A conta está em modo somente leitura.",
+    "subscribeNow": "Assinar agora",
+    "endsToday": "Seu teste termina hoje.",
+    "daysLeft_one": "Falta {{count}} dia do seu teste grátis.",
+    "daysLeft_other": "Faltam {{count}} dias do seu teste grátis.",
+    "viewPlans": "Ver planos"
+  }
+}

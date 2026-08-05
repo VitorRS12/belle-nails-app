@@ -2,6 +2,7 @@ import { Moon, Sun } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface ThemeToggleProps {
   className?: string;
@@ -12,6 +13,7 @@ interface ThemeToggleProps {
  * Sun ⇄ Moon with a sliding thumb and ambient glow.
  */
 export function ThemeToggle({ className }: ThemeToggleProps) {
+  const { t } = useTranslation("common");
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
 
@@ -20,7 +22,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       type="button"
       role="switch"
       aria-checked={isDark}
-      aria-label={isDark ? "Mudar para modo claro" : "Mudar para modo escuro"}
+      aria-label={isDark ? t("themeToggle.toLight") : t("themeToggle.toDark")}
       onClick={toggleTheme}
       className={cn(
         "relative inline-flex h-9 w-[4.5rem] shrink-0 items-center rounded-full",

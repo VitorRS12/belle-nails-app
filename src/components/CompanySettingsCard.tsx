@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Building2, Clock, BellRing } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,16 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useCompany } from "@/hooks/useCompany";
 
 const INTERVAL_PRESETS = [10, 15, 20, 30, 45, 60, 90, 120, 180, 240];
-const REMINDER_OPTIONS: { value: number; label: string }[] = [
-  { value: 1, label: "1h antes" },
-  { value: 2, label: "2h antes" },
-  { value: 6, label: "6h antes" },
-  { value: 12, label: "12h antes" },
-  { value: 24, label: "24h antes" },
-  { value: 48, label: "48h antes" },
-];
+const REMINDER_VALUES = [1, 2, 6, 12, 24, 48];
 
 export function CompanySettingsCard() {
+  const { t } = useTranslation("common");
   const { company, loading, update } = useCompany();
   const [name, setName] = useState("");
   const [intervalMode, setIntervalMode] = useState<string>("30");
@@ -91,38 +86,38 @@ export function CompanySettingsCard() {
           <Building2 className="h-5 w-5" />
         </div>
         <div className="min-w-0">
-          <h3 className="font-display text-lg">Minha empresa</h3>
+          <h3 className="font-display text-lg">{t("companySettingsCard.title")}</h3>
           <p className="text-xs text-muted-foreground">
-            Essas informações aparecerão na sua página pública de agendamentos.
+            {t("companySettingsCard.description")}
           </p>
         </div>
       </div>
 
       {loading || !company ? (
-        <p className="text-sm text-muted-foreground">Carregando…</p>
+        <p className="text-sm text-muted-foreground">{t("companySettingsCard.loading")}</p>
       ) : (
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="company-name">Nome</Label>
+            <Label htmlFor="company-name">{t("companySettingsCard.name")}</Label>
             <Input
               id="company-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Nome da sua empresa"
+              placeholder={t("companySettingsCard.namePlaceholder")}
             />
           </div>
 
           <div className="space-y-1.5">
             <Label className="flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5" /> Intervalo da agenda
+              <Clock className="h-3.5 w-3.5" /> {t("companySettingsCard.intervalLabel")}
             </Label>
             <Select value={intervalMode} onValueChange={setIntervalMode}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 {INTERVAL_PRESETS.map((m) => (
-                  <SelectItem key={m} value={String(m)}>{m} minutos</SelectItem>
+                  <SelectItem key={m} value={String(m)}>{t("companySettingsCard.intervalMinutes", { count: m })}</SelectItem>
                 ))}
-                <SelectItem value="custom">Personalizado…</SelectItem>
+                <SelectItem value="custom">{t("companySettingsCard.intervalCustom")}</SelectItem>
               </SelectContent>
             </Select>
             {intervalMode === "custom" && (
@@ -131,29 +126,29 @@ export function CompanySettingsCard() {
                 min={5}
                 max={240}
                 step={5}
-                placeholder="Minutos (entre 5 e 240)"
+                placeholder={t("companySettingsCard.intervalCustomPlaceholder")}
                 value={customInterval}
                 onChange={(e) => setCustomInterval(e.target.value)}
                 className={!intervalValid ? "border-destructive" : ""}
               />
             )}
             <p className="text-[11px] text-muted-foreground">
-              Define de quanto em quanto tempo os horários da agenda são gerados.
+              {t("companySettingsCard.intervalHint")}
             </p>
           </div>
 
           <div className="space-y-2">
             <Label className="flex items-center gap-1.5">
-              <BellRing className="h-3.5 w-3.5" /> Lembretes automáticos
+              <BellRing className="h-3.5 w-3.5" /> {t("companySettingsCard.remindersLabel")}
             </Label>
             <div className="flex flex-wrap gap-2">
-              {REMINDER_OPTIONS.map((opt) => {
-                const active = reminders.includes(opt.value);
+              {REMINDER_VALUES.map((value) => {
+                const active = reminders.includes(value);
                 return (
                   <button
-                    key={opt.value}
+                    key={value}
                     type="button"
-                    onClick={() => toggleReminder(opt.value)}
+                    onClick={() => toggleReminder(value)}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-smooth ${
                       active
                         ? "bg-gradient-primary text-primary-foreground border-transparent shadow-soft"
@@ -161,19 +156,19 @@ export function CompanySettingsCard() {
                     }`}
                     aria-pressed={active}
                   >
-                    {opt.label}
+                    {t(`companySettingsCard.reminderOptions.${value}`)}
                   </button>
                 );
               })}
             </div>
             <p className="text-[11px] text-muted-foreground">
-              Escolha quando enviar lembretes por e-mail antes do agendamento. Selecione um ou mais horários — deixe vazio para desativar.
+              {t("companySettingsCard.remindersHint")}
             </p>
           </div>
 
 
           <div className="space-y-1.5">
-            <Label>Link público</Label>
+            <Label>{t("companySettingsCard.publicLink")}</Label>
             <a
               href={`/b/${company.slug}`}
               target="_blank"
@@ -183,7 +178,7 @@ export function CompanySettingsCard() {
               {typeof window !== "undefined" ? window.location.origin : ""}/b/{company.slug}
             </a>
             <p className="text-[11px] text-muted-foreground">
-              Compartilhe este link para suas clientes agendarem online.
+              {t("companySettingsCard.publicLinkHint")}
             </p>
           </div>
 
@@ -192,7 +187,7 @@ export function CompanySettingsCard() {
             disabled={!dirty || saving || !intervalValid}
             className="w-full bg-gradient-primary shadow-elegant rounded-xl"
           >
-            {saving ? "Salvando…" : "Salvar alterações"}
+            {saving ? t("companySettingsCard.saving") : t("companySettingsCard.saveButton")}
           </Button>
         </div>
       )}

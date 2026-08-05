@@ -1,0 +1,43 @@
+{
+  "planos": {
+    "unlimitedSuffix": "Unlimited {{suffix}}",
+    "upToSuffix": "Up to {{n}} {{suffix}}",
+    "title": "Plans",
+    "subtitle": "Choose the ideal plan for your salon",
+    "unavailable": "This plan is not yet available for subscription.",
+    "checkoutStartError": "Could not start checkout. Please try again.",
+    "checkoutOpenError": "Could not open checkout. Please try again.",
+    "current": "Current",
+    "perMonth": "/month",
+    "perYear": "/year",
+    "professionals": "professionals",
+    "appointmentsPerMonth": "appointments/month",
+    "services": "services",
+    "publicBookingPage": "Public booking page",
+    "emailNotifications": "Email notifications",
+    "advancedReports": "Advanced reports",
+    "noLovableBranding": "No Lovable branding",
+    "currentPlan": "Current plan",
+    "openingCheckout": "Opening checkout…",
+    "subscribe": "Subscribe"
+  },
+  "success": {
+    "title": "Payment confirmed!",
+    "description": "Your subscription is being activated. It may take a few seconds for the new plan to appear on your dashboard.",
+    "backToDashboard": "Back to dashboard"
+  },
+  "canceled": {
+    "title": "Payment canceled",
+    "description": "No charge was made. You can try again whenever you'd like.",
+    "back": "Back",
+    "viewPlans": "View plans"
+  },
+  "trialBanner": {
+    "expired": "Your trial period has ended. The account is in read-only mode.",
+    "subscribeNow": "Subscribe now",
+    "endsToday": "Your trial ends today.",
+    "daysLeft_one": "{{count}} day left in your free trial.",
+    "daysLeft_other": "{{count}} days left in your free trial.",
+    "viewPlans": "View plans"
+  }
+}

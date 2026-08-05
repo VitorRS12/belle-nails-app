@@ -1,7 +1,9 @@
 import { Link, Navigate } from "react-router-dom";
+import { useTranslation, Trans } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { Button } from "@/components/ui/button";
+import { LanguageToggle } from "@/components/LanguageToggle";
 import {
   Sparkles,
   CalendarDays,
@@ -22,127 +24,33 @@ import dashboardShot from "@/assets/screenshots/painel.png.asset.json";
 import agendaShot from "@/assets/screenshots/agenda.png.asset.json";
 import clientesShot from "@/assets/screenshots/clientes.png.asset.json";
 
-const plans = [
-  {
-    name: "Starter",
-    price: "R$ 30",
-    period: "/mês",
-    description: "Para profissionais autônomos.",
-    features: [
-      "1 profissional",
-      "Agendamentos ilimitados",
-      "Página pública de agendamento",
-      "Cadastro de clientes e serviços",
-    ],
-    cta: "Começar 30 dias grátis",
-  },
-  {
-    name: "Pro",
-    price: "R$ 49",
-    period: "/mês",
-    description: "Para pequenos estúdios.",
-    features: [
-      "Até 5 profissionais",
-      "Agendamentos ilimitados",
-      "Notificações automáticas por e-mail",
-      "Lembretes 24h antes",
-      "Relatórios e histórico",
-    ],
-    highlighted: true,
-    cta: "Começar 30 dias grátis",
-  },
-  {
-    name: "Business",
-    price: "R$ 99",
-    period: "/mês",
-    description: "Para estúdios em crescimento.",
-    features: [
-      "Profissionais ilimitados",
-      "Agendamentos ilimitados",
-      "Gestão de bloqueios e jornadas",
-      "Suporte prioritário",
-      "Recursos avançados",
-    ],
-    cta: "Começar 30 dias grátis",
-  },
-];
+const PLAN_KEYS = ["starter", "pro", "business"] as const;
+const PLAN_PRICES: Record<(typeof PLAN_KEYS)[number], string> = {
+  starter: "R$ 30",
+  pro: "R$ 49",
+  business: "R$ 99",
+};
 
-const features = [
-  {
-    icon: CalendarDays,
-    title: "Agendamento inteligente",
-    desc: "Sua cliente agenda online em poucos toques e recebe a confirmação por e-mail automaticamente.",
-  },
-  {
-    icon: Users,
-    title: "Gestão de profissionais",
-    desc: "Cada profissional controla a própria agenda e recebe as solicitações em tempo real.",
-  },
-  {
-    icon: ClipboardList,
-    title: "Agenda personalizável",
-    desc: "Defina o intervalo dos horários — 10, 15, 30, 60 minutos ou o tempo que fizer sentido para você.",
-  },
-  {
-    icon: LayoutDashboard,
-    title: "Comunicação automatizada",
-    desc: "E-mails automáticos para a cliente, para a profissional e para a proprietária a cada novo agendamento.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Dados protegidos",
-    desc: "Cada profissional só acessa as próprias clientes, com criptografia e segurança de ponta.",
-  },
-  {
-    icon: Sparkles,
-    title: "Pensado para o seu segmento",
-    desc: "Feito sob medida para manicure, design de cílios e sobrancelhas — sem configurações que você não precisa.",
-  },
-];
+const FEATURE_ICONS = [
+  CalendarDays,
+  Users,
+  ClipboardList,
+  LayoutDashboard,
+  ShieldCheck,
+  Sparkles,
+] as const;
+const FEATURE_KEYS = [
+  "smartScheduling",
+  "professionalManagement",
+  "customizableAgenda",
+  "automatedCommunication",
+  "protectedData",
+  "tailoredForSegment",
+] as const;
 
-const testimonials = [
-  {
-    quote:
-      "Minha agenda ficou impecável. As clientes agendam sozinhas e eu só preciso confirmar.",
-    name: "Ana Beatriz",
-    role: "Nail designer · São Paulo",
-  },
-  {
-    quote:
-      "Reduzi faltas em 70% depois que passei a mandar lembretes automáticos. Vale cada centavo.",
-    name: "Carolina Freitas",
-    role: "Estúdio de cílios · Rio de Janeiro",
-  },
-  {
-    quote:
-      "Simples e bonito. Minhas clientes elogiam sempre a página de agendamento.",
-    name: "Marina Souza",
-    role: "Design de sobrancelhas · Belo Horizonte",
-  },
-];
+const TESTIMONIAL_KEYS = ["ana", "carolina", "marina"] as const;
 
-const faqs = [
-  {
-    q: "Como funciona o teste grátis?",
-    a: "Você tem 30 dias completos para usar o Belle Nails sem custo algum. Não pedimos cartão para começar e você pode cancelar quando quiser durante o período.",
-  },
-  {
-    q: "Preciso instalar algo?",
-    a: "Não. O Belle Nails funciona direto no navegador do seu celular ou computador. Você também pode adicionar à tela inicial como um app.",
-  },
-  {
-    q: "As minhas clientes precisam criar conta?",
-    a: "Não. Elas agendam pela sua página pública informando apenas nome, contato e o serviço desejado.",
-  },
-  {
-    q: "Posso mudar de plano depois?",
-    a: "Sim. Você pode fazer upgrade ou downgrade a qualquer momento — o valor é ajustado proporcionalmente.",
-  },
-  {
-    q: "Como é feita a cobrança?",
-    a: "Os pagamentos são processados pela Paddle.com como Merchant of Record, com todas as garantias legais e reembolso em até 30 dias.",
-  },
-];
+const FAQ_KEYS = ["trial", "install", "clientAccount", "changePlan", "billing"] as const;
 
 const FaqItem = ({ q, a }: { q: string; a: string }) => {
   const [open, setOpen] = useState(false);
@@ -172,11 +80,11 @@ const FaqItem = ({ q, a }: { q: string; a: string }) => {
 
 const Landing = () => {
   const { session, loading } = useAuth();
+  const { t } = useTranslation("landing");
 
   usePageMeta({
-    title: "Belle Nails · A agenda elegante do seu salão",
-    description:
-      "Belle Nails — agenda online e gestão completa para manicures, designers de cílios e sobrancelhas. Página pública de agendamento, notificações automáticas e relatórios.",
+    title: t("meta.home.title"),
+    description: t("meta.home.description"),
     path: "/",
   });
 
@@ -203,16 +111,19 @@ const Landing = () => {
           <span className="font-display text-xl tracking-wide">Belle Nails</span>
         </div>
         <nav className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
-          <a href="#recursos" className="hover:text-foreground transition-smooth">Recursos</a>
-          <a href="#depoimentos" className="hover:text-foreground transition-smooth">Depoimentos</a>
-          <a href="#precos" className="hover:text-foreground transition-smooth">Preços</a>
-          <a href="#faq" className="hover:text-foreground transition-smooth">FAQ</a>
+          <a href="#recursos" className="hover:text-foreground transition-smooth">{t("nav.features")}</a>
+          <a href="#depoimentos" className="hover:text-foreground transition-smooth">{t("nav.testimonials")}</a>
+          <a href="#precos" className="hover:text-foreground transition-smooth">{t("nav.pricing")}</a>
+          <a href="#faq" className="hover:text-foreground transition-smooth">{t("nav.faq")}</a>
         </nav>
-        <Link to="/auth">
-          <Button variant="ghost" className="rounded-full">
-            Entrar
-          </Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          <LanguageToggle variant="full" />
+          <Link to="/auth">
+            <Button variant="ghost" className="rounded-full">
+              {t("nav.login")}
+            </Button>
+          </Link>
+        </div>
       </header>
 
       <main id="main" className="relative">
@@ -223,16 +134,16 @@ const Landing = () => {
             <div className="col-span-12 md:col-span-8 rounded-[2rem] border border-border/60 bg-card/70 backdrop-blur p-8 md:p-12 shadow-soft relative overflow-hidden">
               <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/70 px-3.5 py-1 text-[11px] uppercase tracking-[0.22em] text-muted-foreground mb-6">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                Para profissionais de beleza
+                {t("hero.badge")}
               </div>
               <h1 className="font-display text-5xl sm:text-6xl md:text-7xl leading-[1.02] tracking-tight">
-                A agenda
+                {t("hero.titleLine1")}
                 <br />
-                <em className="italic text-primary font-medium">elegante</em>{" "}
-                do seu salão.
+                <em className="italic text-primary font-medium">{t("hero.titleEmphasis")}</em>{" "}
+                {t("hero.titleLine2")}
               </h1>
               <p className="mt-6 max-w-lg text-base sm:text-lg text-muted-foreground leading-relaxed">
-                Receba clientes, organize horários e acompanhe seu negócio com um app feito sob medida para quem cuida da beleza.
+                {t("hero.description")}
               </p>
               <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-3">
                 <Link to="/auth">
@@ -240,12 +151,12 @@ const Landing = () => {
                     size="lg"
                     className="h-12 px-7 rounded-full bg-gradient-primary shadow-elegant gap-2 hover:scale-[1.02] transition-transform"
                   >
-                    Começar 30 dias grátis <ArrowRight className="h-4 w-4" />
+                    {t("hero.ctaStart")} <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
                 <a href="#recursos">
                   <Button size="lg" variant="ghost" className="h-12 px-6 rounded-full">
-                    Ver recursos
+                    {t("hero.ctaFeatures")}
                   </Button>
                 </a>
               </div>
@@ -260,7 +171,7 @@ const Landing = () => {
                   ))}
                 </div>
                 <span>
-                  <strong className="text-foreground">+120</strong> salões já usam
+                  <Trans t={t} i18nKey="hero.socialProof" components={{ strong: <strong className="text-foreground" /> }} />
                 </span>
                 <span className="hidden sm:flex items-center gap-1">
                   <Star className="h-3.5 w-3.5 fill-accent text-accent" />
@@ -268,7 +179,7 @@ const Landing = () => {
                   <Star className="h-3.5 w-3.5 fill-accent text-accent" />
                   <Star className="h-3.5 w-3.5 fill-accent text-accent" />
                   <Star className="h-3.5 w-3.5 fill-accent text-accent" />
-                  <span className="ml-1">4.9/5</span>
+                  <span className="ml-1">{t("hero.rating")}</span>
                 </span>
               </div>
               {/* petal ornament */}
@@ -280,7 +191,7 @@ const Landing = () => {
               <div className="h-full rounded-[calc(2rem-4px)] bg-card/95 overflow-hidden flex flex-col">
                 <div className="px-5 pt-5 pb-2 flex items-center justify-between">
                   <span className="text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
-                    Painel
+                    {t("hero.panelLabel")}
                   </span>
                   <span className="flex gap-1">
                     <span className="h-1.5 w-1.5 rounded-full bg-primary/60" />
@@ -290,7 +201,7 @@ const Landing = () => {
                 </div>
                 <img
                   src={dashboardShot.url}
-                  alt="Painel do Belle Nails"
+                  alt={t("hero.panelAlt")}
                   loading="lazy"
                   className="w-full flex-1 object-cover object-top"
                 />
@@ -304,7 +215,7 @@ const Landing = () => {
                 24/7
               </div>
               <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                Agendamento aberto o tempo todo, mesmo quando você dorme.
+                {t("hero.openAllTheTime")}
               </p>
             </div>
 
@@ -315,7 +226,7 @@ const Landing = () => {
                 −70%
               </div>
               <p className="mt-1 text-xs text-foreground/70 leading-relaxed">
-                de faltas com lembretes automáticos 24h antes.
+                {t("hero.noShowsReduction")}
               </p>
             </div>
 
@@ -328,14 +239,14 @@ const Landing = () => {
                   ))}
                 </div>
                 <p className="font-display text-xl md:text-2xl italic leading-snug text-foreground">
-                  “Minhas clientes elogiam sempre a página de agendamento — parece um app de verdade.”
+                  “{t("heroTestimonial.quote")}”
                 </p>
               </div>
               <div className="mt-6 flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-gradient-primary" />
                 <div>
-                  <div className="text-sm font-medium">Marina Souza</div>
-                  <div className="text-xs text-muted-foreground">Design de sobrancelhas · BH</div>
+                  <div className="text-sm font-medium">{t("heroTestimonial.name")}</div>
+                  <div className="text-xs text-muted-foreground">{t("heroTestimonial.role")}</div>
                 </div>
               </div>
             </div>
@@ -346,10 +257,10 @@ const Landing = () => {
         <section className="max-w-6xl mx-auto px-6 pb-16">
           <div className="rounded-[2rem] border border-border/60 bg-card/60 backdrop-blur px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
-              { k: "+120", v: "salões atendidos" },
-              { k: "+18k", v: "agendamentos mensais" },
-              { k: "99,9%", v: "uptime da plataforma" },
-              { k: "30 dias", v: "de teste grátis" },
+              { k: "+120", v: t("trustedStrip.salons") },
+              { k: "+18k", v: t("trustedStrip.appointments") },
+              { k: "99,9%", v: t("trustedStrip.uptime") },
+              { k: "30 dias", v: t("trustedStrip.trial") },
             ].map((s) => (
               <div key={s.v}>
                 <div className="font-display text-3xl md:text-4xl text-primary tracking-tight">
@@ -367,12 +278,12 @@ const Landing = () => {
         <section id="recursos" className="max-w-6xl mx-auto px-6 pb-20">
           <div className="text-center mb-14">
             <p className="text-[11px] uppercase tracking-[0.28em] text-accent-foreground/80 mb-3">
-              Recursos
+              {t("features.eyebrow")}
             </p>
             <h2 className="font-display text-4xl sm:text-5xl tracking-tight">
-              Tudo o que seu salão precisa,
+              {t("features.titleLine1")}
               <br />
-              <em className="italic text-primary">nada que atrapalhe</em>.
+              <em className="italic text-primary">{t("features.titleEmphasis")}</em>.
             </h2>
           </div>
 
@@ -383,15 +294,15 @@ const Landing = () => {
                 <CalendarDays className="h-5 w-5 text-primary-foreground" />
               </div>
               <h3 className="font-display text-2xl md:text-3xl mb-2">
-                Agenda que parece um app de verdade
+                {t("features.bigCard.title")}
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed max-w-md">
-                Visualização semanal, conflitos evitados automaticamente, bloqueios de horário e jornadas por profissional.
+                {t("features.bigCard.desc")}
               </p>
               <div className="mt-6 rounded-2xl overflow-hidden border border-border/50 shadow-soft">
                 <img
                   src={agendaShot.url}
-                  alt="Agenda semanal"
+                  alt={t("screenshots.agenda")}
                   loading="lazy"
                   className="w-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
                 />
@@ -403,38 +314,41 @@ const Landing = () => {
               <article className="rounded-[2rem] border border-border/60 bg-gradient-gold shadow-gold p-8">
                 <Mail className="h-5 w-5 text-foreground/80 mb-4" />
                 <h3 className="font-display text-2xl mb-1.5 text-foreground">
-                  E-mails automáticos
+                  {t("features.autoEmails.title")}
                 </h3>
                 <p className="text-sm text-foreground/75 leading-relaxed">
-                  Confirmação, lembrete 24h antes e recados internos — enviados sem você mexer um dedo.
+                  {t("features.autoEmails.desc")}
                 </p>
               </article>
               <article className="rounded-[2rem] border border-border/60 bg-card/70 backdrop-blur p-8 shadow-soft">
                 <ShieldCheck className="h-5 w-5 text-primary mb-4" />
                 <h3 className="font-display text-2xl mb-1.5">
-                  Dados protegidos
+                  {t("features.protectedDataCard.title")}
                 </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Cada profissional só acessa as próprias clientes. Criptografia de ponta a ponta.
+                  {t("features.protectedDataCard.desc")}
                 </p>
               </article>
             </div>
 
             {/* Bottom row of smaller cards */}
-            {features.slice(1, 4).map(({ icon: Icon, title, desc }) => (
-              <article
-                key={title}
-                className="col-span-12 md:col-span-4 rounded-[2rem] border border-border/60 bg-card/70 backdrop-blur p-7 shadow-soft hover:shadow-elegant transition-smooth"
-              >
-                <div className="h-10 w-10 rounded-xl bg-accent-soft flex items-center justify-center mb-4">
-                  <Icon className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="font-display text-xl mb-1.5">{title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {desc}
-                </p>
-              </article>
-            ))}
+            {FEATURE_KEYS.slice(1, 4).map((key, idx) => {
+              const Icon = FEATURE_ICONS[idx + 1];
+              return (
+                <article
+                  key={key}
+                  className="col-span-12 md:col-span-4 rounded-[2rem] border border-border/60 bg-card/70 backdrop-blur p-7 shadow-soft hover:shadow-elegant transition-smooth"
+                >
+                  <div className="h-10 w-10 rounded-xl bg-accent-soft flex items-center justify-center mb-4">
+                    <Icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="font-display text-xl mb-1.5">{t(`features.${key}.title`)}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {t(`features.${key}.desc`)}
+                  </p>
+                </article>
+              );
+            })}
           </div>
         </section>
 
@@ -442,25 +356,25 @@ const Landing = () => {
         <section className="max-w-6xl mx-auto px-6 pb-24">
           <div className="text-center mb-12">
             <p className="text-[11px] uppercase tracking-[0.28em] text-accent-foreground/80 mb-3">
-              Veja por dentro
+              {t("screenshots.eyebrow")}
             </p>
             <h2 className="font-display text-4xl sm:text-5xl tracking-tight">
-              Uma interface pensada
+              {t("screenshots.titleLine1")}
               <br />
-              <em className="italic text-primary">nos mínimos detalhes</em>.
+              <em className="italic text-primary">{t("screenshots.titleEmphasis")}</em>.
             </h2>
           </div>
           <div className="grid sm:grid-cols-3 gap-5">
             {[
-              { src: dashboardShot.url, label: "Painel", alt: "Painel" },
-              { src: agendaShot.url, label: "Agenda", alt: "Agenda" },
-              { src: clientesShot.url, label: "Clientes", alt: "Clientes" },
-            ].map(({ src, alt, label }) => (
+              { src: dashboardShot.url, label: t("screenshots.panel") },
+              { src: agendaShot.url, label: t("screenshots.agenda") },
+              { src: clientesShot.url, label: t("screenshots.clients") },
+            ].map(({ src, label }) => (
               <div key={label} className="group">
                 <div className="rounded-3xl border border-border/60 bg-card/60 backdrop-blur overflow-hidden shadow-soft hover:shadow-elegant transition-smooth">
                   <img
                     src={src}
-                    alt={alt}
+                    alt={label}
                     loading="lazy"
                     className="w-full h-auto object-contain group-hover:scale-[1.03] transition-transform duration-500"
                   />
@@ -477,17 +391,17 @@ const Landing = () => {
         <section id="depoimentos" className="max-w-6xl mx-auto px-6 pb-24">
           <div className="text-center mb-12">
             <p className="text-[11px] uppercase tracking-[0.28em] text-accent-foreground/80 mb-3">
-              Depoimentos
+              {t("testimonials.eyebrow")}
             </p>
             <h2 className="font-display text-4xl sm:text-5xl tracking-tight">
-              Quem usa,
-              <em className="italic text-primary"> ama</em>.
+              {t("testimonials.titleLine1")}
+              <em className="italic text-primary"> {t("testimonials.titleEmphasis")}</em>.
             </h2>
           </div>
           <div className="grid md:grid-cols-3 gap-5">
-            {testimonials.map((t) => (
+            {TESTIMONIAL_KEYS.map((key) => (
               <div
-                key={t.name}
+                key={key}
                 className="rounded-[2rem] border border-border/60 bg-card/70 backdrop-blur p-7 shadow-soft"
               >
                 <div className="flex gap-0.5 mb-4">
@@ -496,13 +410,13 @@ const Landing = () => {
                   ))}
                 </div>
                 <p className="font-display text-lg italic leading-snug text-foreground">
-                  “{t.quote}”
+                  “{t(`testimonials.items.${key}.quote`)}”
                 </p>
                 <div className="mt-6 flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-gradient-primary" />
                   <div>
-                    <div className="text-sm font-medium">{t.name}</div>
-                    <div className="text-xs text-muted-foreground">{t.role}</div>
+                    <div className="text-sm font-medium">{t(`testimonials.items.${key}.name`)}</div>
+                    <div className="text-xs text-muted-foreground">{t(`testimonials.items.${key}.role`)}</div>
                   </div>
                 </div>
               </div>
@@ -514,83 +428,89 @@ const Landing = () => {
         <section id="precos" className="max-w-6xl mx-auto px-6 pb-24">
           <div className="text-center mb-14">
             <p className="text-[11px] uppercase tracking-[0.28em] text-accent-foreground/80 mb-3">
-              Planos e preços
+              {t("pricing.eyebrow")}
             </p>
             <h2 className="font-display text-4xl sm:text-5xl tracking-tight">
-              Escolha o plano <em className="italic text-primary">ideal</em>{" "}
-              para você.
+              {t("pricing.titleLine1")} <em className="italic text-primary">{t("pricing.titleEmphasis")}</em>{" "}
+              {t("pricing.titleLine2")}
             </h2>
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
-              Todos os planos incluem{" "}
-              <strong className="text-foreground">30 dias de teste grátis</strong>. Sem compromisso — cancele quando quiser durante o período.
+              <Trans t={t} i18nKey="pricing.subtitle" components={{ strong: <strong className="text-foreground" /> }} />
             </p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
-            {plans.map((p) => (
-              <div
-                key={p.name}
-                className={`rounded-[2rem] border p-8 flex flex-col backdrop-blur transition-smooth ${
-                  p.highlighted
-                    ? "border-primary/60 bg-card shadow-elegant md:scale-[1.04] relative"
-                    : "border-border/60 bg-card/70 hover:shadow-soft"
-                }`}
-              >
-                {p.highlighted && (
-                  <span className="self-start mb-4 text-[11px] uppercase tracking-[0.18em] font-semibold px-3 py-1 rounded-full bg-gradient-gold text-foreground/80 shadow-gold">
-                    Mais popular
-                  </span>
-                )}
-                <h3 className="font-display text-3xl">{p.name}</h3>
-                <p className="text-sm text-muted-foreground mt-1.5">
-                  {p.description}
-                </p>
-                <div className="mt-6 flex items-baseline gap-1.5">
-                  <span className="font-display text-5xl tracking-tight">
-                    {p.price}
-                  </span>
-                  <span className="text-muted-foreground">{p.period}</span>
-                </div>
-                <ul className="mt-7 space-y-3 flex-1">
-                  {p.features.map((f) => (
-                    <li
-                      key={f}
-                      className="flex items-start gap-2.5 text-sm text-foreground/85"
+            {PLAN_KEYS.map((key) => {
+              const highlighted = key === "pro";
+              const featureKeys = Object.keys(
+                t(`pricing.plans.${key}.features`, { returnObjects: true }) as Record<string, string>,
+              );
+              return (
+                <div
+                  key={key}
+                  className={`rounded-[2rem] border p-8 flex flex-col backdrop-blur transition-smooth ${
+                    highlighted
+                      ? "border-primary/60 bg-card shadow-elegant md:scale-[1.04] relative"
+                      : "border-border/60 bg-card/70 hover:shadow-soft"
+                  }`}
+                >
+                  {highlighted && (
+                    <span className="self-start mb-4 text-[11px] uppercase tracking-[0.18em] font-semibold px-3 py-1 rounded-full bg-gradient-gold text-foreground/80 shadow-gold">
+                      {t("pricing.popular")}
+                    </span>
+                  )}
+                  <h3 className="font-display text-3xl">{t(`pricing.plans.${key}.name`)}</h3>
+                  <p className="text-sm text-muted-foreground mt-1.5">
+                    {t(`pricing.plans.${key}.description`)}
+                  </p>
+                  <div className="mt-6 flex items-baseline gap-1.5">
+                    <span className="font-display text-5xl tracking-tight">
+                      {PLAN_PRICES[key]}
+                    </span>
+                    <span className="text-muted-foreground">/mês</span>
+                  </div>
+                  <ul className="mt-7 space-y-3 flex-1">
+                    {featureKeys.map((fk) => (
+                      <li
+                        key={fk}
+                        className="flex items-start gap-2.5 text-sm text-foreground/85"
+                      >
+                        <Check className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+                        <span>{t(`pricing.plans.${key}.features.${fk}`)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link to="/auth" className="mt-8 block">
+                    <Button
+                      size="lg"
+                      className={`w-full h-12 rounded-full ${
+                        highlighted ? "bg-gradient-primary shadow-elegant" : ""
+                      }`}
+                      variant={highlighted ? "default" : "outline"}
                     >
-                      <Check className="h-4 w-4 mt-0.5 text-primary shrink-0" />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link to="/auth" className="mt-8 block">
-                  <Button
-                    size="lg"
-                    className={`w-full h-12 rounded-full ${
-                      p.highlighted ? "bg-gradient-primary shadow-elegant" : ""
-                    }`}
-                    variant={p.highlighted ? "default" : "outline"}
-                  >
-                    {p.cta}
-                  </Button>
-                </Link>
-              </div>
-            ))}
+                      {t("pricing.plans.cta")}
+                    </Button>
+                  </Link>
+                </div>
+              );
+            })}
           </div>
 
           <p className="text-center text-xs text-muted-foreground mt-10">
-            Pagamentos processados pela Paddle.com (Merchant of Record). Veja nossa{" "}
-            <Link to="/reembolso" className="underline hover:text-foreground">
-              Política de Reembolso
-            </Link>
-            ,{" "}
-            <Link to="/privacidade" className="underline hover:text-foreground">
-              Privacidade
-            </Link>{" "}
-            e{" "}
-            <Link to="/termos" className="underline hover:text-foreground">
-              Termos de Uso
-            </Link>
-            .
+            <Trans
+              t={t}
+              i18nKey="pricing.footer"
+              components={{
+                refund: <Link to="/reembolso" className="underline hover:text-foreground" />,
+                privacy: <Link to="/privacidade" className="underline hover:text-foreground" />,
+                terms: <Link to="/termos" className="underline hover:text-foreground" />,
+              }}
+              values={{
+                refund: t("pricing.refundPolicy"),
+                privacy: t("pricing.privacyPolicy"),
+                terms: t("pricing.termsOfUse"),
+              }}
+            />
           </p>
         </section>
 
@@ -598,15 +518,15 @@ const Landing = () => {
         <section id="faq" className="max-w-3xl mx-auto px-6 pb-24">
           <div className="text-center mb-12">
             <p className="text-[11px] uppercase tracking-[0.28em] text-accent-foreground/80 mb-3">
-              Perguntas frequentes
+              {t("faq.eyebrow")}
             </p>
             <h2 className="font-display text-4xl sm:text-5xl tracking-tight">
-              A gente <em className="italic text-primary">responde</em>.
+              {t("faq.titleLine1")} <em className="italic text-primary">{t("faq.titleEmphasis")}</em>.
             </h2>
           </div>
           <div className="space-y-3">
-            {faqs.map((f) => (
-              <FaqItem key={f.q} q={f.q} a={f.a} />
+            {FAQ_KEYS.map((key) => (
+              <FaqItem key={key} q={t(`faq.items.${key}.q`)} a={t(`faq.items.${key}.a`)} />
             ))}
           </div>
         </section>
@@ -617,11 +537,11 @@ const Landing = () => {
             <Sparkles className="absolute top-8 left-8 h-10 w-10 text-primary-foreground/20" />
             <Sparkles className="absolute bottom-8 right-8 h-14 w-14 text-primary-foreground/20" />
             <h3 className="font-display text-4xl sm:text-5xl tracking-tight text-primary-foreground">
-              Pronta para encantar{" "}
-              <em className="italic">suas clientes?</em>
+              {t("finalCta.titleLine1")}{" "}
+              <em className="italic">{t("finalCta.titleEmphasis")}</em>
             </h3>
             <p className="mt-4 text-primary-foreground/85 max-w-md mx-auto">
-              Crie sua conta gratuitamente e comece a organizar sua agenda em minutos.
+              {t("finalCta.description")}
             </p>
             <Link to="/auth" className="inline-block mt-8">
               <Button
@@ -629,7 +549,7 @@ const Landing = () => {
                 variant="secondary"
                 className="h-12 px-8 rounded-full gap-2 hover:scale-[1.03] transition-transform"
               >
-                Começar 30 dias grátis <ArrowRight className="h-4 w-4" />
+                {t("finalCta.cta")} <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
           </div>
@@ -644,12 +564,12 @@ const Landing = () => {
           <span className="font-display text-base tracking-wide text-foreground">Belle Nails</span>
         </div>
         <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-          <Link to="/precos" className="hover:text-foreground transition-smooth">Preços</Link>
-          <Link to="/termos" className="hover:text-foreground transition-smooth">Termos de Uso</Link>
-          <Link to="/privacidade" className="hover:text-foreground transition-smooth">Privacidade</Link>
-          <Link to="/reembolso" className="hover:text-foreground transition-smooth">Reembolso</Link>
+          <Link to="/precos" className="hover:text-foreground transition-smooth">{t("footer.pricing")}</Link>
+          <Link to="/termos" className="hover:text-foreground transition-smooth">{t("footer.terms")}</Link>
+          <Link to="/privacidade" className="hover:text-foreground transition-smooth">{t("footer.privacy")}</Link>
+          <Link to="/reembolso" className="hover:text-foreground transition-smooth">{t("footer.refund")}</Link>
         </nav>
-        <div>© {new Date().getFullYear()} Belle Nails · Feito com carinho.</div>
+        <div>{t("footer.copyright", { year: new Date().getFullYear() })}</div>
       </footer>
     </div>
   );

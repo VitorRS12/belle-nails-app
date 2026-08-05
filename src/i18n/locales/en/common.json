@@ -1,0 +1,232 @@
+{
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "close": "Close",
+    "confirm": "Confirm",
+    "loading": "Loading…",
+    "search": "Search",
+    "back": "Back"
+  },
+  "language": {
+    "change": "Change language"
+  },
+  "appSidebar": {
+    "brand": "Belle Nails",
+    "panel": "Dashboard",
+    "navigation": "Navigation",
+    "nav": {
+      "dashboard": "Dashboard",
+      "inicio": "Home",
+      "agenda": "Calendar",
+      "clientes": "Clients",
+      "atendimentos": "History",
+      "servicos": "Services",
+      "configuracoes": "Settings"
+    }
+  },
+  "bottomNav": {
+    "dashboard": "Dashboard",
+    "inicio": "Home",
+    "agenda": "Calendar",
+    "clientes": "Clients",
+    "atendimentos": "History",
+    "configuracoes": "Settings"
+  },
+  "breadcrumbs": {
+    "ariaLabel": "breadcrumb",
+    "labels": {
+      "inicio": "Home",
+      "dashboard": "Dashboard",
+      "agenda": "Calendar",
+      "clientes": "Clients",
+      "atendimentos": "History",
+      "configuracoes": "Settings",
+      "relatorio": "Report"
+    }
+  },
+  "appointmentCard": {
+    "status": {
+      "scheduled": "Scheduled",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "pendente_confirmacao": "Awaiting confirmation"
+    },
+    "confirmRemove": "Remove this appointment?",
+    "removed": "Removed",
+    "confirmCancel": "Cancel this service?",
+    "cancelled": "Appointment cancelled",
+    "completed": "Marked as completed ✨",
+    "rescheduled": "Rescheduled!",
+    "confirmed": "Appointment confirmed",
+    "extraPrefix": "+R$ {{value}}",
+    "materialQuantity": "{{name}} · {{quantity}}",
+    "confirm": "Confirm",
+    "complete": "Complete",
+    "postpone": "Postpone",
+    "cancel": "Cancel",
+    "reschedule": {
+      "title": "Postpone / Reschedule",
+      "description": "Choose the new date and time.",
+      "date": "Date",
+      "time": "Time",
+      "confirmButton": "Confirm new time"
+    },
+    "complete_dialog": {
+      "title": "Complete appointment",
+      "extraValue": "Extra amount (optional)",
+      "extraValuePlaceholder": "0.00",
+      "extraReason": "Reason for extra amount",
+      "extraReasonPlaceholder": "E.g.: special decoration, additional extension…",
+      "totalLabel": "Final total",
+      "confirmButton": "Confirm completion"
+    }
+  },
+  "appointmentForm": {
+    "title": {
+      "edit": "Edit appointment",
+      "new": "New appointment"
+    },
+    "readOnlyError": "Your trial has expired. Subscribe to a plan to keep creating appointments.",
+    "errors": {
+      "customServiceName": "Enter the service name",
+      "selectOrCreateClient": "Select or add a client",
+      "addService": "Add at least one service"
+    },
+    "customServiceSaved": "Service saved to your list ✨",
+    "saved": {
+      "updated": "Updated!",
+      "created": "Saved with care ✨"
+    },
+    "client": "Client",
+    "selectClient": "Select a client",
+    "newClientPlaceholder": "or add new",
+    "newClientNameOnlyPlaceholder": "Client name",
+    "date": "Date",
+    "time": "Time",
+    "professional": "Professional",
+    "selectProfessional": "Select a professional",
+    "services": "Services",
+    "addFromList": "Add service from list",
+    "myServices": "⭐ My services",
+    "customServiceHint": "Create a custom service (saved to your list)",
+    "customServiceNamePlaceholder": "Service name",
+    "customServicePricePlaceholder": "$0.00",
+    "addAndSave": "Add and save",
+    "total": "Total",
+    "materials": "Materials used",
+    "materialNamePlaceholder": "Name",
+    "materialQtyPlaceholder": "Qty",
+    "materialQuantity": "{{name}} · {{quantity}}",
+    "notes": "Notes",
+    "notesPlaceholder": "Details, preferences...",
+    "status": "Status",
+    "statusOptions": {
+      "scheduled": "Scheduled",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "submit": "Save"
+  },
+  "companySettingsCard": {
+    "title": "My business",
+    "description": "This information will appear on your public booking page.",
+    "loading": "Loading…",
+    "name": "Name",
+    "namePlaceholder": "Your business name",
+    "intervalLabel": "Calendar interval",
+    "intervalMinutes": "{{count}} minutes",
+    "intervalCustom": "Custom…",
+    "intervalCustomPlaceholder": "Minutes (between 5 and 240)",
+    "intervalHint": "Sets how often calendar time slots are generated.",
+    "remindersLabel": "Automatic reminders",
+    "reminderOptions": {
+      "1": "1h before",
+      "2": "2h before",
+      "6": "6h before",
+      "12": "12h before",
+      "24": "24h before",
+      "48": "48h before"
+    },
+    "remindersHint": "Choose when to send email reminders before the appointment. Select one or more times — leave empty to disable.",
+    "publicLink": "Public link",
+    "publicLinkHint": "Share this link so your clients can book online.",
+    "saveButton": "Save changes",
+    "saving": "Saving…"
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "description": "We had a problem loading this screen. Please try again.",
+    "backHome": "Back to home"
+  },
+  "installAppCard": {
+    "installedToast": "App installed successfully!",
+    "browserMenuHint": "Use your browser menu (⋮) and tap \"Install app\" or \"Add to Home screen\".",
+    "installedTitle": "App installed",
+    "title": "Install Belle Nails",
+    "installedDescription": "You're already using the installed version — quick access from your home screen.",
+    "description": "Get direct access from your phone's home screen, with faster launch and no need for the browser.",
+    "howToInstall": "How to install",
+    "installNow": "Install now",
+    "browserFallbackHint": "Use the browser menu if the button doesn't open the prompt.",
+    "iosSteps": {
+      "step1": "Tap the share icon in Safari.",
+      "step2": "Scroll and choose **Add to Home Screen**.",
+      "step3": "Confirm by tapping **Add** in the top right corner."
+    }
+  },
+  "installAppPrompt": {
+    "title": "Install Belle Nails",
+    "descriptionDeferred": "Get quick access straight from your home screen, even without internet.",
+    "descriptionIOS": "Tap share and then \"Add to Home Screen\".",
+    "installNow": "Install now",
+    "dismiss": "Dismiss"
+  },
+  "offlineIndicator": {
+    "offline": "Offline",
+    "online": "Online",
+    "syncingPending_one": "{{count}} pending",
+    "syncingPending_other": "{{count}} pending"
+  },
+  "paymentTestModeBanner": {
+    "message": "Preview payments are in test mode — no real charges are made."
+  },
+  "relatorio": {
+    "selectMonth": "Select the month",
+    "noCompleted": "No completed appointments this month.",
+    "pdf": {
+      "brand": "Belle Nails",
+      "subtitle": "Monthly report",
+      "summaryTitle": "Month summary",
+      "revenue": "REVENUE",
+      "appointments": "APPOINTMENTS",
+      "highlightsTitle": "Highlights",
+      "topService": "MOST PERFORMED SERVICE",
+      "topClient": "CLIENT WHO BOOKED THIS SERVICE MOST",
+      "servicesTitle": "Services performed",
+      "tableHead": {
+        "date": "Date",
+        "time": "Time",
+        "client": "Client",
+        "service": "Service",
+        "value": "Value"
+      },
+      "total": "Total"
+    },
+    "pdfGenerated": "PDF generated!",
+    "revenue": "Revenue",
+    "appointments": "Appointments",
+    "topServiceLabel": "Most performed service",
+    "timesInMonth": "{{count}}x this month",
+    "topClientLabel": "Client who did this service the most",
+    "timesWithService": "{{count}}x · {{service}}",
+    "generatePdf": "Generate monthly PDF"
+  },
+  "themeToggle": {
+    "toLight": "Switch to light mode",
+    "toDark": "Switch to dark mode"
+  }
+}

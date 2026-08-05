@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Download, Share, Smartphone, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
@@ -32,6 +33,7 @@ function detectPlatform(): "ios" | "android" | "desktop" {
  * - Already installed: shows confirmation state
  */
 export function InstallAppCard() {
+  const { t } = useTranslation("common");
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [installed, setInstalled] = useState(() => isStandalone());
   const [showIOSHelp, setShowIOSHelp] = useState(false);
@@ -45,7 +47,7 @@ export function InstallAppCard() {
     const onInstalled = () => {
       setInstalled(true);
       setDeferred(null);
-      toast.success("App instalado com sucesso!");
+      toast.success(t("installAppCard.installedToast"));
     };
     window.addEventListener("beforeinstallprompt", handler);
     window.addEventListener("appinstalled", onInstalled);
@@ -69,10 +71,7 @@ export function InstallAppCard() {
       setShowIOSHelp((v) => !v);
       return;
     }
-    toast.info(
-      "Use o menu do seu navegador (⋮) e toque em \"Instalar app\" ou \"Adicionar à tela inicial\".",
-      { duration: 6000 },
-    );
+    toast.info(t("installAppCard.browserMenuHint"), { duration: 6000 });
   }
 
   return (
@@ -89,23 +88,23 @@ export function InstallAppCard() {
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="font-display text-lg leading-tight">
-            {installed ? "App instalado" : "Instalar o Belle Nails"}
+            {installed ? t("installAppCard.installedTitle") : t("installAppCard.title")}
           </h3>
           <p className="text-xs text-muted-foreground mt-0.5">
             {installed
-              ? "Você já está usando a versão instalada — acesso rápido pela tela inicial."
-              : "Tenha acesso direto pela tela inicial do celular, com abertura mais rápida e sem precisar do navegador."}
+              ? t("installAppCard.installedDescription")
+              : t("installAppCard.description")}
           </p>
 
           {!installed && (
             <div className="mt-3 flex flex-wrap gap-2">
               <Button size="sm" onClick={install} className="rounded-full">
                 <Download className="h-4 w-4 mr-1.5" />
-                {platform === "ios" ? "Como instalar" : "Instalar agora"}
+                {platform === "ios" ? t("installAppCard.howToInstall") : t("installAppCard.installNow")}
               </Button>
               {platform !== "ios" && !deferred && (
                 <span className="text-[11px] text-muted-foreground self-center">
-                  Use o menu do navegador se o botão não abrir o prompt.
+                  {t("installAppCard.browserFallbackHint")}
                 </span>
               )}
             </div>
@@ -114,11 +113,10 @@ export function InstallAppCard() {
           {!installed && (platform === "ios" || showIOSHelp) && (
             <ol className="mt-3 space-y-1.5 text-xs text-muted-foreground list-decimal pl-4">
               <li>
-                Toque no ícone <Share className="inline h-3.5 w-3.5 mx-0.5 align-text-bottom" /> de
-                compartilhar no Safari.
+                <Share className="inline h-3.5 w-3.5 mx-0.5 align-text-bottom" /> {t("installAppCard.iosSteps.step1")}
               </li>
-              <li>Role e escolha <strong>Adicionar à Tela de Início</strong>.</li>
-              <li>Confirme em <strong>Adicionar</strong> no canto superior direito.</li>
+              <li>{t("installAppCard.iosSteps.step2")}</li>
+              <li>{t("installAppCard.iosSteps.step3")}</li>
             </ol>
           )}
         </div>

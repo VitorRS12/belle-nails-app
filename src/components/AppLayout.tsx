@@ -59,7 +59,9 @@ export function AppLayout({ title, subtitle, action, children, wide }: Props) {
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
                 <OfflineIndicator />
+                <LanguageToggle />
                 {action}
+
               </div>
             </header>
             <div className="md:hidden px-5 pb-2 overflow-x-auto">

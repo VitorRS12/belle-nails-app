@@ -20,8 +20,9 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { format, parseISO } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { ptBR, enUS } from "date-fns/locale";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 const statusVariant: Record<string, string> = {
   active: "bg-primary/10 text-primary",
@@ -32,24 +33,26 @@ const statusVariant: Record<string, string> = {
 };
 
 const AdminCompanies = () => {
+  const { t, i18n } = useTranslation("admin");
   const { data: companies, isLoading } = useAdminCompanies();
   const { data: plans } = usePlans();
   const changePlan = useChangeCompanyPlan();
   const [editing, setEditing] = useState<{ companyId: string; planId: string } | null>(null);
+  const dateLocale = i18n.resolvedLanguage?.startsWith("en") ? enUS : ptBR;
 
   const handleSave = async () => {
     if (!editing) return;
     try {
       await changePlan.mutateAsync(editing);
-      toast.success("Plano atualizado");
+      toast.success(t("companies.planUpdated"));
       setEditing(null);
     } catch {
-      toast.error("Não foi possível atualizar");
+      toast.error(t("companies.planUpdateError"));
     }
   };
 
   return (
-    <AdminLayout title="Empresas" subtitle="Todas as empresas cadastradas na plataforma">
+    <AdminLayout title={t("companies.title")} subtitle={t("companies.subtitle")}>
       {isLoading ? (
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -58,16 +61,16 @@ const AdminCompanies = () => {
         </div>
       ) : !companies || companies.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-12">
-          Nenhuma empresa cadastrada ainda.
+          {t("companies.empty")}
         </p>
       ) : (
         <div className="rounded-2xl border border-border/60 bg-card shadow-soft overflow-hidden">
           <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_1fr_1fr_auto] gap-3 px-4 py-3 border-b border-border/60 text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
-            <span>Empresa</span>
-            <span>Plano</span>
-            <span>Status</span>
-            <span className="text-right">Profissionais</span>
-            <span className="text-right">Agend./mês</span>
+            <span>{t("companies.table.company")}</span>
+            <span>{t("companies.table.plan")}</span>
+            <span>{t("companies.table.status")}</span>
+            <span className="text-right">{t("companies.table.professionals")}</span>
+            <span className="text-right">{t("companies.table.appointmentsPerMonth")}</span>
             <span></span>
           </div>
           <ul className="divide-y divide-border/60">
@@ -79,8 +82,9 @@ const AdminCompanies = () => {
                 <div className="min-w-0">
                   <p className="font-medium truncate">{c.name}</p>
                   <p className="text-xs text-muted-foreground truncate">
-                    /b/{c.slug} · criada{" "}
-                    {format(parseISO(c.created_at), "dd MMM yyyy", { locale: ptBR })}
+                    /b/{c.slug} · {t("companies.createdOn", {
+                      date: format(parseISO(c.created_at), "dd MMM yyyy", { locale: dateLocale }),
+                    })}
                   </p>
                 </div>
                 <span className="text-sm">{c.plan_name ?? "—"}</span>
@@ -106,7 +110,7 @@ const AdminCompanies = () => {
                     setEditing({ companyId: c.id, planId: c.plan_id ?? "" })
                   }
                 >
-                  Mudar plano
+                  {t("companies.changePlan")}
                 </Button>
               </li>
             ))}
@@ -117,10 +121,9 @@ const AdminCompanies = () => {
       <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>Alterar plano</DialogTitle>
+            <DialogTitle>{t("companies.dialog.title")}</DialogTitle>
             <DialogDescription>
-              A mudança é aplicada imediatamente. Use com cautela — em produção, prefira que
-              a empresa troque o plano pelo Stripe.
+              {t("companies.dialog.description")}
             </DialogDescription>
           </DialogHeader>
           <Select
@@ -130,7 +133,7 @@ const AdminCompanies = () => {
             }
           >
             <SelectTrigger>
-              <SelectValue placeholder="Selecione o plano" />
+              <SelectValue placeholder={t("companies.dialog.selectPlaceholder")} />
             </SelectTrigger>
             <SelectContent>
               {(plans ?? []).map((p) => (
@@ -140,7 +143,7 @@ const AdminCompanies = () => {
                     style: "currency",
                     currency: p.currency,
                   })}
-                  /mês
+                  {t("companies.dialog.perMonth")}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -150,7 +153,7 @@ const AdminCompanies = () => {
             disabled={!editing?.planId || changePlan.isPending}
             className="bg-gradient-primary"
           >
-            Salvar
+            {t("companies.dialog.save")}
           </Button>
         </DialogContent>
       </Dialog>

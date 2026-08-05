@@ -1,1 +1,212 @@
-{}
+{
+  "meta": {
+    "home": {
+      "title": "Belle Nails · A agenda elegante do seu salão",
+      "description": "Belle Nails — agenda online e gestão completa para manicures, designers de cílios e sobrancelhas. Página pública de agendamento, notificações automáticas e relatórios."
+    },
+    "pricing": {
+      "title": "Preços e planos · Belle Nails",
+      "description": "Planos Starter (R$30), Pro (R$49) e Business da Belle Nails. Todos com 30 dias de teste grátis e pagamento via Paddle."
+    }
+  },
+  "nav": {
+    "features": "Recursos",
+    "testimonials": "Depoimentos",
+    "pricing": "Preços",
+    "faq": "FAQ",
+    "login": "Entrar",
+    "back": "Voltar"
+  },
+  "hero": {
+    "badge": "Para profissionais de beleza",
+    "titleLine1": "A agenda",
+    "titleEmphasis": "elegante",
+    "titleLine2": "do seu salão.",
+    "description": "Receba clientes, organize horários e acompanhe seu negócio com um app feito sob medida para quem cuida da beleza.",
+    "ctaStart": "Começar 30 dias grátis",
+    "ctaFeatures": "Ver recursos",
+    "socialProof": "<strong>+120</strong> salões já usam",
+    "rating": "4.9/5",
+    "panelLabel": "Painel",
+    "panelAlt": "Painel do Belle Nails"
+  },
+  "trustedStrip": {
+    "salons": "salões atendidos",
+    "appointments": "agendamentos mensais",
+    "uptime": "uptime da plataforma",
+    "trial": "de teste grátis"
+  },
+  "heroTestimonial": {
+    "quote": "Minhas clientes elogiam sempre a página de agendamento — parece um app de verdade.",
+    "name": "Marina Souza",
+    "role": "Design de sobrancelhas · BH"
+  },
+  "features": {
+    "eyebrow": "Recursos",
+    "titleLine1": "Tudo o que seu salão precisa,",
+    "titleEmphasis": "nada que atrapalhe",
+    "smartScheduling": {
+      "title": "Agendamento inteligente",
+      "desc": "Sua cliente agenda online em poucos toques e recebe a confirmação por e-mail automaticamente."
+    },
+    "professionalManagement": {
+      "title": "Gestão de profissionais",
+      "desc": "Cada profissional controla a própria agenda e recebe as solicitações em tempo real."
+    },
+    "customizableAgenda": {
+      "title": "Agenda personalizável",
+      "desc": "Defina o intervalo dos horários — 10, 15, 30, 60 minutos ou o tempo que fizer sentido para você."
+    },
+    "automatedCommunication": {
+      "title": "Comunicação automatizada",
+      "desc": "E-mails automáticos para a cliente, para a profissional e para a proprietária a cada novo agendamento."
+    },
+    "protectedData": {
+      "title": "Dados protegidos",
+      "desc": "Cada profissional só acessa as próprias clientes, com criptografia e segurança de ponta."
+    },
+    "tailoredForSegment": {
+      "title": "Pensado para o seu segmento",
+      "desc": "Feito sob medida para manicure, design de cílios e sobrancelhas — sem configurações que você não precisa."
+    },
+    "bigCard": {
+      "title": "Agenda que parece um app de verdade",
+      "desc": "Visualização semanal, conflitos evitados automaticamente, bloqueios de horário e jornadas por profissional."
+    },
+    "autoEmails": {
+      "title": "E-mails automáticos",
+      "desc": "Confirmação, lembrete 24h antes e recados internos — enviados sem você mexer um dedo."
+    },
+    "protectedDataCard": {
+      "title": "Dados protegidos",
+      "desc": "Cada profissional só acessa as próprias clientes. Criptografia de ponta a ponta."
+    }
+  },
+  "screenshots": {
+    "eyebrow": "Veja por dentro",
+    "titleLine1": "Uma interface pensada",
+    "titleEmphasis": "nos mínimos detalhes",
+    "panel": "Painel",
+    "agenda": "Agenda",
+    "clients": "Clientes"
+  },
+  "testimonials": {
+    "eyebrow": "Depoimentos",
+    "titleLine1": "Quem usa,",
+    "titleEmphasis": "ama",
+    "items": {
+      "ana": {
+        "quote": "Minha agenda ficou impecável. As clientes agendam sozinhas e eu só preciso confirmar.",
+        "name": "Ana Beatriz",
+        "role": "Nail designer · São Paulo"
+      },
+      "carolina": {
+        "quote": "Reduzi faltas em 70% depois que passei a mandar lembretes automáticos. Vale cada centavo.",
+        "name": "Carolina Freitas",
+        "role": "Estúdio de cílios · Rio de Janeiro"
+      },
+      "marina": {
+        "quote": "Simples e bonito. Minhas clientes elogiam sempre a página de agendamento.",
+        "name": "Marina Souza",
+        "role": "Design de sobrancelhas · Belo Horizonte"
+      }
+    }
+  },
+  "pricing": {
+    "eyebrow": "Planos e preços",
+    "titleLine1": "Escolha o plano",
+    "titleEmphasis": "ideal",
+    "titleLine2": "para você.",
+    "subtitle": "Todos os planos incluem <strong>30 dias de teste grátis</strong>. Sem compromisso — cancele quando quiser durante o período.",
+    "popular": "Mais popular",
+    "footer": "Pagamentos processados pela Paddle.com (Merchant of Record). Veja nossa {{refund}}, {{privacy}} e {{terms}}.",
+    "refundPolicy": "Política de Reembolso",
+    "privacyPolicy": "Privacidade",
+    "termsOfUse": "Termos de Uso",
+    "plans": {
+      "starter": {
+        "name": "Starter",
+        "description": "Para profissionais autônomos.",
+        "descriptionWithTrial": "Para profissionais autônomos. 30 dias de teste grátis.",
+        "features": {
+          "professionals": "1 profissional",
+          "unlimitedAppointments": "Agendamentos ilimitados",
+          "publicPage": "Página pública de agendamento",
+          "clientAndServiceRegistration": "Cadastro de clientes e serviços"
+        }
+      },
+      "pro": {
+        "name": "Pro",
+        "description": "Para pequenos estúdios.",
+        "descriptionWithTrial": "Para pequenos estúdios. 30 dias de teste grátis.",
+        "features": {
+          "professionals": "Até 5 profissionais",
+          "unlimitedAppointments": "Agendamentos ilimitados",
+          "emailNotifications": "Notificações automáticas por e-mail",
+          "reminders": "Lembretes 24h antes",
+          "reports": "Relatórios e histórico"
+        }
+      },
+      "business": {
+        "name": "Business",
+        "description": "Para estúdios em crescimento.",
+        "descriptionWithTrial": "Para estúdios em crescimento. 30 dias de teste grátis.",
+        "features": {
+          "professionals": "Profissionais ilimitados",
+          "unlimitedAppointments": "Agendamentos ilimitados",
+          "blockManagement": "Gestão de bloqueios e jornadas",
+          "prioritySupport": "Suporte prioritário",
+          "advancedFeatures": "Recursos avançados",
+          "advancedFeaturesAccess": "Acesso a recursos avançados"
+        }
+      },
+      "cta": "Começar 30 dias grátis"
+    }
+  },
+  "faq": {
+    "eyebrow": "Perguntas frequentes",
+    "titleLine1": "A gente",
+    "titleEmphasis": "responde",
+    "items": {
+      "trial": {
+        "q": "Como funciona o teste grátis?",
+        "a": "Você tem 30 dias completos para usar o Belle Nails sem custo algum. Não pedimos cartão para começar e você pode cancelar quando quiser durante o período."
+      },
+      "install": {
+        "q": "Preciso instalar algo?",
+        "a": "Não. O Belle Nails funciona direto no navegador do seu celular ou computador. Você também pode adicionar à tela inicial como um app."
+      },
+      "clientAccount": {
+        "q": "As minhas clientes precisam criar conta?",
+        "a": "Não. Elas agendam pela sua página pública informando apenas nome, contato e o serviço desejado."
+      },
+      "changePlan": {
+        "q": "Posso mudar de plano depois?",
+        "a": "Sim. Você pode fazer upgrade ou downgrade a qualquer momento — o valor é ajustado proporcionalmente."
+      },
+      "billing": {
+        "q": "Como é feita a cobrança?",
+        "a": "Os pagamentos são processados pela Paddle.com como Merchant of Record, com todas as garantias legais e reembolso em até 30 dias."
+      }
+    }
+  },
+  "finalCta": {
+    "titleLine1": "Pronta para encantar",
+    "titleEmphasis": "suas clientes?",
+    "description": "Crie sua conta gratuitamente e comece a organizar sua agenda em minutos.",
+    "cta": "Começar 30 dias grátis"
+  },
+  "footer": {
+    "pricing": "Preços",
+    "terms": "Termos de Uso",
+    "privacy": "Privacidade",
+    "refund": "Reembolso",
+    "copyright": "© {{year}} Belle Nails · Feito com carinho."
+  },
+  "precosPage": {
+    "title": "Planos e preços",
+    "subtitle": "Todos os planos incluem <strong>30 dias de teste grátis</strong>. Cancele quando quiser durante o período.",
+    "footer": "Pagamentos processados pela Paddle.com (Merchant of Record). Veja nossa {{refund}} e os {{terms}}.",
+    "copyright": "© {{year}} Belle Nails"
+  }
+}

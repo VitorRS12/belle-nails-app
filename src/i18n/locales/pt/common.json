@@ -174,8 +174,8 @@
     "browserFallbackHint": "Use o menu do navegador se o botão não abrir o prompt.",
     "iosSteps": {
       "step1": "Toque no ícone de compartilhar no Safari.",
-      "step2": "Role e escolha <strong>Adicionar à Tela de Início</strong>.",
-      "step3": "Confirme em <strong>Adicionar</strong> no canto superior direito."
+      "step2": "Role e escolha **Adicionar à Tela de Início**.",
+      "step3": "Confirme em **Adicionar** no canto superior direito."
     }
   },
   "installAppPrompt": {

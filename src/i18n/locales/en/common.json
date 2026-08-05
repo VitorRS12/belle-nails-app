@@ -174,8 +174,8 @@
     "browserFallbackHint": "Use the browser menu if the button doesn't open the prompt.",
     "iosSteps": {
       "step1": "Tap the share icon in Safari.",
-      "step2": "Scroll and choose <strong>Add to Home Screen</strong>.",
-      "step3": "Confirm by tapping <strong>Add</strong> in the top right corner."
+      "step2": "Scroll and choose **Add to Home Screen**.",
+      "step3": "Confirm by tapping **Add** in the top right corner."
     }
   },
   "installAppPrompt": {

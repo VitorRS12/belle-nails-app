@@ -107,14 +107,11 @@
     "workbox-window": "^7.4.1"
   },
   "resolutions": {
-    "dompurify": "3.4.13",
-    "@capacitor/cli/tar": "7.5.22",
-    "@capacitor/cli/glob": "13.0.6",
-    "@capacitor/cli/minimatch": "10.2.6",
-    "@capacitor/cli/brace-expansion": "5.0.9",
-    "@capacitor/cli/uuid": "14.0.1"
+    "dompurify": "3.4.13"
   },
   "overrides": {
-    "dompurify": "3.4.13"
+    "dompurify": "3.4.13",
+    "tar": "7.5.22",
+    "uuid": "14.0.1"
   }
 }

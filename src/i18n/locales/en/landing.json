@@ -210,5 +210,27 @@
     "subtitle": "All plans include a <strong>30-day free trial</strong>. Cancel anytime during the trial.",
     "footer": "Payments processed by Paddle.com (Merchant of Record). See our {{refund}} and {{terms}}.",
     "copyright": "© {{year}} Belle Nails"
+  },
+  "mockups": {
+    "panel": {
+      "today": "Appointments today",
+      "revenue": "Monthly revenue",
+      "clients": "Active clients",
+      "services": "Services",
+      "week": "Last 7 days"
+    },
+    "agenda": {
+      "today": "Today",
+      "count": "{{count}} appointments",
+      "service1": "Manicure + Polish",
+      "service2": "Gel extensions",
+      "service3": "Pedicure",
+      "done": "Completed",
+      "scheduled": "Scheduled"
+    },
+    "clients": {
+      "search": "Search client...",
+      "visits": "{{count}} visits"
+    }
   }
 }

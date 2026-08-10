@@ -20,9 +20,8 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { useState } from "react";
-import dashboardShot from "@/assets/screenshots/painel.png.asset.json";
-import agendaShot from "@/assets/screenshots/agenda.png.asset.json";
-import clientesShot from "@/assets/screenshots/clientes.png.asset.json";
+import { PanelMockup, AgendaMockup, ClientsMockup } from "@/components/landing/AppMockups";
+
 
 const PLAN_KEYS = ["starter", "pro", "business"] as const;
 const PLAN_PRICES: Record<(typeof PLAN_KEYS)[number], string> = {
@@ -199,12 +198,10 @@ const Landing = () => {
                     <span className="h-1.5 w-1.5 rounded-full bg-muted" />
                   </span>
                 </div>
-                <img
-                  src={dashboardShot.url}
-                  alt={t("hero.panelAlt")}
-                  loading="lazy"
-                  className="w-full flex-1 object-cover object-top"
-                />
+                <div className="w-full flex-1 overflow-hidden">
+                  <PanelMockup />
+                </div>
+
               </div>
             </div>
 
@@ -299,14 +296,10 @@ const Landing = () => {
               <p className="text-sm text-muted-foreground leading-relaxed max-w-md">
                 {t("features.bigCard.desc")}
               </p>
-              <div className="mt-6 rounded-2xl overflow-hidden border border-border/50 shadow-soft">
-                <img
-                  src={agendaShot.url}
-                  alt={t("screenshots.agenda")}
-                  loading="lazy"
-                  className="w-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
-                />
+              <div className="mt-6 rounded-2xl overflow-hidden border border-border/50 shadow-soft group-hover:scale-[1.02] transition-transform duration-500">
+                <AgendaMockup />
               </div>
+
             </article>
 
             {/* Right column stacked */}
@@ -366,18 +359,13 @@ const Landing = () => {
           </div>
           <div className="grid sm:grid-cols-3 gap-5">
             {[
-              { src: dashboardShot.url, label: t("screenshots.panel") },
-              { src: agendaShot.url, label: t("screenshots.agenda") },
-              { src: clientesShot.url, label: t("screenshots.clients") },
-            ].map(({ src, label }) => (
+              { Mock: PanelMockup, label: t("screenshots.panel") },
+              { Mock: AgendaMockup, label: t("screenshots.agenda") },
+              { Mock: ClientsMockup, label: t("screenshots.clients") },
+            ].map(({ Mock, label }) => (
               <div key={label} className="group">
-                <div className="rounded-3xl border border-border/60 bg-card/60 backdrop-blur overflow-hidden shadow-soft hover:shadow-elegant transition-smooth">
-                  <img
-                    src={src}
-                    alt={label}
-                    loading="lazy"
-                    className="w-full h-auto object-contain group-hover:scale-[1.03] transition-transform duration-500"
-                  />
+                <div className="rounded-3xl border border-border/60 bg-card/60 backdrop-blur overflow-hidden shadow-soft hover:shadow-elegant transition-smooth group-hover:scale-[1.02] duration-500">
+                  <Mock />
                 </div>
                 <p className="mt-3 text-center text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                   {label}
@@ -385,6 +373,7 @@ const Landing = () => {
               </div>
             ))}
           </div>
+
         </section>
 
         {/* ============ TESTIMONIALS ============ */}

@@ -210,5 +210,27 @@
     "subtitle": "Todos os planos incluem <strong>30 dias de teste grátis</strong>. Cancele quando quiser durante o período.",
     "footer": "Pagamentos processados pela Paddle.com (Merchant of Record). Veja nossa {{refund}} e os {{terms}}.",
     "copyright": "© {{year}} Belle Nails"
+  },
+  "mockups": {
+    "panel": {
+      "today": "Agendamentos hoje",
+      "revenue": "Faturamento do mês",
+      "clients": "Clientes ativos",
+      "services": "Serviços",
+      "week": "Últimos 7 dias"
+    },
+    "agenda": {
+      "today": "Hoje",
+      "count": "{{count}} agendamentos",
+      "service1": "Manicure + Esmaltação",
+      "service2": "Alongamento em gel",
+      "service3": "Pedicure",
+      "done": "Concluído",
+      "scheduled": "Agendado"
+    },
+    "clients": {
+      "search": "Buscar cliente...",
+      "visits": "{{count}} atendimentos"
+    }
   }
 }

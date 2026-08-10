@@ -198,12 +198,10 @@ const Landing = () => {
                     <span className="h-1.5 w-1.5 rounded-full bg-muted" />
                   </span>
                 </div>
-                <img
-                  src={dashboardShot.url}
-                  alt={t("hero.panelAlt")}
-                  loading="lazy"
-                  className="w-full flex-1 object-cover object-top"
-                />
+                <div className="w-full flex-1 overflow-hidden">
+                  <PanelMockup />
+                </div>
+
               </div>
             </div>
 

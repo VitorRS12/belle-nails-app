@@ -20,9 +20,8 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { useState } from "react";
-import dashboardShot from "@/assets/screenshots/painel.png.asset.json";
-import agendaShot from "@/assets/screenshots/agenda.png.asset.json";
-import clientesShot from "@/assets/screenshots/clientes.png.asset.json";
+import { PanelMockup, AgendaMockup, ClientsMockup } from "@/components/landing/AppMockups";
+
 
 const PLAN_KEYS = ["starter", "pro", "business"] as const;
 const PLAN_PRICES: Record<(typeof PLAN_KEYS)[number], string> = {

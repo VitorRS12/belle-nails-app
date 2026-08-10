@@ -299,14 +299,10 @@ const Landing = () => {
               <p className="text-sm text-muted-foreground leading-relaxed max-w-md">
                 {t("features.bigCard.desc")}
               </p>
-              <div className="mt-6 rounded-2xl overflow-hidden border border-border/50 shadow-soft">
-                <img
-                  src={agendaShot.url}
-                  alt={t("screenshots.agenda")}
-                  loading="lazy"
-                  className="w-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
-                />
+              <div className="mt-6 rounded-2xl overflow-hidden border border-border/50 shadow-soft group-hover:scale-[1.02] transition-transform duration-500">
+                <AgendaMockup />
               </div>
+
             </article>
 
             {/* Right column stacked */}

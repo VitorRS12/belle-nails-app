@@ -361,18 +361,13 @@ const Landing = () => {
           </div>
           <div className="grid sm:grid-cols-3 gap-5">
             {[
-              { src: dashboardShot.url, label: t("screenshots.panel") },
-              { src: agendaShot.url, label: t("screenshots.agenda") },
-              { src: clientesShot.url, label: t("screenshots.clients") },
-            ].map(({ src, label }) => (
+              { Mock: PanelMockup, label: t("screenshots.panel") },
+              { Mock: AgendaMockup, label: t("screenshots.agenda") },
+              { Mock: ClientsMockup, label: t("screenshots.clients") },
+            ].map(({ Mock, label }) => (
               <div key={label} className="group">
-                <div className="rounded-3xl border border-border/60 bg-card/60 backdrop-blur overflow-hidden shadow-soft hover:shadow-elegant transition-smooth">
-                  <img
-                    src={src}
-                    alt={label}
-                    loading="lazy"
-                    className="w-full h-auto object-contain group-hover:scale-[1.03] transition-transform duration-500"
-                  />
+                <div className="rounded-3xl border border-border/60 bg-card/60 backdrop-blur overflow-hidden shadow-soft hover:shadow-elegant transition-smooth group-hover:scale-[1.02] duration-500">
+                  <Mock />
                 </div>
                 <p className="mt-3 text-center text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                   {label}
@@ -380,6 +375,7 @@ const Landing = () => {
               </div>
             ))}
           </div>
+
         </section>
 
         {/* ============ TESTIMONIALS ============ */}

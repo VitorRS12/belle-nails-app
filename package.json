@@ -105,5 +105,11 @@
     "vite-plugin-pwa": "^1.3.0",
     "vitest": "^3.2.4",
     "workbox-window": "^7.4.1"
+  },
+  "overrides": {
+    "dompurify": "3.4.13"
+  },
+  "resolutions": {
+    "dompurify": "3.4.13"
   }
 }

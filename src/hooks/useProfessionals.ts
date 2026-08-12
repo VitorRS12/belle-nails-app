@@ -11,6 +11,7 @@ export interface Professional {
   photo_url: string | null;
   bio: string | null;
   specialties: string[];
+  areas: string[];
   active: boolean;
   email: string | null;
   created_at: string;
@@ -21,6 +22,7 @@ export type ProfessionalInput = {
   bio?: string | null;
   photo_url?: string | null;
   specialties?: string[];
+  areas?: string[];
   active?: boolean;
 };
 
@@ -38,7 +40,7 @@ export function useProfessionals() {
     setLoading(true);
     const { data, error } = await supabase
       .from("professionals")
-      .select("id, company_id, user_id, name, photo_url, bio, specialties, active, email, created_at")
+      .select("id, company_id, user_id, name, photo_url, bio, specialties, areas, active, email, created_at")
       .eq("company_id", company.id)
       .order("created_at", { ascending: true });
     if (error) {
@@ -63,6 +65,7 @@ export function useProfessionals() {
         bio: input.bio ?? null,
         photo_url: input.photo_url ?? null,
         specialties: input.specialties ?? [],
+        areas: input.areas ?? [],
         active: input.active ?? true,
       });
       if (error) {

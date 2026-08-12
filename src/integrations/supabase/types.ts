@@ -694,6 +694,7 @@ export type Database = {
       professionals: {
         Row: {
           active: boolean
+          areas: string[]
           bio: string | null
           company_id: string
           created_at: string
@@ -707,6 +708,7 @@ export type Database = {
         }
         Insert: {
           active?: boolean
+          areas?: string[]
           bio?: string | null
           company_id: string
           created_at?: string
@@ -720,6 +722,7 @@ export type Database = {
         }
         Update: {
           active?: boolean
+          areas?: string[]
           bio?: string | null
           company_id?: string
           created_at?: string
@@ -978,6 +981,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_company_admin: {
+        Args: { _company_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_company_member: {
         Args: { _company_id: string; _user_id: string }
         Returns: boolean
@@ -990,6 +997,10 @@ export type Database = {
           source_queue: string
         }
         Returns: number
+      }
+      owns_professional: {
+        Args: { _professional_id: string; _user_id: string }
+        Returns: boolean
       }
       read_email_batch: {
         Args: { batch_size: number; queue_name: string; vt: number }

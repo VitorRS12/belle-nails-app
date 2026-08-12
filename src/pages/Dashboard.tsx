@@ -3,6 +3,8 @@ import { AppLayout } from "@/components/AppLayout";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { RelatorioContent } from "@/components/RelatorioContent";
 import { useAppointments, useClients } from "@/hooks/useStore";
+import { useProfessionals } from "@/hooks/useProfessionals";
+import { useUserRoles } from "@/hooks/useUserRoles";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -66,8 +68,21 @@ const COLORS = [
 
 const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "relatorio" }) => {
   const [tab, setTab] = useState<"overview" | "relatorio">(initialTab);
-  const appts = useAppointments();
+  const allAppts = useAppointments();
   const clients = useClients();
+  const { professionals } = useProfessionals();
+  const { isCompanyAdmin, isSuperAdmin } = useUserRoles();
+  const canFilterByProfessional = isCompanyAdmin || isSuperAdmin;
+
+  // Owner/admin can drill down into a single professional's numbers.
+  const [professionalFilter, setProfessionalFilter] = useState<string>("all");
+  const appts = useMemo(
+    () =>
+      professionalFilter === "all"
+        ? allAppts
+        : allAppts.filter((a) => a.professionalId === professionalFilter),
+    [allAppts, professionalFilter]
+  );
 
   // Filters
   const [search, setSearch] = useState("");
@@ -96,13 +111,18 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
   }, [appts, search, statusFilter, serviceFilter, dateFilter]);
 
   const hasActiveFilters =
-    !!search || statusFilter !== "all" || serviceFilter !== "all" || !!dateFilter;
+    !!search ||
+    statusFilter !== "all" ||
+    serviceFilter !== "all" ||
+    !!dateFilter ||
+    professionalFilter !== "all";
 
   const clearFilters = () => {
     setSearch("");
     setStatusFilter("all");
     setServiceFilter("all");
     setDateFilter("");
+    setProfessionalFilter("all");
   };
 
 
@@ -279,6 +299,21 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
               className="pl-9"
             />
           </div>
+          {canFilterByProfessional && (
+            <Select value={professionalFilter} onValueChange={setProfessionalFilter}>
+              <SelectTrigger>
+                <SelectValue placeholder="Profissional" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Toda a equipe</SelectItem>
+                {professionals.map((p) => (
+                  <SelectItem key={p.id} value={p.id}>
+                    {p.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
           <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as StatusFilter)}>
             <SelectTrigger>
               <SelectValue placeholder="Status" />

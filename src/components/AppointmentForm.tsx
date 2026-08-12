@@ -15,6 +15,7 @@ import { Plus, X, Star } from "lucide-react";
 import { toast } from "sonner";
 import { useTrialStatus } from "@/features/billing/hooks/useTrialStatus";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Props {
   trigger?: React.ReactNode;
@@ -39,6 +40,13 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
   const { profile } = useProfile();
   const { services: customCatalog, add: addCustomService } = useCustomServices();
   const { professionals } = useProfessionals();
+  const { user } = useAuth();
+  // The professional linked to the signed-in account, used as the default so
+  // every appointment is attributed to whoever created it.
+  const myProfessionalId = useMemo(
+    () => professionals.find((p) => p.user_id && p.user_id === user?.id)?.id ?? "",
+    [professionals, user?.id]
+  );
   const activeProfessionals = useMemo(
     () => professionals.filter((p) => p.active),
     [professionals]
@@ -75,10 +83,11 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
     setNotes(initial?.notes ?? "");
     setStatus(initial?.status ?? "scheduled");
     setProfessionalId(
-      initial?.professionalId ??
+      initial?.professionalId ||
+        myProfessionalId ||
         (activeProfessionals.length === 1 ? activeProfessionals[0].id : "")
     );
-  }, [open, initial, defaultDate, activeProfessionals]);
+  }, [open, initial, defaultDate, activeProfessionals, myProfessionalId]);
 
   const total = useMemo(
     () => services.reduce((s, x) => s + (Number(x.price) || 0), 0),

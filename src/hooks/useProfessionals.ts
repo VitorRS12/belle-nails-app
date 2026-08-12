@@ -11,6 +11,7 @@ export interface Professional {
   photo_url: string | null;
   bio: string | null;
   specialties: string[];
+  areas: string[];
   active: boolean;
   email: string | null;
   created_at: string;
@@ -21,6 +22,7 @@ export type ProfessionalInput = {
   bio?: string | null;
   photo_url?: string | null;
   specialties?: string[];
+  areas?: string[];
   active?: boolean;
 };
 
@@ -38,7 +40,7 @@ export function useProfessionals() {
     setLoading(true);
     const { data, error } = await supabase
       .from("professionals")
-      .select("id, company_id, user_id, name, photo_url, bio, specialties, active, email, created_at")
+      .select("id, company_id, user_id, name, photo_url, bio, specialties, areas, active, email, created_at")
       .eq("company_id", company.id)
       .order("created_at", { ascending: true });
     if (error) {
@@ -55,23 +57,26 @@ export function useProfessionals() {
   }, [refresh]);
 
   const create = useCallback(
-    async (input: ProfessionalInput) => {
-      if (!company) return false;
-      const { error } = await supabase.from("professionals").insert({
+    async (input: ProfessionalInput): Promise<Professional | null> => {
+      if (!company) return null;
+      const { data, error } = await supabase.from("professionals").insert({
         company_id: company.id,
         name: input.name,
         bio: input.bio ?? null,
         photo_url: input.photo_url ?? null,
         specialties: input.specialties ?? [],
+        areas: input.areas ?? [],
         active: input.active ?? true,
-      });
-      if (error) {
+      })
+        .select("id, company_id, user_id, name, photo_url, bio, specialties, areas, active, email, created_at")
+        .maybeSingle();
+      if (error || !data) {
         toast.error("Não foi possível cadastrar a profissional");
-        return false;
+        return null;
       }
       toast.success("Profissional cadastrada");
       await refresh();
-      return true;
+      return data as Professional;
     },
     [company, refresh]
   );

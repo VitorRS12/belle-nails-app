@@ -54,16 +54,30 @@ interface FormState {
   name: string;
   bio: string;
   specialties: string;
+  areas: string[];
   active: boolean;
 }
 
-const emptyForm: FormState = { name: "", bio: "", specialties: "", active: true };
+const AREA_OPTIONS: { key: string; label: string; emoji: string }[] = [
+  { key: "manicure", label: "Unhas", emoji: "💅" },
+  { key: "sobrancelhas", label: "Sobrancelhas", emoji: "✨" },
+  { key: "cilios", label: "Cílios", emoji: "👁️" },
+];
+
+const emptyForm: FormState = {
+  name: "",
+  bio: "",
+  specialties: "",
+  areas: ["manicure"],
+  active: true,
+};
 
 function toForm(p: Professional): FormState {
   return {
     name: p.name,
     bio: p.bio ?? "",
     specialties: p.specialties.join(", "),
+    areas: p.areas ?? [],
     active: p.active,
   };
 }
@@ -76,6 +90,7 @@ function fromForm(f: FormState) {
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean),
+    areas: f.areas,
     active: f.active,
   };
 }
@@ -181,6 +196,15 @@ const Equipe = () => {
                         </Badge>
                       )}
                     </div>
+                    {(p.areas ?? []).length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-1.5">
+                        {(p.areas ?? []).map((a) => (
+                          <Badge key={a} className="text-[10px]" variant="outline">
+                            {AREA_OPTIONS.find((o) => o.key === a)?.label ?? a}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                     {p.specialties.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-1.5">
                         {p.specialties.map((s) => (
@@ -294,6 +318,46 @@ function ProfessionalDetailsForm({
           onChange={(e) => setForm({ ...form, specialties: e.target.value })}
         />
       </div>
+      <div className="space-y-1.5">
+        <Label>Áreas de atuação</Label>
+        <p className="text-xs text-muted-foreground">
+          Selecione com o que ela trabalha (pode marcar mais de uma).
+        </p>
+        <div className="grid grid-cols-1 gap-2 pt-1">
+          {AREA_OPTIONS.map((a) => {
+            const checked = form.areas.includes(a.key);
+            return (
+              <button
+                key={a.key}
+                type="button"
+                onClick={() =>
+                  setForm({
+                    ...form,
+                    areas: checked
+                      ? form.areas.filter((x) => x !== a.key)
+                      : [...form.areas, a.key],
+                  })
+                }
+                className={`flex items-center justify-between rounded-xl border px-3 py-2 text-left transition-colors ${
+                  checked
+                    ? "border-primary bg-primary/10"
+                    : "border-border/60 bg-card hover:bg-accent-soft/40"
+                }`}
+              >
+                <span className="text-sm font-medium">
+                  {a.emoji} {a.label}
+                </span>
+                <span
+                  className={`h-4 w-4 rounded-full border ${
+                    checked ? "bg-primary border-primary" : "border-border"
+                  }`}
+                />
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="space-y-1.5">
         <Label htmlFor="bio">{t("team.form.bio")}</Label>
         <Textarea

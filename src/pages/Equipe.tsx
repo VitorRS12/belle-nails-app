@@ -121,9 +121,16 @@ const Equipe = () => {
     if (!form.name.trim()) return;
     setSaving(true);
     const payload = fromForm(form);
-    const ok = editing ? await update(editing.id, payload) : await create(payload);
+    if (editing) {
+      await update(editing.id, payload);
+      setSaving(false);
+      return;
+    }
+    const created = await create(payload);
     setSaving(false);
-    if (ok && !editing) setOpen(false);
+    // Keep the sheet open on the new professional so the owner can invite her
+    // by e-mail right away.
+    if (created) setEditing(created);
   };
 
   const handleDelete = async (p: Professional) => {

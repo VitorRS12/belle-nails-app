@@ -57,9 +57,9 @@ export function useProfessionals() {
   }, [refresh]);
 
   const create = useCallback(
-    async (input: ProfessionalInput) => {
-      if (!company) return false;
-      const { error } = await supabase.from("professionals").insert({
+    async (input: ProfessionalInput): Promise<Professional | null> => {
+      if (!company) return null;
+      const { data, error } = await supabase.from("professionals").insert({
         company_id: company.id,
         name: input.name,
         bio: input.bio ?? null,
@@ -67,14 +67,16 @@ export function useProfessionals() {
         specialties: input.specialties ?? [],
         areas: input.areas ?? [],
         active: input.active ?? true,
-      });
-      if (error) {
+      })
+        .select("id, company_id, user_id, name, photo_url, bio, specialties, areas, active, email, created_at")
+        .maybeSingle();
+      if (error || !data) {
         toast.error("Não foi possível cadastrar a profissional");
-        return false;
+        return null;
       }
       toast.success("Profissional cadastrada");
       await refresh();
-      return true;
+      return data as Professional;
     },
     [company, refresh]
   );

@@ -83,8 +83,8 @@ export function AppointmentForm({ trigger, initial, defaultDate, onSaved }: Prop
     setNotes(initial?.notes ?? "");
     setStatus(initial?.status ?? "scheduled");
     setProfessionalId(
-      initial?.professionalId ??
-        myProfessionalId ??
+      initial?.professionalId ||
+        myProfessionalId ||
         (activeProfessionals.length === 1 ? activeProfessionals[0].id : "")
     );
   }, [open, initial, defaultDate, activeProfessionals, myProfessionalId]);

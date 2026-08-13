@@ -31,6 +31,10 @@ export async function notifyAppointmentStatus(appointmentId: string, kind: Kind)
       companyName = company?.name ?? "";
     }
 
+    const formattedDate = appt.date
+      ? new Date(`${appt.date}T00:00:00`).toLocaleDateString("pt-BR")
+      : "";
+
     await supabase.functions.invoke("send-notification-email", {
       body: {
         template: TEMPLATE[kind],
@@ -38,10 +42,11 @@ export async function notifyAppointmentStatus(appointmentId: string, kind: Kind)
         companyId: appt.company_id,
         appointmentId: appt.id,
         data: {
-          clientName: appt.client_name ?? "",
+          customerName: appt.client_name ?? "",
           companyName,
-          service: appt.service ?? "",
-          date: appt.date,
+          serviceName: appt.service ?? "",
+          professionalName: "",
+          date: formattedDate,
           time: appt.time,
         },
       },

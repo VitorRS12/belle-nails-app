@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AppLayout } from "@/components/AppLayout";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { RelatorioContent } from "@/components/RelatorioContent";
@@ -24,7 +25,8 @@ import {
   isWithinInterval,
   isSameMonth,
 } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { ptBR, enUS } from "date-fns/locale";
+import i18n from "@/i18n";
 import {
   ResponsiveContainer,
   BarChart,
@@ -41,13 +43,13 @@ import {
 
 type StatusFilter = "all" | "scheduled" | "completed" | "postponed" | "cancelled" | "pendente_confirmacao";
 
-const STATUS_LABELS: Record<Exclude<StatusFilter, "all">, string> = {
-  scheduled: "Agendado",
-  completed: "Concluído",
-  postponed: "Adiado",
-  cancelled: "Cancelado",
-  pendente_confirmacao: "Aguardando",
-};
+const STATUS_KEYS: Exclude<StatusFilter, "all">[] = [
+  "scheduled",
+  "completed",
+  "postponed",
+  "cancelled",
+  "pendente_confirmacao",
+];
 
 const STATUS_BADGE: Record<Exclude<StatusFilter, "all">, string> = {
   scheduled: "bg-primary/15 text-primary",
@@ -67,6 +69,8 @@ const COLORS = [
 ];
 
 const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "relatorio" }) => {
+  const { t } = useTranslation("app");
+  const dateLocale = i18n.resolvedLanguage === "en" ? enUS : ptBR;
   const [tab, setTab] = useState<"overview" | "relatorio">(initialTab);
   const allAppts = useAppointments();
   const clients = useClients();
@@ -140,7 +144,7 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
         return isWithinInterval(ad, { start, end });
       });
       return {
-        label: format(d, "MMM", { locale: ptBR }),
+        label: format(d, "MMM", { locale: dateLocale }),
         revenue: monthAppts.reduce((s, a) => s + a.price, 0),
         count: monthAppts.length,
       };
@@ -181,18 +185,18 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
       },
       recent,
     };
-  }, [appts, clients]);
+  }, [appts, clients, dateLocale]);
 
   return (
     <AppLayout
       wide
-      subtitle={format(new Date(), "EEEE, dd 'de' MMMM", { locale: ptBR })}
-      title="Dashboard"
+      subtitle={format(new Date(), "EEEE, dd 'de' MMMM", { locale: dateLocale })}
+      title={t("report.title")}
     >
       <Tabs value={tab} onValueChange={(v) => setTab(v as "overview" | "relatorio")} className="space-y-6">
         <TabsList className="grid w-full grid-cols-2 max-w-sm">
-          <TabsTrigger value="overview">Visão geral</TabsTrigger>
-          <TabsTrigger value="relatorio">Relatório</TabsTrigger>
+          <TabsTrigger value="overview">{t("report.tabs.overview")}</TabsTrigger>
+          <TabsTrigger value="relatorio">{t("report.tabs.report")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6 mt-0">
@@ -200,28 +204,30 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
       <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <KpiCard
           icon={<TrendingUp className="h-5 w-5" />}
-          label="Faturamento (mês)"
+          label={t("report.kpis.revenue")}
           value={`R$ ${data.kpis.revenue.toFixed(2).replace(".", ",")}`}
           accent
           hint={
             data.kpis.variation != null
-              ? `${data.kpis.variation >= 0 ? "+" : ""}${data.kpis.variation.toFixed(0)}% vs mês anterior`
+              ? t("report.kpis.vsLastMonth", {
+                  value: `${data.kpis.variation >= 0 ? "+" : ""}${data.kpis.variation.toFixed(0)}`,
+                })
               : undefined
           }
         />
         <KpiCard
           icon={<CalendarCheck className="h-5 w-5" />}
-          label="Atendimentos (mês)"
+          label={t("report.kpis.appointments")}
           value={String(data.kpis.count)}
         />
         <KpiCard
           icon={<Users className="h-5 w-5" />}
-          label="Clientes cadastradas"
+          label={t("report.kpis.clients")}
           value={String(data.kpis.clients)}
         />
         <KpiCard
           icon={<Sparkles className="h-5 w-5" />}
-          label="Serviço top"
+          label={t("report.kpis.topService")}
           value={data.topServices[0]?.name ?? "—"}
           small
         />
@@ -230,7 +236,7 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
       {/* Charts */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="md:col-span-2 rounded-2xl bg-card border border-border/60 p-4 shadow-soft">
-          <h3 className="font-display text-lg mb-3">Faturamento — últimos 6 meses</h3>
+          <h3 className="font-display text-lg mb-3">{t("report.charts.revenueTitle")}</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.months}>
@@ -252,9 +258,9 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
         </div>
 
         <div className="rounded-2xl bg-card border border-border/60 p-4 shadow-soft">
-          <h3 className="font-display text-lg mb-3">Top serviços</h3>
+          <h3 className="font-display text-lg mb-3">{t("report.charts.topServicesTitle")}</h3>
           {data.topServices.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Sem dados ainda.</p>
+            <p className="text-sm text-muted-foreground">{t("report.charts.noData")}</p>
           ) : (
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
@@ -282,9 +288,9 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
       {/* Filtered appointments table */}
       <section className="rounded-2xl bg-card border border-border/60 p-4 shadow-soft space-y-4">
         <div className="flex items-center justify-between gap-3 flex-wrap">
-          <h3 className="font-display text-lg">Atendimentos</h3>
+          <h3 className="font-display text-lg">{t("report.table.title")}</h3>
           <span className="text-xs text-muted-foreground">
-            {filtered.length} {filtered.length === 1 ? "resultado" : "resultados"}
+            {t("report.table.results", { count: filtered.length })}
           </span>
         </div>
 
@@ -295,17 +301,17 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Buscar cliente, serviço, nota…"
+              placeholder={t("report.table.searchPlaceholder")}
               className="pl-9"
             />
           </div>
           {canFilterByProfessional && (
             <Select value={professionalFilter} onValueChange={setProfessionalFilter}>
               <SelectTrigger>
-                <SelectValue placeholder="Profissional" />
+                <SelectValue placeholder={t("report.table.professionalPlaceholder")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Toda a equipe</SelectItem>
+                <SelectItem value="all">{t("report.table.allProfessionals")}</SelectItem>
                 {professionals.map((p) => (
                   <SelectItem key={p.id} value={p.id}>
                     {p.name}
@@ -316,21 +322,21 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
           )}
           <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as StatusFilter)}>
             <SelectTrigger>
-              <SelectValue placeholder="Status" />
+              <SelectValue placeholder={t("report.table.statusPlaceholder")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos os status</SelectItem>
-              {Object.entries(STATUS_LABELS).map(([v, l]) => (
-                <SelectItem key={v} value={v}>{l}</SelectItem>
+              <SelectItem value="all">{t("report.table.allStatuses")}</SelectItem>
+              {STATUS_KEYS.map((v) => (
+                <SelectItem key={v} value={v}>{t(`report.status.${v}`)}</SelectItem>
               ))}
             </SelectContent>
           </Select>
           <Select value={serviceFilter} onValueChange={setServiceFilter}>
             <SelectTrigger>
-              <SelectValue placeholder="Serviço" />
+              <SelectValue placeholder={t("report.table.servicePlaceholder")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos os serviços</SelectItem>
+              <SelectItem value="all">{t("report.table.allServices")}</SelectItem>
               {allServices.map((s) => (
                 <SelectItem key={s} value={s}>{s}</SelectItem>
               ))}
@@ -341,7 +347,7 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
               type="date"
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}
-              aria-label="A partir de"
+              aria-label={t("report.table.fromDate")}
             />
           </div>
         </div>
@@ -349,25 +355,25 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
         {hasActiveFilters && (
           <div>
             <Button variant="ghost" size="sm" onClick={clearFilters} className="h-8">
-              <X className="h-3.5 w-3.5 mr-1" /> Limpar filtros
+              <X className="h-3.5 w-3.5 mr-1" /> {t("report.table.clearFilters")}
             </Button>
           </div>
         )}
 
         {filtered.length === 0 ? (
           <p className="text-sm text-muted-foreground py-6 text-center">
-            Nenhum atendimento encontrado com os filtros atuais.
+            {t("report.table.noResults")}
           </p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-left text-muted-foreground border-b border-border">
-                  <th className="py-2 pr-3">Data</th>
-                  <th className="py-2 pr-3">Cliente</th>
-                  <th className="py-2 pr-3">Serviço</th>
-                  <th className="py-2 pr-3">Status</th>
-                  <th className="py-2 pr-3 text-right">Valor</th>
+                  <th className="py-2 pr-3">{t("report.table.columns.date")}</th>
+                  <th className="py-2 pr-3">{t("report.table.columns.client")}</th>
+                  <th className="py-2 pr-3">{t("report.table.columns.service")}</th>
+                  <th className="py-2 pr-3">{t("report.table.columns.status")}</th>
+                  <th className="py-2 pr-3 text-right">{t("report.table.columns.value")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -385,7 +391,7 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
                         <td className="py-2 pr-3">{a.service}</td>
                         <td className="py-2 pr-3">
                           <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${STATUS_BADGE[st] ?? ""}`}>
-                            {STATUS_LABELS[st] ?? st}
+                            {t(`report.status.${st}`, { defaultValue: st })}
                           </span>
                         </td>
                         <td className="py-2 pr-3 text-right font-medium">
@@ -398,7 +404,7 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
             </table>
             {filtered.length > 50 && (
               <p className="text-xs text-muted-foreground text-center mt-3">
-                Mostrando os 50 mais recentes de {filtered.length}.
+                {t("report.table.showingRecent", { count: filtered.length })}
               </p>
             )}
           </div>

@@ -46,7 +46,9 @@
         "status": "Status",
         "value": "Valor"
       },
-      "showingRecent": "Mostrando os 50 mais recentes de {{count}}."
+      "showingRecent": "Mostrando os 50 mais recentes de {{count}}.",
+      "professionalPlaceholder": "Profissional",
+      "allProfessionals": "Toda a equipe"
     },
     "status": {
       "scheduled": "Agendado",
@@ -280,6 +282,11 @@
       "title": "Área de atuação",
       "description": "Selecione a área em que sua empresa atua. O catálogo de serviços é ajustado automaticamente."
     },
-    "cloudNote": "Seus dados são salvos automaticamente na nuvem e ficam disponíveis no celular e no navegador."
+    "cloudNote": "Seus dados são salvos automaticamente na nuvem e ficam disponíveis no celular e no navegador.",
+    "areaOptions": {
+      "manicure": "Manicure",
+      "cilios": "Cílios",
+      "sobrancelhas": "Sobrancelhas"
+    }
   }
 }

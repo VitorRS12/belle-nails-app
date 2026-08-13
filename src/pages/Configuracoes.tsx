@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -16,6 +17,7 @@ import { Progress } from "@/components/ui/progress";
 import { InstallAppCard } from "@/components/InstallAppCard";
 
 const Configuracoes = () => {
+  const { t } = useTranslation("app");
   const { user, signOut } = useAuth();
   const { profile, updateArea } = useProfile();
   const { theme, toggleTheme } = useTheme();
@@ -26,14 +28,14 @@ const Configuracoes = () => {
   const handleSetArea = async (key: AreaKey) => {
     if (profile?.area === key) return;
     const ok = await updateArea(key);
-    if (ok) toast.success("Área de atuação atualizada");
-    else toast.error("Falha ao atualizar a área");
+    if (ok) toast.success(t("settings.areaUpdated"));
+    else toast.error(t("settings.areaUpdateFailed"));
   };
 
 
 
   return (
-    <AppLayout subtitle="Conta" title="Configurações">
+    <AppLayout subtitle={t("settings.subtitle")} title={t("settings.title")}>
       <div className="space-y-4">
         {/* Account */}
         <div className="rounded-2xl bg-card border border-border/60 p-5 shadow-soft">
@@ -47,7 +49,7 @@ const Configuracoes = () => {
             </div>
           </div>
           <Button variant="outline" onClick={() => signOut()} className="w-full rounded-xl">
-            <LogOut className="h-4 w-4 mr-2" /> Sair
+            <LogOut className="h-4 w-4 mr-2" /> {t("settings.signOut")}
           </Button>
         </div>
 
@@ -64,7 +66,7 @@ const Configuracoes = () => {
                 </div>
                 <div className="min-w-0">
                   <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                    Plano atual
+                    {t("settings.plan.current")}
                   </p>
                   <h3 className="font-display text-lg truncate">
                     {planData.plan.plan_name}{" "}
@@ -75,22 +77,22 @@ const Configuracoes = () => {
                 </div>
               </div>
               <Button asChild size="sm" variant="outline">
-                <Link to="/planos">Ver planos</Link>
+                <Link to="/planos">{t("settings.plan.viewPlans")}</Link>
               </Button>
             </div>
 
             <UsageRow
-              label="Profissionais"
+              label={t("settings.plan.professionals")}
               used={planData.usage.professionals}
               max={planData.plan.max_professionals}
             />
             <UsageRow
-              label="Agendamentos no mês"
+              label={t("settings.plan.appointmentsMonth")}
               used={planData.usage.appointmentsThisMonth}
               max={planData.plan.max_appointments_per_month}
             />
             <UsageRow
-              label="Serviços ativos"
+              label={t("settings.plan.activeServices")}
               used={planData.usage.services}
               max={planData.plan.max_services}
             />
@@ -107,9 +109,9 @@ const Configuracoes = () => {
               <ShieldCheck className="h-5 w-5" />
             </div>
             <div className="min-w-0 flex-1">
-              <h3 className="font-display text-lg">Painel Super Admin</h3>
+              <h3 className="font-display text-lg">{t("settings.superAdmin.title")}</h3>
               <p className="text-xs text-muted-foreground">
-                Gerenciar empresas, planos e métricas da plataforma.
+                {t("settings.superAdmin.description")}
               </p>
             </div>
             <ChevronRight className="h-5 w-5 text-muted-foreground" />
@@ -126,9 +128,9 @@ const Configuracoes = () => {
             <UsersRound className="h-5 w-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <h3 className="font-display text-lg">Equipe</h3>
+            <h3 className="font-display text-lg">{t("settings.links.team.title")}</h3>
             <p className="text-xs text-muted-foreground">
-              Gerencie as profissionais da sua empresa.
+              {t("settings.links.team.description")}
             </p>
           </div>
           <ChevronRight className="h-5 w-5 text-muted-foreground" />
@@ -143,9 +145,9 @@ const Configuracoes = () => {
             <Tag className="h-5 w-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <h3 className="font-display text-lg">Serviços</h3>
+            <h3 className="font-display text-lg">{t("settings.links.services.title")}</h3>
             <p className="text-xs text-muted-foreground">
-              Catálogo com duração, preço e cor — usado nos agendamentos e no site público.
+              {t("settings.links.services.description")}
             </p>
           </div>
           <ChevronRight className="h-5 w-5 text-muted-foreground" />
@@ -160,9 +162,9 @@ const Configuracoes = () => {
             <Bell className="h-5 w-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <h3 className="font-display text-lg">Histórico de notificações</h3>
+            <h3 className="font-display text-lg">{t("settings.links.notifications.title")}</h3>
             <p className="text-xs text-muted-foreground">
-              Veja todos os e-mails enviados aos clientes e à empresa.
+              {t("settings.links.notifications.description")}
             </p>
           </div>
           <ChevronRight className="h-5 w-5 text-muted-foreground" />
@@ -177,9 +179,9 @@ const Configuracoes = () => {
             <CalendarDays className="h-5 w-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <h3 className="font-display text-lg">Minha jornada</h3>
+            <h3 className="font-display text-lg">{t("settings.links.myJourney.title")}</h3>
             <p className="text-xs text-muted-foreground">
-              Escolha os dias e horários em que você atende.
+              {t("settings.links.myJourney.description")}
             </p>
           </div>
           <ChevronRight className="h-5 w-5 text-muted-foreground" />
@@ -214,12 +216,12 @@ const Configuracoes = () => {
                 {theme === "dark" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
               </div>
               <div className="min-w-0">
-                <h3 className="font-display text-lg">Aparência</h3>
+                <h3 className="font-display text-lg">{t("settings.appearance.title")}</h3>
                 <p className="text-xs text-muted-foreground">
                   {theme === "dark"
-                    ? "Tema escuro ativado — ideal à noite."
-                    : "Tema claro ativado — luminoso e suave."}{" "}
-                  Sua preferência fica salva.
+                    ? t("settings.appearance.darkOn")
+                    : t("settings.appearance.lightOn")}{" "}
+                  {t("settings.appearance.savedPreference")}
                 </p>
               </div>
             </div>
@@ -232,13 +234,13 @@ const Configuracoes = () => {
           <div className="flex items-center gap-3 mb-4">
             <Briefcase className="h-6 w-6 text-primary" />
             <div>
-              <h3 className="font-display text-lg">Área de atuação</h3>
+              <h3 className="font-display text-lg">{t("settings.area.title")}</h3>
               <p className="text-xs text-muted-foreground">
-                Selecione a área em que sua empresa atua. O catálogo de serviços é ajustado automaticamente.
+                {t("settings.area.description")}
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Área de atuação">
+          <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label={t("settings.area.title")}>
             {AREAS.map((a) => {
               const active = (profile?.area ?? "manicure") === a.key;
               return (
@@ -255,7 +257,7 @@ const Configuracoes = () => {
                   }`}
                 >
                   <div className="text-xl">{a.emoji}</div>
-                  <div className="text-sm font-medium">{a.label}</div>
+                  <div className="text-sm font-medium">{t(`settings.areaOptions.${a.key}`, { defaultValue: a.label })}</div>
                 </button>
               );
             })}
@@ -263,7 +265,7 @@ const Configuracoes = () => {
         </div>
 
         <p className="text-xs text-muted-foreground text-center px-4">
-          Seus dados são salvos automaticamente na nuvem e ficam disponíveis no celular e no navegador.
+          {t("settings.cloudNote")}
         </p>
 
         {/* Instalar app (PWA) — sempre no fim da página */}

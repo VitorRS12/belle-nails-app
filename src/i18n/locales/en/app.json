@@ -46,7 +46,9 @@
         "status": "Status",
         "value": "Value"
       },
-      "showingRecent": "Showing the 50 most recent of {{count}}."
+      "showingRecent": "Showing the 50 most recent of {{count}}.",
+      "professionalPlaceholder": "Professional",
+      "allProfessionals": "Whole team"
     },
     "status": {
       "scheduled": "Scheduled",
@@ -280,6 +282,11 @@
       "title": "Business area",
       "description": "Select the area your company works in. The service catalog is adjusted automatically."
     },
-    "cloudNote": "Your data is automatically saved in the cloud and available on mobile and browser."
+    "cloudNote": "Your data is automatically saved in the cloud and available on mobile and browser.",
+    "areaOptions": {
+      "manicure": "Manicure",
+      "cilios": "Lashes",
+      "sobrancelhas": "Eyebrows"
+    }
   }
 }

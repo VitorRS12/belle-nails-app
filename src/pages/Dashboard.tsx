@@ -365,49 +365,93 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
             {t("report.table.noResults")}
           </p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left text-muted-foreground border-b border-border">
-                  <th className="py-2 pr-3">{t("report.table.columns.date")}</th>
-                  <th className="py-2 pr-3">{t("report.table.columns.client")}</th>
-                  <th className="py-2 pr-3">{t("report.table.columns.service")}</th>
-                  <th className="py-2 pr-3">{t("report.table.columns.status")}</th>
-                  <th className="py-2 pr-3 text-right">{t("report.table.columns.value")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[...filtered]
-                  .sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time))
-                  .slice(0, 50)
-                  .map((a) => {
+          (() => {
+            const rows = [...filtered]
+              .sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time))
+              .slice(0, 50);
+            return (
+              <div>
+                {/* Mobile: stacked cards instead of a horizontally cramped table */}
+                <ul className="md:hidden space-y-2">
+                  {rows.map((a) => {
                     const st = (a.status as Exclude<StatusFilter, "all">) ?? "scheduled";
                     return (
-                      <tr key={a.id} className="border-b border-border/40 last:border-0">
-                        <td className="py-2 pr-3 whitespace-nowrap">
-                          {format(parseISO(a.date), "dd/MM/yyyy")} {a.time}
-                        </td>
-                        <td className="py-2 pr-3">{a.clientName}</td>
-                        <td className="py-2 pr-3">{a.service}</td>
-                        <td className="py-2 pr-3">
-                          <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${STATUS_BADGE[st] ?? ""}`}>
+                      <li
+                        key={a.id}
+                        className="rounded-xl border border-border/60 bg-background/60 p-3"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0">
+                            <p className="font-medium text-sm truncate">{a.clientName}</p>
+                            <p className="text-xs text-muted-foreground truncate">{a.service}</p>
+                          </div>
+                          <span className="font-display text-primary text-sm whitespace-nowrap">
+                            R$ {a.price.toFixed(2).replace(".", ",")}
+                          </span>
+                        </div>
+                        <div className="mt-2 flex items-center justify-between gap-2">
+                          <span className="text-[11px] text-muted-foreground whitespace-nowrap">
+                            {format(parseISO(a.date), "dd/MM/yyyy")} · {a.time}
+                          </span>
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${STATUS_BADGE[st] ?? ""}`}
+                          >
                             {t(`report.status.${st}`, { defaultValue: st })}
                           </span>
-                        </td>
-                        <td className="py-2 pr-3 text-right font-medium">
-                          R$ {a.price.toFixed(2).replace(".", ",")}
-                        </td>
-                      </tr>
+                        </div>
+                      </li>
                     );
                   })}
-              </tbody>
-            </table>
-            {filtered.length > 50 && (
-              <p className="text-xs text-muted-foreground text-center mt-3">
-                {t("report.table.showingRecent", { count: filtered.length })}
-              </p>
-            )}
-          </div>
+                </ul>
+
+                <div className="hidden md:block overflow-x-auto -mx-1 px-1">
+                  <table className="w-full text-sm min-w-[560px]">
+                    <thead>
+                      <tr className="text-left text-muted-foreground border-b border-border">
+                        <th className="py-2 pr-3 font-medium">{t("report.table.columns.date")}</th>
+                        <th className="py-2 pr-3 font-medium">{t("report.table.columns.client")}</th>
+                        <th className="py-2 pr-3 font-medium">{t("report.table.columns.service")}</th>
+                        <th className="py-2 pr-3 font-medium">{t("report.table.columns.status")}</th>
+                        <th className="py-2 pr-3 font-medium text-right">
+                          {t("report.table.columns.value")}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rows.map((a) => {
+                        const st = (a.status as Exclude<StatusFilter, "all">) ?? "scheduled";
+                        return (
+                          <tr key={a.id} className="border-b border-border/40 last:border-0">
+                            <td className="py-2 pr-3 whitespace-nowrap tabular-nums">
+                              {format(parseISO(a.date), "dd/MM/yyyy")} {a.time}
+                            </td>
+                            <td className="py-2 pr-3 max-w-[180px] truncate">{a.clientName}</td>
+                            <td className="py-2 pr-3 max-w-[180px] truncate">{a.service}</td>
+                            <td className="py-2 pr-3">
+                              <span
+                                className={`px-2 py-0.5 rounded-full text-[11px] font-medium whitespace-nowrap ${STATUS_BADGE[st] ?? ""}`}
+                              >
+                                {t(`report.status.${st}`, { defaultValue: st })}
+                              </span>
+                            </td>
+                            <td className="py-2 pr-3 text-right font-medium tabular-nums whitespace-nowrap">
+                              R$ {a.price.toFixed(2).replace(".", ",")}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {filtered.length > 50 && (
+                  <p className="text-xs text-muted-foreground text-center mt-3">
+                    {t("report.table.showingRecent", { count: filtered.length })}
+                  </p>
+                )}
+              </div>
+            );
+          })()
         )}
       </section>
         </TabsContent>

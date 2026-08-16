@@ -79,6 +79,7 @@ const Agenda = () => {
         </div>
       )}
 
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] lg:items-start">
       <div className="rounded-2xl bg-card border border-border/60 p-2 sm:p-4 shadow-soft flex justify-center">
         <Calendar
           mode="single"
@@ -97,7 +98,7 @@ const Agenda = () => {
         />
       </div>
 
-      <section className="space-y-2">
+      <section className="space-y-2 min-w-0">
         <h2 className="font-display text-lg text-foreground/80 capitalize">
           {format(selected, "EEEE, dd 'de' MMMM", { locale: dateLocale })}
         </h2>
@@ -122,6 +123,7 @@ const Agenda = () => {
           </div>
         )}
       </section>
+      </div>
     </AppLayout>
   );
 };

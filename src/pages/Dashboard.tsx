@@ -295,8 +295,8 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
         </div>
 
         {/* Filters */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
-          <div className="relative lg:col-span-2">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-2">
+          <div className="relative col-span-2 lg:col-span-2">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               value={search}

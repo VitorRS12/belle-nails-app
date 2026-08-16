@@ -87,8 +87,16 @@ const AdminCompanies = () => {
                     })}
                   </p>
                 </div>
-                <span className="text-sm">{c.plan_name ?? "—"}</span>
-                <span>
+                <span className="text-sm flex items-center gap-2 md:block">
+                  <span className="md:hidden text-[11px] uppercase tracking-wider text-muted-foreground">
+                    {t("companies.table.plan")}
+                  </span>
+                  {c.plan_name ?? "—"}
+                </span>
+                <span className="flex items-center gap-2 md:block">
+                  <span className="md:hidden text-[11px] uppercase tracking-wider text-muted-foreground">
+                    {t("companies.table.status")}
+                  </span>
                   {c.status ? (
                     <Badge className={statusVariant[c.status] ?? "bg-muted"} variant="secondary">
                       {c.status}
@@ -97,15 +105,22 @@ const AdminCompanies = () => {
                     "—"
                   )}
                 </span>
-                <span className="text-sm tabular-nums md:text-right">
+                <span className="text-sm tabular-nums md:text-right flex items-center gap-2 md:block">
+                  <span className="md:hidden text-[11px] uppercase tracking-wider text-muted-foreground">
+                    {t("companies.table.professionals")}
+                  </span>
                   {c.professional_count}
                 </span>
-                <span className="text-sm tabular-nums md:text-right">
+                <span className="text-sm tabular-nums md:text-right flex items-center gap-2 md:block">
+                  <span className="md:hidden text-[11px] uppercase tracking-wider text-muted-foreground">
+                    {t("companies.table.appointmentsPerMonth")}
+                  </span>
                   {c.appointments_this_month}
                 </span>
                 <Button
                   size="sm"
                   variant="outline"
+                  className="w-full md:w-auto mt-1 md:mt-0"
                   onClick={() =>
                     setEditing({ companyId: c.id, planId: c.plan_id ?? "" })
                   }

@@ -121,7 +121,7 @@ const Servicos = () => {
             description={t("services.empty.description")}
           />
         ) : (
-          <ul className="grid gap-3">
+          <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {services.map((s, idx) => (
               <motion.li
                 key={s.id}

@@ -168,7 +168,7 @@ const Equipe = () => {
             description={t("team.empty.description")}
           />
         ) : (
-          <ul className="grid gap-3">
+          <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {professionals.map((p, idx) => (
               <motion.li
                 key={p.id}

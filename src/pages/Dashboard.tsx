@@ -201,7 +201,7 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
 
         <TabsContent value="overview" className="space-y-6 mt-0">
       {/* KPIs */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <section className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
         <KpiCard
           icon={<TrendingUp className="h-5 w-5" />}
           label={t("report.kpis.revenue")}
@@ -234,10 +234,10 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
       </section>
 
       {/* Charts */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="md:col-span-2 rounded-2xl bg-card border border-border/60 p-4 shadow-soft">
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
+        <div className="lg:col-span-2 rounded-2xl bg-card border border-border/60 p-3 sm:p-4 shadow-soft">
           <h3 className="font-display text-lg mb-3">{t("report.charts.revenueTitle")}</h3>
-          <div className="h-64">
+          <div className="h-56 sm:h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.months}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -257,12 +257,12 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
           </div>
         </div>
 
-        <div className="rounded-2xl bg-card border border-border/60 p-4 shadow-soft">
+        <div className="rounded-2xl bg-card border border-border/60 p-3 sm:p-4 shadow-soft">
           <h3 className="font-display text-lg mb-3">{t("report.charts.topServicesTitle")}</h3>
           {data.topServices.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("report.charts.noData")}</p>
           ) : (
-            <div className="h-64">
+            <div className="h-56 sm:h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -286,7 +286,7 @@ const Dashboard = ({ initialTab = "overview" }: { initialTab?: "overview" | "rel
       </section>
 
       {/* Filtered appointments table */}
-      <section className="rounded-2xl bg-card border border-border/60 p-4 shadow-soft space-y-4">
+      <section className="rounded-2xl bg-card border border-border/60 p-3 sm:p-4 shadow-soft space-y-4">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <h3 className="font-display text-lg">{t("report.table.title")}</h3>
           <span className="text-xs text-muted-foreground">

@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://bellenailsorigin.lovable.app/sitemap.xml
+Sitemap: https://bellenailsapp.com/sitemap.xml

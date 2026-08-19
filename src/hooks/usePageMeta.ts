@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const SITE_URL = "https://bellenailsorigin.lovable.app";
+const SITE_URL = "https://bellenailsapp.com";
 
 type Meta = {
   title: string;

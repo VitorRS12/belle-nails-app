@@ -35,6 +35,7 @@ import Termos from "./pages/legal/Termos.tsx";
 import Privacidade from "./pages/legal/Privacidade.tsx";
 import Reembolso from "./pages/legal/Reembolso.tsx";
 import CancelarAgendamento from "./pages/CancelarAgendamento.tsx";
+import NomesParaSalaoDeBeleza from "./pages/blog/NomesParaSalaoDeBeleza.tsx";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ActiveAreaProvider } from "./contexts/ActiveAreaContext";
 import { ThemeProvider } from "./contexts/ThemeContext";

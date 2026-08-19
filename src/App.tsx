@@ -35,6 +35,7 @@ import Termos from "./pages/legal/Termos.tsx";
 import Privacidade from "./pages/legal/Privacidade.tsx";
 import Reembolso from "./pages/legal/Reembolso.tsx";
 import CancelarAgendamento from "./pages/CancelarAgendamento.tsx";
+import NomesParaSalaoDeBeleza from "./pages/blog/NomesParaSalaoDeBeleza.tsx";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ActiveAreaProvider } from "./contexts/ActiveAreaContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -53,6 +54,7 @@ function AppInner() {
         <Route path="/auth" element={wrap(<Auth />)} />
         <Route path="/b/:slug" element={wrap(<PublicBooking />)} />
         <Route path="/precos" element={wrap(<Precos />)} />
+        <Route path="/blog/nomes-para-salao-de-beleza" element={wrap(<NomesParaSalaoDeBeleza />)} />
         <Route path="/termos" element={wrap(<Termos />)} />
         <Route path="/privacidade" element={wrap(<Privacidade />)} />
         <Route path="/reembolso" element={wrap(<Reembolso />)} />

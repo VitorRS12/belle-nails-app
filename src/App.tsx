@@ -54,6 +54,7 @@ function AppInner() {
         <Route path="/auth" element={wrap(<Auth />)} />
         <Route path="/b/:slug" element={wrap(<PublicBooking />)} />
         <Route path="/precos" element={wrap(<Precos />)} />
+        <Route path="/blog/nomes-para-salao-de-beleza" element={wrap(<NomesParaSalaoDeBeleza />)} />
         <Route path="/termos" element={wrap(<Termos />)} />
         <Route path="/privacidade" element={wrap(<Privacidade />)} />
         <Route path="/reembolso" element={wrap(<Reembolso />)} />

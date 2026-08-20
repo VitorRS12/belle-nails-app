@@ -91,10 +91,31 @@ export default defineConfig(({ mode }) => ({
       },
     }),
   ].filter(Boolean),
+  build: {
+    target: "es2020",
+    cssCodeSplit: true,
+    chunkSizeWarningLimit: 900,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return;
+          if (/[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom|scheduler)[\\/]/.test(id))
+            return "vendor-react";
+          if (id.includes("recharts") || id.includes("d3-")) return "vendor-charts";
+          if (id.includes("jspdf") || id.includes("dompurify") || id.includes("html2canvas")) return "vendor-pdf";
+          if (id.includes("framer-motion")) return "vendor-motion";
+          if (id.includes("@supabase")) return "vendor-supabase";
+          if (id.includes("i18next")) return "vendor-i18n";
+          if (id.includes("date-fns")) return "vendor-date";
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
     dedupe: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime", "@tanstack/react-query", "@tanstack/query-core"],
   },
+
 }));

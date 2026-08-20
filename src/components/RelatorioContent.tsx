@@ -6,8 +6,8 @@ import { Label } from "@/components/ui/label";
 import { FileDown, TrendingUp, Trophy, Crown } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+// jsPDF/autoTable são carregados sob demanda dentro de generatePDF (code-splitting).
+
 import { toast } from "sonner";
 
 export function RelatorioContent() {

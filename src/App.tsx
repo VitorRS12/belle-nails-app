@@ -58,7 +58,11 @@ function RouteFallback() {
 
 function AppInner() {
   const location = useLocation();
-  const wrap = (el: JSX.Element) => <PageTransition>{el}</PageTransition>;
+  const wrap = (el: JSX.Element) => (
+    <PageTransition>
+      <Suspense fallback={<RouteFallback />}>{el}</Suspense>
+    </PageTransition>
+  );
   return (
     <AnimatePresence mode="wait" initial={false}>
       <Routes location={location} key={location.pathname}>

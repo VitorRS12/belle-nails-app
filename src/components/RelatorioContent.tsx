@@ -6,8 +6,8 @@ import { Label } from "@/components/ui/label";
 import { FileDown, TrendingUp, Trophy, Crown } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-// jsPDF/autoTable são carregados sob demanda dentro de generatePDF (code-splitting).
-
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { toast } from "sonner";
 
 export function RelatorioContent() {
@@ -51,14 +51,10 @@ export function RelatorioContent() {
 
   const monthLabel = format(parseISO(`${month}-01`), "MMMM 'de' yyyy", { locale: ptBR });
 
-  const generatePDF = async () => {
+  const generatePDF = () => {
     if (stats.appts.length === 0) {
       return toast.error("Nenhum atendimento concluído neste mês.");
     }
-    const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([
-      import("jspdf"),
-      import("jspdf-autotable"),
-    ]);
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
 

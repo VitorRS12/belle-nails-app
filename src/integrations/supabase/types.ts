@@ -279,11 +279,15 @@ export type Database = {
           id: string
           paddle_customer_id: string | null
           paddle_subscription_id: string | null
+          payment_failed_notice_sent_at: string | null
           plan_id: string
+          renewal_notice_for_period_end: string | null
           status: string
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
           trial_ends_at: string | null
+          trial_notice_1d_sent_at: string | null
+          trial_notice_7d_sent_at: string | null
           updated_at: string
         }
         Insert: {
@@ -296,11 +300,15 @@ export type Database = {
           id?: string
           paddle_customer_id?: string | null
           paddle_subscription_id?: string | null
+          payment_failed_notice_sent_at?: string | null
           plan_id: string
+          renewal_notice_for_period_end?: string | null
           status?: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           trial_ends_at?: string | null
+          trial_notice_1d_sent_at?: string | null
+          trial_notice_7d_sent_at?: string | null
           updated_at?: string
         }
         Update: {
@@ -313,11 +321,15 @@ export type Database = {
           id?: string
           paddle_customer_id?: string | null
           paddle_subscription_id?: string | null
+          payment_failed_notice_sent_at?: string | null
           plan_id?: string
+          renewal_notice_for_period_end?: string | null
           status?: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           trial_ends_at?: string | null
+          trial_notice_1d_sent_at?: string | null
+          trial_notice_7d_sent_at?: string | null
           updated_at?: string
         }
         Relationships: [

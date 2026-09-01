@@ -7,6 +7,9 @@ import { template as bookingConfirmedCustomer } from './booking-confirmed-custom
 import { template as bookingCancelledCustomer } from './booking-cancelled-customer.tsx'
 import { template as bookingCancelledCompany } from './booking-cancelled-company.tsx'
 import { template as bookingReminderCustomer } from './booking-reminder-customer.tsx'
+import { template as billingTrialEnding } from './billing-trial-ending.tsx'
+import { template as billingRenewalUpcoming } from './billing-renewal-upcoming.tsx'
+import { template as billingPaymentFailed } from './billing-payment-failed.tsx'
 
 export interface TemplateEntry {
   // deno-lint-ignore no-explicit-any
@@ -26,4 +29,7 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'booking-cancelled-customer': bookingCancelledCustomer,
   'booking-cancelled-company': bookingCancelledCompany,
   'booking-reminder-customer': bookingReminderCustomer,
+  'billing-trial-ending': billingTrialEnding,
+  'billing-renewal-upcoming': billingRenewalUpcoming,
+  'billing-payment-failed': billingPaymentFailed,
 }

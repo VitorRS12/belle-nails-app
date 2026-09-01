@@ -29,6 +29,23 @@ function formatDate(iso: string | null) {
   return new Date(iso).toLocaleDateString("pt-BR", { timeZone: "America/Bahia" });
 }
 
+// Accepts either the exact service-role key or any JWT carrying the
+// service_role claim (covers rotated/alternate service keys used by cron).
+function isServiceRoleToken(token: string, serviceRole: string): boolean {
+  if (!token) return false;
+  if (token === serviceRole) return true;
+  try {
+    const [, payload] = token.split(".");
+    if (!payload) return false;
+    const json = JSON.parse(
+      atob(payload.replace(/-/g, "+").replace(/_/g, "/")),
+    ) as { role?: string };
+    return json.role === "service_role";
+  } catch {
+    return false;
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
@@ -38,7 +55,10 @@ Deno.serve(async (req) => {
 
     const authHeader = req.headers.get("Authorization") ?? "";
     const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
-    if (token !== SERVICE_ROLE) return json({ error: "Unauthorized" }, 401);
+    if (!isServiceRoleToken(token, SERVICE_ROLE)) {
+      console.warn("unauthorized call to send-billing-notices");
+      return json({ error: "Unauthorized" }, 401);
+    }
 
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
     const now = Date.now();

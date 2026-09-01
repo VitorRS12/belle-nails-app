@@ -19,6 +19,8 @@ project_id = "dfrrpbqfdupdurecguvj"
     verify_jwt = false
   [functions.send-reminders]
     verify_jwt = false
+  [functions.send-billing-notices]
+    verify_jwt = false
   [functions.send-transactional-email]
     verify_jwt = true
   [functions.preview-transactional-email]

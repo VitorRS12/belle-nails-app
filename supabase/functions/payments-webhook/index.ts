@@ -119,6 +119,79 @@ async function handleSubscriptionCanceled(data: any) {
     .eq("paddle_subscription_id", data.id);
 }
 
+// Sends the "payment failed" advance notice to the company owner.
+async function handlePaymentFailed(data: any) {
+  try {
+    const subscriptionId: string | undefined = data?.subscriptionId ?? data?.subscription_id;
+    if (!subscriptionId) return;
+
+    const supabase = getSupabase();
+    const { data: sub } = await supabase
+      .from("company_subscriptions")
+      .select("id, company_id, plan_id")
+      .eq("paddle_subscription_id", subscriptionId)
+      .maybeSingle();
+    if (!sub) return;
+
+    const [{ data: company }, { data: plan }] = await Promise.all([
+      supabase
+        .from("companies")
+        .select("name, owner_user_id")
+        .eq("id", (sub as any).company_id)
+        .maybeSingle(),
+      supabase
+        .from("subscription_plans")
+        .select("name, price_cents, currency")
+        .eq("id", (sub as any).plan_id)
+        .maybeSingle(),
+    ]);
+    if (!company || !plan) return;
+
+    const { data: userRes } = await supabase.auth.admin.getUserById(
+      (company as any).owner_user_id,
+    );
+    const email = userRes?.user?.email;
+    if (!email) return;
+
+    const meta = (userRes?.user?.user_metadata ?? {}) as Record<string, unknown>;
+    const amount = new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: ((plan as any).currency as string) || "BRL",
+    }).format((((plan as any).price_cents as number) ?? 0) / 100);
+
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+    const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    await fetch(`${SUPABASE_URL}/functions/v1/send-transactional-email`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${SERVICE_ROLE}`,
+        apikey: SERVICE_ROLE,
+      },
+      body: JSON.stringify({
+        templateName: "billing-payment-failed",
+        recipientEmail: email,
+        idempotencyKey: `billing-payment-failed-${data?.id ?? subscriptionId}`,
+        templateData: {
+          ownerName:
+            (meta.full_name as string) || (meta.name as string) || email.split("@")[0],
+          companyName: (company as any).name,
+          planName: (plan as any).name,
+          amount,
+          manageUrl: "https://bellenailsapp.com/planos",
+        },
+      }),
+    });
+
+    await supabase
+      .from("company_subscriptions")
+      .update({ payment_failed_notice_sent_at: new Date().toISOString() })
+      .eq("id", (sub as any).id);
+  } catch (e) {
+    console.error("handlePaymentFailed error", e);
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method !== "POST") return new Response("Method not allowed", { status: 405 });
   const url = new URL(req.url);
@@ -134,6 +207,9 @@ Deno.serve(async (req) => {
         break;
       case EventName.SubscriptionCanceled:
         await handleSubscriptionCanceled(event.data);
+        break;
+      case EventName.TransactionPaymentFailed:
+        await handlePaymentFailed(event.data);
         break;
       default:
         console.log("Unhandled event:", event.eventType);

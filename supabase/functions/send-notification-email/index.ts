@@ -1,9 +1,9 @@
-// Thin compatibility wrapper: keeps the legacy `template` API used across the app
-// while delegating the actual delivery to `send-transactional-email`
-// (Lovable Emails infrastructure, verified sender domain).
+// Feature sender: keeps the legacy `template` API used across the app while
+// delivering through Lovable's managed email API (verified sender domain).
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { sendTemplateEmailLogged } from "../_shared/send-email-logged.ts";
 
 type Template =
   | "booking_confirmation_customer"
@@ -62,29 +62,28 @@ Deno.serve(async (req) => {
     const templateName = TEMPLATE_MAP[body.template];
     if (!templateName) return json({ error: "Unknown template" }, 400);
 
-    const res = await fetch(`${SUPABASE_URL}/functions/v1/send-transactional-email`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${SERVICE_ROLE}`,
-        apikey: SERVICE_ROLE,
-      },
-      body: JSON.stringify({
-        templateName,
-        recipientEmail: body.to,
+    const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
+
+    let ok = true;
+    let suppressed = false;
+    let errorMessage: string | null = null;
+
+    try {
+      const result = await sendTemplateEmailLogged(admin, templateName, body.to, {
+        templateData: body.data,
         idempotencyKey:
           body.idempotencyKey ??
           (body.appointmentId ? `${templateName}-${body.appointmentId}` : undefined),
-        templateData: body.data,
-      }),
-    });
-
-    const payload = await res.json().catch(() => ({}));
-    const ok = res.ok && payload?.success !== false;
+      });
+      suppressed = !result.sent;
+    } catch (e) {
+      ok = false;
+      errorMessage = e instanceof Error ? e.message : String(e);
+      console.error("email send failed", templateName, errorMessage);
+    }
 
     // Best-effort audit log (app-facing notification history)
     try {
-      const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
       await admin.from("notification_log").insert({
         company_id: body.companyId ?? null,
         appointment_id: body.appointmentId ?? null,
@@ -92,19 +91,17 @@ Deno.serve(async (req) => {
         template: body.template,
         recipient: body.to,
         subject: templateName,
-        status: ok ? "sent" : "failed",
-        provider_id: payload?.messageId ?? payload?.message_id ?? null,
-        error: ok ? null : JSON.stringify(payload).slice(0, 500),
+        status: ok ? (suppressed ? "suppressed" : "sent") : "failed",
+        provider_id: null,
+        error: errorMessage ? errorMessage.slice(0, 500) : null,
       });
     } catch (logErr) {
       console.error("notification_log insert failed", logErr);
     }
 
-    if (!ok) {
-      console.error("send-transactional-email failed", res.status, payload);
-      return json({ error: "Email send failed" }, 502);
-    }
-    return json({ ok: true, id: payload?.messageId ?? null });
+    if (!ok) return json({ error: "Email send failed" }, 502);
+    // A suppressed recipient is an expected outcome, not an error.
+    return json({ ok: true, suppressed });
   } catch (e) {
     console.error(e);
     return json({ error: "Unexpected error" }, 500);

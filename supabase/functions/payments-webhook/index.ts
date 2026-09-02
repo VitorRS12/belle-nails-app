@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { verifyWebhook, EventName, type PaddleEnv } from "../_shared/paddle.ts";
+import { sendTemplateEmailLogged } from "../_shared/send-email-logged.ts";
 
 let _supabase: ReturnType<typeof createClient> | null = null;
 function getSupabase() {
@@ -159,28 +160,16 @@ async function handlePaymentFailed(data: any) {
       currency: ((plan as any).currency as string) || "BRL",
     }).format((((plan as any).price_cents as number) ?? 0) / 100);
 
-    const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-    const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    await fetch(`${SUPABASE_URL}/functions/v1/send-transactional-email`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${SERVICE_ROLE}`,
-        apikey: SERVICE_ROLE,
+    await sendTemplateEmailLogged(supabase, "billing-payment-failed", email, {
+      idempotencyKey: `billing-payment-failed-${data?.id ?? subscriptionId}`,
+      templateData: {
+        ownerName:
+          (meta.full_name as string) || (meta.name as string) || email.split("@")[0],
+        companyName: (company as any).name,
+        planName: (plan as any).name,
+        amount,
+        manageUrl: "https://bellenailsapp.com/planos",
       },
-      body: JSON.stringify({
-        templateName: "billing-payment-failed",
-        recipientEmail: email,
-        idempotencyKey: `billing-payment-failed-${data?.id ?? subscriptionId}`,
-        templateData: {
-          ownerName:
-            (meta.full_name as string) || (meta.name as string) || email.split("@")[0],
-          companyName: (company as any).name,
-          planName: (plan as any).name,
-          amount,
-          manageUrl: "https://bellenailsapp.com/planos",
-        },
-      }),
     });
 
     await supabase

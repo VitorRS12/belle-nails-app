@@ -6,6 +6,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { sendTemplateEmailLogged } from "../_shared/send-email-logged.ts";
 
 const DAY_MS = 86_400_000;
 const SITE_URL = "https://bellenailsapp.com";
@@ -108,13 +109,6 @@ Deno.serve(async (req) => {
       return info;
     }
 
-    const sendUrl = `${SUPABASE_URL}/functions/v1/send-transactional-email`;
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${SERVICE_ROLE}`,
-      apikey: SERVICE_ROLE,
-    };
-
     let sent = 0;
     let evaluated = 0;
 
@@ -158,28 +152,21 @@ Deno.serve(async (req) => {
           n.kind === "renewal" ? "billing-renewal-upcoming" : "billing-trial-ending";
         const cycleKey = (n.chargeDate ?? "").slice(0, 10);
         try {
-          const res = await fetch(sendUrl, {
-            method: "POST",
-            headers,
-            body: JSON.stringify({
-              templateName,
-              recipientEmail: info.email,
-              idempotencyKey: `${templateName}-${s.id}-${n.days}d-${cycleKey}`,
-              templateData: {
-                ownerName: info.name,
-                companyName: company.name,
-                planName: plan.name,
-                amount: formatAmount(plan.price_cents, plan.currency),
-                chargeDate: formatDate(n.chargeDate),
-                daysLeft: n.days,
-                manageUrl: `${SITE_URL}/planos`,
-              },
-            }),
+          const result = await sendTemplateEmailLogged(admin, templateName, info.email, {
+            idempotencyKey: `${templateName}-${s.id}-${n.days}d-${cycleKey}`,
+            templateData: {
+              ownerName: info.name,
+              companyName: company.name,
+              planName: plan.name,
+              amount: formatAmount(plan.price_cents, plan.currency),
+              chargeDate: formatDate(n.chargeDate),
+              daysLeft: n.days,
+              manageUrl: `${SITE_URL}/planos`,
+            },
           });
 
-          if (!res.ok) {
-            console.error("billing notice send failed", s.id, n.kind, res.status, await res.text());
-            continue;
+          if (!result.sent) {
+            console.warn("billing notice recipient suppressed", s.id, n.kind);
           }
 
           const patch: Record<string, unknown> = {};

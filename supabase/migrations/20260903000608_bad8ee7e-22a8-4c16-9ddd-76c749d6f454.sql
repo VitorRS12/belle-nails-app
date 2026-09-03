@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.prevent_professional_company_reassignment() FROM PUBLIC, anon, authenticated;
